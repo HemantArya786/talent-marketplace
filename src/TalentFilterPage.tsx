@@ -1,11 +1,11 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "./components/ui/button";
+import { Card, CardContent } from "./components/ui/card";
+import { Slider } from "./components/ui/slider";
+import { Switch } from "./components/ui/switch";
+import { Badge } from "./components/ui/badge";
 import {
   Command,
   CommandEmpty,
@@ -13,15 +13,15 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "./components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+} from "./components/ui/popover";
+import { Checkbox } from "./components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group";
+import { Label } from "./components/ui/label";
 
 const TalentFilterPage: React.FC = () => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);

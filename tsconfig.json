@@ -4,17 +4,13 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "moduleResolution": "node",
-    "types": ["node"],                   // 👈 Required for Node globals like __dirname
-    "target": "esnext",
+    "jsx": "react-jsx",
     "module": "esnext",
-    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "target": "esnext",
     "allowJs": true,
+    "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "include": ["src"]
 }

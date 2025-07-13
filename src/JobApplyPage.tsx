@@ -1,24 +1,24 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 
 import React, { useState } from "react";
-import { Button } from "./components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./components/ui/card";
-import { Badge } from "./components/ui/badge";
-import { Input } from "./components/ui/input";
-import { Label } from "./components/ui/label";
-import { Textarea } from "./components/ui/textarea";
-import { Checkbox } from "./components/ui/checkbox";
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./components/ui/collapsible";
+} from "@/components/ui/collapsible";
 
 const JobApplyPage: React.FC = () => {
   const [isJobDetailsOpen, setIsJobDetailsOpen] = useState(false);
@@ -316,7 +316,7 @@ const JobApplyPage: React.FC = () => {
                       <Input
                         id="email"
                         type="email"
-                        placeholder="your.email.example.com"
+                        placeholder="your.email@example.com"
                         value={formData.email}
                         onChange={(e) =>
                           handleInputChange("email", e.target.value)

@@ -231,14 +231,15 @@ const Navbar: React.FC = () => {
           >
             <div className="px-6 py-4 space-y-3">
               {navLinks.map((link) => (
-                <button
-                  key={link}
+                <Link
+                  key={link.name}
+                  to={link.path}
                   onClick={() => {
-                    setActiveLink(link);
+                    setActiveLink(link.name);
                     setIsMobileMenuOpen(false);
                   }}
                   className={`block w-full text-left px-3 py-2 text-sm font-medium transition-all duration-200 cursor-pointer !rounded-button whitespace-nowrap ${
-                    activeLink === link
+                    activeLink === link.name
                       ? isDarkMode
                         ? "text-blue-400 bg-slate-800"
                         : "text-blue-800 bg-blue-50"
@@ -247,8 +248,8 @@ const Navbar: React.FC = () => {
                       : "text-gray-700 hover:text-blue-800 hover:bg-gray-50"
                   }`}
                 >
-                  {link}
-                </button>
+                  {link.name}
+                </Link>
               ))}
 
               {!isLoggedIn && (
@@ -285,11 +286,11 @@ const Navbar: React.FC = () => {
 
       {/* Main Content Area */}
 
-      <style jsx global>{`
+      {/* <style jsx global>{`
         .!rounded-button {
           border-radius: 8px !important;
         }
-      `}</style>
+      `}</style> */}
     </div>
   );
 };

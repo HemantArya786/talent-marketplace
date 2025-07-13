@@ -3,7 +3,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "moduleResolution": "node",
+    "types": ["node"],                   // 👈 Required for Node globals like __dirname
+    "target": "esnext",
+    "module": "esnext",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": true
   },
   "files": [],
   "references": [

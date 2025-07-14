@@ -17,6 +17,8 @@ import { Pagination, Autoplay } from "swiper/modules";
 const Home: React.FC = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const swiperModules = [Pagination, Autoplay];
+  const [activeTab, setActiveTab] = useState<"talent" | "jobs">("talent");
+  const isDarkMode = false; // Replace with actual dark mode state if needed
 
   const aiAgents = [
     {
@@ -124,60 +126,90 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-white font-inter">
       {/* Hero Section */}
-      <section
-        className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 overflow-hidden"
+      <div
+        className="relative w-full h-screen  bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://readdy.ai/api/search-image?query=modern%20abstract%20AI%20technology%20background%20with%20geometric%20shapes%20neural%20networks%20and%20flowing%20data%20streams%20in%20deep%20blue%20gradient%20professional%20tech%20aesthetic&width=1440&height=1024&seq=hero&orientation=landscape')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundImage: `url('https://readdy.ai/api/search-image?query=Professional%20confident%20woman%20developer%20working%20on%20computer%20in%20modern%20cozy%20tech%20workspace%20with%20warm%20lighting%2C%20multiple%20monitors%2C%20plants%2C%20and%20contemporary%20office%20setup%2C%20realistic%20photography%20style%2C%20high%20quality%2C%20professional%20atmosphere&width=1440&height=1024&seq=hero-bg-001&orientation=landscape')`,
         }}
       >
-        <div className="absolute inset-0 bg-blue-900/70"></div>
-        <div className="relative z-10 max-w-6xl mx-auto px-6 text-center text-white">
-          <h1 className="font-poppins text-6xl md:text-7xl font-bold mb-6 leading-tight">
-            Unleash the Power of
-            <span className="block text-blue-200">Artificial Intelligence</span>
-          </h1>
-          <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed opacity-90">
-            Connect with top AI agents, collaborate with world-class experts,
-            and transform your business with cutting-edge artificial
-            intelligence solutions
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button
-              size="lg"
-              className="!rounded-button whitespace-nowrap bg-white text-blue-900 hover:bg-blue-50 px-12 py-4 text-lg font-semibold cursor-pointer"
-            >
-              Get Started Free
-              <i className="fas fa-arrow-right ml-3"></i>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="!rounded-button whitespace-nowrap border-white text-white hover:bg-white hover:text-blue-900 px-12 py-4 text-lg font-semibold cursor-pointer"
-            >
-              Watch Demo
-              <i className="fas fa-play ml-3"></i>
-            </Button>
-          </div>
-          <div className="mt-16 flex justify-center items-center gap-8 text-blue-200">
-            <div className="text-center">
-              <div className="text-3xl font-bold">50K+</div>
-              <div className="text-sm opacity-80">Active Users</div>
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 flex items-center h-full max-w-7xl mx-auto px-8">
+          <div className="w-full max-w-2xl">
+            {/* Main Headline */}
+            <h1 className="text-6xl font-bold text-white leading-tight mb-8">
+              Connecting top AI & GTM talent with companies that move fast
+            </h1>
+
+            {/* Search Component */}
+            <div className="bg-black bg-opacity-60 rounded-2xl p-8 backdrop-blur-sm">
+              {/* Toggle Buttons */}
+              <div className="flex mb-6">
+                <button
+                  onClick={() => setActiveTab("talent")}
+                  className={`flex-1 py-3 px-6 rounded-l-xl font-medium transition-all duration-200 cursor-pointer whitespace-nowrap !rounded-button ${
+                    activeTab === "talent"
+                      ? "bg-white text-black"
+                      : "bg-gray-700 text-white hover:bg-gray-600"
+                  }`}
+                >
+                  Find Talent
+                </button>
+                <button
+                  onClick={() => setActiveTab("jobs")}
+                  className={`flex-1 py-3 px-6 rounded-r-xl font-medium transition-all duration-200 cursor-pointer whitespace-nowrap !rounded-button ${
+                    activeTab === "jobs"
+                      ? "bg-white text-black"
+                      : "bg-gray-700 text-white hover:bg-gray-600"
+                  }`}
+                >
+                  Find Jobs
+                </button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by skills, role, or company"
+                  className="w-full py-4 px-6 pr-32 rounded-xl bg-white text-gray-900 text-lg border-none outline-none"
+                />
+                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white px-8 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors cursor-pointer whitespace-nowrap !rounded-button">
+                  <i className="fas fa-search mr-2"></i>
+                  Search
+                </button>
+              </div>
             </div>
-            <div className="w-px h-12 bg-blue-400"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold">1000+</div>
-              <div className="text-sm opacity-80">AI Agents</div>
-            </div>
-            <div className="w-px h-12 bg-blue-400"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold">99.9%</div>
-              <div className="text-sm opacity-80">Uptime</div>
+
+            {/* Trusted Companies */}
+            <div className="mt-12">
+              <p className="text-white text-sm mb-6 opacity-80">
+                Trusted by leading companies
+              </p>
+              <div className="flex items-center space-x-12 opacity-70">
+                <div className="flex items-center space-x-2">
+                  <i className="fab fa-microsoft text-white text-2xl"></i>
+                  <span className="text-white font-medium">Microsoft</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <i className="fab fa-google text-white text-2xl"></i>
+                  <span className="text-white font-medium">Google</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <i className="fas fa-cube text-white text-2xl"></i>
+                  <span className="text-white font-medium">HubSpot</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <i className="fas fa-brain text-white text-2xl"></i>
+                  <span className="text-white font-medium">OpenAI</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Top AI Agents Section */}
       <section className="py-24 bg-gray-50">
@@ -343,7 +375,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-24 bg-blue-900 text-white overflow-hidden">
+      {/* <section className="py-24 bg-blue-900 text-white overflow-hidden">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="font-poppins text-4xl md:text-5xl font-bold mb-6">
@@ -403,7 +435,7 @@ const Home: React.FC = () => {
             </Swiper>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Final CTA Section */}
       <section
@@ -456,150 +488,6 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div>
-              <h3 className="font-poppins text-2xl font-bold mb-6 text-blue-400">
-                Readdy.ai
-              </h3>
-              <p className="text-gray-400 leading-relaxed mb-6">
-                Empowering businesses with cutting-edge AI solutions and expert
-                guidance for the future of work.
-              </p>
-              <div className="flex gap-4">
-                <i className="fab fa-twitter text-xl text-gray-400 hover:text-blue-400 cursor-pointer transition-colors"></i>
-                <i className="fab fa-linkedin text-xl text-gray-400 hover:text-blue-400 cursor-pointer transition-colors"></i>
-                <i className="fab fa-github text-xl text-gray-400 hover:text-blue-400 cursor-pointer transition-colors"></i>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Platform</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    AI Agents
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Expert Network
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    API Access
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Integrations
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Resources</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Tutorials
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Community
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-6">Company</h4>
-              <ul className="space-y-3 text-gray-400">
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Privacy
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 mb-4 md:mb-0">
-              © 2025 Readdy.ai. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6 text-gray-400">
-              <i className="fab fa-cc-visa text-2xl"></i>
-              <i className="fab fa-cc-mastercard text-2xl"></i>
-              <i className="fab fa-paypal text-2xl"></i>
-              <i className="fas fa-shield-alt text-xl"></i>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

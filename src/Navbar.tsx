@@ -2,295 +2,381 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [searchFilter, setSearchFilter] = useState("Talent");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState("Find Talent");
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
+  const handleDropdownToggle = (dropdown: string) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
-  const toggleLogin = () => {
-    setIsLoggedIn(!isLoggedIn);
+  const handleSearchFilterToggle = () => {
+    const filters = ["Talent", "Jobs", "Projects"];
+    const currentIndex = filters.indexOf(searchFilter);
+    const nextIndex = (currentIndex + 1) % filters.length;
+    setSearchFilter(filters[nextIndex]);
   };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const navLinks = [
-    { name: "Find Talent", path: "/find" },
-    { name: "Find Jobs", path: "/list" },
-    { name: "AI Agents", path: "/ai-agents" },
-    { name: "Companies", path: "/companies" },
-    { name: "About Us", path: "/about" },
-    { name: "How It Works", path: "/how-it-works" },
-  ];
 
   return (
-    <div
-      className={`  ${isDarkMode ? "dark bg-slate-900" : "bg-gray-50"}`}
-      style={{ fontFamily: "Inter, sans-serif" }}
-    >
-      {/* Navbar */}
-      <nav
-        className={`w-full h-[70px]  ${
-          isDarkMode
-            ? "bg-slate-900/95 border-slate-700"
-            : "bg-white/95 border-gray-200"
-        } backdrop-blur-sm shadow-sm border-b rounded-lg sticky top-0 z-50 transition-all duration-200`}
-      >
-        <div className="max-w-7xl mx-auto px-16 h-full flex items-center justify-between">
-          {/* Left Section - Logo */}
-          <div className="flex items-center">
-            <div
-              className={`text-2xl font-semibold mr-8 cursor-pointer  ${
-                isDarkMode ? "text-white" : "text-blue-400"
-              } transition-colors duration-200`}
-            >
-              Talent Marketplace
-            </div>
-          </div>
-
-          {/* Center Section - Navigation Links (Desktop) */}
-          <div className="hidden lg:flex items-center justify-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setActiveLink(link.name)}
-                className={`px-3 py-2 text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap !rounded-button ${
-                  activeLink === link.name
-                    ? isDarkMode
-                      ? "text-blue-400 border-b-2 border-blue-400"
-                      : "text-blue-800 border-b-2 border-blue-800"
-                    : isDarkMode
-                    ? "text-gray-300 hover:text-blue-400"
-                    : "text-gray-700 hover:text-blue-800"
-                } hover:opacity-80`}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Right Section - Auth & Theme Toggle */}
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className={`p-2 rounded-md transition-colors duration-200 cursor-pointer !rounded-button whitespace-nowrap ${
-                isDarkMode
-                  ? "text-gray-300 hover:text-white hover:bg-slate-800"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              }`}
-            >
-              <i
-                className={`fas ${isDarkMode ? "fa-sun" : "fa-moon"} text-lg`}
-              ></i>
-            </button>
-
-            {/* Authentication Section */}
-            {!isLoggedIn ? (
-              <div className="hidden md:flex items-center space-x-3">
-                <Button
-                  variant="outline"
-                  className={`px-4 py-2 text-sm font-medium border transition-all duration-200 cursor-pointer !rounded-button whitespace-nowrap ${
-                    isDarkMode
-                      ? "border-slate-600 text-gray-300 hover:bg-slate-800 hover:text-white"
-                      : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  Login
-                </Button>
-                <Button
-                  className="px-4 py-2 text-sm font-medium bg-blue-800 text-white hover:bg-blue-900 transition-all duration-200 cursor-pointer !rounded-button whitespace-nowrap"
-                  onClick={toggleLogin}
-                >
-                  Sign Up
-                </Button>
-              </div>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="cursor-pointer">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage
-                        src="https://readdy.ai/api/search-image?query=professional%20business%20person%20headshot%20with%20clean%20modern%20background%20and%20professional%20lighting%20setup&width=100&height=100&seq=avatar-001&orientation=squarish"
-                        alt="User"
-                      />
-                      <AvatarFallback className="bg-blue-800 text-white text-sm">
-                        JD
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className={`w-56 ${
-                    isDarkMode
-                      ? "bg-slate-800 border-slate-700"
-                      : "bg-white border-gray-200"
-                  }`}
-                  align="end"
-                >
-                  <DropdownMenuLabel
-                    className={isDarkMode ? "text-gray-200" : "text-gray-900"}
-                  >
-                    My Account
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator
-                    className={isDarkMode ? "bg-slate-700" : "bg-gray-200"}
-                  />
-                  <DropdownMenuItem
-                    className={`cursor-pointer ${
-                      isDarkMode
-                        ? "text-gray-300 hover:bg-slate-700"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    <i className="fas fa-user mr-2"></i>
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={`cursor-pointer ${
-                      isDarkMode
-                        ? "text-gray-300 hover:bg-slate-700"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    <i className="fas fa-cog mr-2"></i>
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={`cursor-pointer ${
-                      isDarkMode
-                        ? "text-gray-300 hover:bg-slate-700"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    <i className="fas fa-bell mr-2"></i>
-                    Notifications
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator
-                    className={isDarkMode ? "bg-slate-700" : "bg-gray-200"}
-                  />
-                  <DropdownMenuItem
-                    className={`cursor-pointer ${
-                      isDarkMode
-                        ? "text-gray-300 hover:bg-slate-700"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                    onClick={toggleLogin}
-                  >
-                    <i className="fas fa-sign-out-alt mr-2"></i>
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={toggleMobileMenu}
-              className={`lg:hidden p-2 rounded-md transition-colors duration-200 cursor-pointer !rounded-button whitespace-nowrap ${
-                isDarkMode
-                  ? "text-gray-300 hover:text-white hover:bg-slate-800"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              }`}
-            >
-              <i
-                className={`fas ${
-                  isMobileMenuOpen ? "fa-times" : "fa-bars"
-                } text-lg`}
-              ></i>
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div
-            className={`lg:hidden absolute top-full left-0 w-full ${
-              isDarkMode
-                ? "bg-slate-900/98 border-slate-700"
-                : "bg-white/98 border-gray-200"
-            } backdrop-blur-sm border-b shadow-lg transition-all duration-300`}
-          >
-            <div className="px-6 py-4 space-y-3">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  onClick={() => {
-                    setActiveLink(link.name);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`block w-full text-left px-3 py-2 text-sm font-medium transition-all duration-200 cursor-pointer !rounded-button whitespace-nowrap ${
-                    activeLink === link.name
-                      ? isDarkMode
-                        ? "text-blue-400 bg-slate-800"
-                        : "text-blue-800 bg-blue-50"
-                      : isDarkMode
-                      ? "text-gray-300 hover:text-blue-400 hover:bg-slate-800"
-                      : "text-gray-700 hover:text-blue-800 hover:bg-gray-50"
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
-
-              {!isLoggedIn && (
-                <div className="pt-4 border-t border-gray-200 dark:border-slate-700 space-y-3">
-                  <Button
-                    variant="outline"
-                    className={`w-full text-sm font-medium border transition-all duration-200 cursor-pointer !rounded-button whitespace-nowrap ${
-                      isDarkMode
-                        ? "border-slate-600 text-gray-300 hover:bg-slate-800 hover:text-white"
-                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                    }`}
-                    onClick={() => {
-                      toggleLogin();
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    Login
-                  </Button>
-                  <Button
-                    className="w-full text-sm font-medium bg-blue-800 text-white hover:bg-blue-900 transition-all duration-200 cursor-pointer !rounded-button whitespace-nowrap"
-                    onClick={() => {
-                      toggleLogin();
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    Sign Up
-                  </Button>
+    <div className=" sticky bg-gray-50">
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Left Section - Logo */}
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="flex items-center">
+                  <Link to="/">
+                    <span className="ml-2 text-xl font-bold text-gray-900">
+                      Talent Marketplace
+                    </span>
+                  </Link>
                 </div>
-              )}
+              </div>
+            </div>
+
+            {/* Center Section - Navigation */}
+            <div className="hidden lg:flex items-center space-x-8">
+              {/* Find Talent Dropdown */}
+              <div className="relative">
+                <button
+                  className="flex items-center text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer"
+                  onClick={() => handleDropdownToggle("findTalent")}
+                >
+                  Find Talent
+                  <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                </button>
+                {activeDropdown === "findTalent" && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-2">
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-code mr-3 text-green-500"></i>
+                      AI Developers
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-chart-line mr-3 text-green-500"></i>
+                      GTM Experts
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-building mr-3 text-green-500"></i>
+                      Agencies
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Find Work Dropdown */}
+              <div className="relative">
+                <Link to={"/find-work"}>
+                  <button
+                    className="flex items-center text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer"
+                    onClick={() => handleDropdownToggle("findWork")}
+                  >
+                    Find Work
+                    <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                  </button>
+                </Link>
+
+                {activeDropdown === "findWork" && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white  rounded-md shadow-lg border border-gray-200 py-2">
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-search mr-3 text-green-500"></i>
+                      Browse Projects
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-paper-plane mr-3 text-green-500"></i>
+                      Apply to Jobs
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Why Readdy.ai Dropdown */}
+              <div className="relative">
+                <button
+                  className="flex items-center text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer"
+                  onClick={() => handleDropdownToggle("whyReaddy")}
+                >
+                  Why Talent Marketplace
+                  <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                </button>
+                {activeDropdown === "whyReaddy" && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-2">
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-cogs mr-3 text-green-500"></i>
+                      How it Works
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-star mr-3 text-green-500"></i>
+                      Benefits
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-trophy mr-3 text-green-500"></i>
+                      Success Stories
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* What's New Dropdown */}
+              <div className="relative ">
+                <button
+                  className="flex items-center text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer"
+                  onClick={() => handleDropdownToggle("whatsNew")}
+                >
+                  What's New
+                  <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                </button>
+                {activeDropdown === "whatsNew" && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-2">
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-blog mr-3 text-green-500"></i>
+                      Blog
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-bell mr-3 text-green-500"></i>
+                      Updates
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <i className="fas fa-users mr-3 text-green-500"></i>
+                      Community
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Pricing */}
+              {/* <a
+                href="#"
+                className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium cursor-pointer"
+              >
+                Pricing
+              </a> */}
+            </div>
+
+            {/* Right Section */}
+            <div className="hidden lg:flex items-center space-x-4">
+              {/* Search Bar */}
+              <div className="relative">
+                <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center px-3 py-2 border-r border-gray-200">
+                    <button
+                      onClick={handleSearchFilterToggle}
+                      className="flex items-center text-sm w-16 text-gray-600 hover:text-gray-900 cursor-pointer whitespace-nowrap"
+                    >
+                      {searchFilter}
+                      <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    className="px-3 py-2 bg-transparent border-none outline-none text-sm w-48"
+                  />
+                  <button className="px-3 py-2 text-gray-400 hover:text-gray-600 cursor-pointer">
+                    <i className="fas fa-search text-sm"></i>
+                  </button>
+                </div>
+              </div>
+
+              {/* Login Button */}
+              <Link to="/login">
+                <Button
+                  variant="ghost"
+                  className="text-gray-700 hover:text-gray-900 hover:border hover:border-blue-600 !rounded-button whitespace-nowrap cursor-pointer"
+                >
+                  Log in
+                </Button>
+              </Link>
+
+              {/* Sign up Button */}
+              <Link to="/signup-options">
+                <Button className="bg-gradient-to-r from-blue-500 to-gray-600 hover:from-blue-600 hover:to-black text-white !rounded-button whitespace-nowrap cursor-pointer">
+                  Sign up
+                </Button>
+              </Link>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-gray-700 hover:text-gray-900 p-2 cursor-pointer"
+              >
+                <i
+                  className={`fas ${
+                    isMobileMenuOpen ? "fa-times" : "fa-bars"
+                  } text-lg`}
+                ></i>
+              </button>
             </div>
           </div>
-        )}
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden border-t border-gray-200 py-4">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-gray-900 px-3 py-2">
+                    Find Talent
+                  </div>
+                  <div className="pl-6 space-y-1">
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      AI Developers
+                    </a>
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      GTM Experts
+                    </a>
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Agencies
+                    </a>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-gray-900 px-3 py-2">
+                    Find Work
+                  </div>
+                  <div className="pl-6 space-y-1">
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Browse Projects
+                    </a>
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Apply to Jobs
+                    </a>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-gray-900 px-3 py-2">
+                    Why Readdy.ai
+                  </div>
+                  <div className="pl-6 space-y-1">
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      How it Works
+                    </a>
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Benefits
+                    </a>
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Success Stories
+                    </a>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-gray-900 px-3 py-2">
+                    What's New
+                  </div>
+                  <div className="pl-6 space-y-1">
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Blog
+                    </a>
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Updates
+                    </a>
+                    <a
+                      href="#"
+                      className="block text-sm text-gray-600 py-1 cursor-pointer"
+                    >
+                      Community
+                    </a>
+                  </div>
+                </div>
+
+                <a
+                  href="#"
+                  className="block text-sm font-medium text-gray-900 px-3 py-2 cursor-pointer"
+                >
+                  Pricing
+                </a>
+
+                <div className="px-3 pt-4 space-y-3">
+                  <Link to="/login">
+                    <Button
+                      variant="ghost"
+                      className="text-gray-700 hover:text-gray-900 hover:border hover:border-blue-600 !rounded-button whitespace-nowrap cursor-pointer"
+                    >
+                      Log in
+                    </Button>
+                  </Link>
+
+                  <Link to={"/signup-options"}>
+                    <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white !rounded-button whitespace-nowrap cursor-pointer">
+                      Sign up
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </nav>
-
-      {/* Main Content Area */}
-
-      {/* <style jsx global>{`
-        .!rounded-button {
-          border-radius: 8px !important;
-        }
-      `}</style> */}
     </div>
   );
 };

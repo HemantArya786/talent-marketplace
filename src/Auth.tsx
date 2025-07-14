@@ -644,7 +644,7 @@ const Auth: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <style jsx>{`
+      {/* <style jsx>{`
         .!rounded-button {
           border-radius: 8px !important;
         }
@@ -658,7 +658,7 @@ const Auth: React.FC = () => {
         input[type="number"] {
           -moz-appearance: textfield;
         }
-      `}</style>
+      `}</style> */}
 
       {currentPage === "login" && <LoginPage />}
       {currentPage === "signup" && <SignupPage />}

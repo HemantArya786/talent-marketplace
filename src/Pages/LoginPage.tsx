@@ -1,15 +1,11 @@
-import  { useState } from "react";
-import Image  from "../../public/image.jpg";
+import React, { useState } from "react";
+import Image from "../../public/image.jpg"
 import { Link } from "react-router-dom";
 
-export default function SignUpPage() {
+export default function LoginPage() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
-    phone: "",  
     password: "",
-    confirmPassword: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -24,27 +20,27 @@ export default function SignUpPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    // Add validation or backend API call here
+    console.log("Login Data:", formData);
+    // Implement validation or backend call here
   };
 
   return (
     <div className="flex h-screen">
-
-       {/* Right Section: Image */}
+ {/* Right: Image */}
       <div className="hidden md:block w-1/2">
         <img
           src={Image}
-          alt="Signup Visual"
+          alt="Login Visual"
           className="w-full h-full object-cover"
         />
       </div>
-      {/* Left Section: Signup Form */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center px-6 md:px-12">
-        <div className="w-full max-w-md space-y-6">
-          <h2 className="text-3xl font-bold text-gray-800 text-center">Create your account</h2>
 
-          {/* Social Signup */}
+      {/* Left: Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center px-6 md:px-12">
+        <div className="w-full max-w-md space-y-6">
+          <h2 className="text-3xl font-bold text-gray-800 text-center">Welcome back</h2>
+
+          {/* Social Login */}
           <div className="flex flex-col gap-4">
             <button type="button" className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
@@ -63,40 +59,15 @@ export default function SignUpPage() {
             <div className="flex-grow h-px bg-gray-300" />
           </div>
 
-          {/* Manual Signup Form */}
+          {/* Login Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="flex gap-4">
-              <input
-                type="text"
-                name="firstName"
-                placeholder="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Last Name"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
             <input
               type="email"
               name="email"
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
+              required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
@@ -105,18 +76,11 @@ export default function SignUpPage() {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type={showPassword ? "text" : "password"}
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-            {/* Show Password Option */}
+            {/* Show Password */}
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -133,15 +97,15 @@ export default function SignUpPage() {
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
             >
-              Sign Up
+              Log In
             </button>
           </form>
 
           {/* Redirect */}
           <p className="text-center text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link to={"/login"} className="text-blue-600 hover:underline">
-              Log in
+            Don’t have an account?{" "}
+            <Link to={"/signup"} className="text-blue-600 hover:underline">
+              Sign up
             </Link>
           </p>
         </div>

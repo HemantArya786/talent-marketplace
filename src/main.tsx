@@ -3,43 +3,39 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "@/App.tsx";
 import "./index.css";
-import Auth from "@/Pages/Auth";
-import ListOfCompanyAndJobs from "@/Pages/ListOfCompanyAndjobs";
 import Navbar from "@/Navbar.tsx";
-import JobApplyPage from "@/Pages/JobApplyPage";
-import CompanyPofilePage from "@/Pages/CompanyProfilePage";
-import CandidateFillUpPage from "@/Pages/CandidateFillUpPage";
-import TalentFilterPage from "@/Pages/TalentFilterPage";
 import Footer from "@/Footer";
-import AboutUs from "@/Pages/AboutUs";
-import HowItWorks from "./Pages/HowItWorks";
-import Test from "@/Test";
-import SignUpOptionPage from "./Pages/AccountOptionPage";
 import SignUpPage from "./Pages/SignUpPage";
-import FindWorkPage from "./Pages/FindWorkPage";
-// import Home from "@/Home.tsx";
+import LoginPage from "./Pages/LoginPage";
+import ResumeUpload from "./Pages/DeveloperResumeUpload";
+import ManualFormPage from "./Pages/DeveloperManualFillup";
+import PortfolioPage from "./Pages/DeveloperPortfolioPage";
+import CompanyFormPage from "./Pages/CompanyManualFillUp";
+import CompanyPortfolioPage from "./Pages/CompanyPortfolioPage";
+import DevelopersListPage from "./Pages/FindDeveloper";
+import Inbox from "./Pages/Inbox";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter> 
       <Navbar />
-      <Routes>
+      <div className="pt-16">
+         <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/login" element={<Auth />} />
-        <Route path="/test" element={<Test />} />
-        <Route path="/signup-options" element={<SignUpOptionPage />} />
-        <Route path="/list" element={<ListOfCompanyAndJobs />} />
-        <Route path="/job-apply" element={<JobApplyPage />} />
-        <Route path="/company-page" element={<CompanyPofilePage />} />
-        <Route path="/candidate-fillup" element={<CandidateFillUpPage />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/find" element={<TalentFilterPage />} />
-        <Route path="/signup-page" element={<SignUpPage />} />
-        <Route path="/find-work" element={<FindWorkPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/developer/resume" element={<ResumeUpload />} />
+        <Route path="/developer/list" element={<DevelopersListPage />} />
+        <Route path="/developer/manual-fillup" element={<ManualFormPage />} />
+        <Route path="/company/portfolio" element={<CompanyPortfolioPage  />} />
+        <Route path="/developer/portfolio" element={<PortfolioPage />} />
+        <Route path="/company/manual-fillup" element={<CompanyFormPage />} />
+        <Route path="/inbox" element={<Inbox />} />
+        <Route path="/signup" element={<SignUpPage />} />
 
         <Route path="*" element={<App />} />
       </Routes>
+      </div>
+     
       <Footer />
     </BrowserRouter>
   </StrictMode>

@@ -14,6 +14,7 @@ import CompanyFormPage from "./Pages/CompanyManualFillUp";
 import CompanyPortfolioPage from "./Pages/CompanyPortfolioPage";
 import DevelopersListPage from "./Pages/FindDeveloper";
 import Inbox from "./Pages/Inbox";
+import RoleSelection from "./Pages/RoleSection";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -23,6 +24,7 @@ createRoot(document.getElementById("root")!).render(
          <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/developer/resume" element={<ResumeUpload />} />
         <Route path="/developer/list" element={<DevelopersListPage />} />
         <Route path="/developer/manual-fillup" element={<ManualFormPage />} />

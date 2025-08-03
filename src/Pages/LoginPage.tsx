@@ -63,8 +63,7 @@ export default function LoginPage() {
         navigate('/role-selection');
       }
       else {
-        throw new Error('Unknown response from server');
-        
+        throw new Error('Unknown response from server: test123213');
       }
     }
     catch (error) {

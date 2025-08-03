@@ -1,12 +1,10 @@
 import { useState } from "react";
-import Image from "../../public/image.jpg"
+import Image from "../../public/image.jpg";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, provider } from '@/lib/firebase'
-import { signInWithPopup } from 'firebase/auth'
-
+import { auth, provider } from "@/lib/firebase";
+import { signInWithPopup } from "firebase/auth";
 
 export default function LoginPage() {
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -14,7 +12,7 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,46 +40,45 @@ export default function LoginPage() {
         firebaseToken: await user.getIdToken(),
       };
 
-      const apiResponse = await fetch('http://localhost:3000/auth/api/google-login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-type': 'application/json' },
-        body: JSON.stringify(userData),
-      });
+      const apiResponse = await fetch(
+        "http://localhost:3000/auth/api/google-login",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify(userData),
+        }
+      );
 
-      if (!apiResponse.ok) throw new Error('Login failed');
+      if (!apiResponse.ok) throw new Error("Login failed");
 
       const result = await apiResponse.json();
 
-      if (result.success && result.role === 'user') {
-        navigate('/developer/portfolio');
+      if (result.success && result.role === "user") {
+        navigate("/developer/portfolio");
+      } else if (result.success && result.role === "client") {
+        navigate("/company/portfolio");
+      } else if (result.needsSignup) {
+        navigate("/role-selection");
+      } else {
+        throw new Error("Unknown response from server");
       }
-      else if (result.success && result.role === 'client') {
-        navigate('/company/portfolio');
-      }
-      else if (result.needsSignup) {
-        navigate('/role-selection');
-      }
-      else {
-        throw new Error('Unknown response from server: test123213');
-      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      alert("Login failed. Please try again.");
     }
-    catch (error) {
-      console.error('Google login error:', error);
-      alert('Login failed. Please try again.');
-    }
-  }
+  };
 
   const handleLinkedinLogin = () => {
     const params = new URLSearchParams({
-      response_type: 'code',
+      response_type: "code",
       client_id: import.meta.env.VITE_LINKEDIN_CLIENT_ID,
-      redirect_uri: 'http://localhost:3000/auth/api/linkedin-login',
-      scope: 'openid email profile',
+      redirect_uri: "http://localhost:3000/auth/api/linkedin-login",
+      scope: "openid email profile",
     });
 
-    window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`
-  }
+    window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`;
+  };
 
   return (
     <div className="flex h-screen">
@@ -97,19 +94,35 @@ export default function LoginPage() {
       {/* Left: Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center px-6 md:px-12">
         <div className="w-full max-w-md space-y-6">
-          <h2 className="text-3xl font-bold text-gray-800 text-center">Welcome back</h2>
+          <h2 className="text-3xl font-bold text-gray-800 text-center">
+            Welcome back
+          </h2>
 
           {/* Social Login */}
           <div className="flex flex-col gap-4">
-            <button type="button" onClick={handleGoogleLogin}
-              className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
-              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+            >
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                className="w-5 h-5"
+              />
               Continue with Google
             </button>
 
-            <button type="button" onClick={handleLinkedinLogin}
-              className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
-              <img src="https://www.svgrepo.com/show/448234/linkedin.svg" alt="LinkedIn" className="w-5 h-5" />
+            <button
+              type="button"
+              onClick={handleLinkedinLogin}
+              className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
+            >
+              <img
+                src="https://www.svgrepo.com/show/448234/linkedin.svg"
+                alt="LinkedIn"
+                className="w-5 h-5"
+              />
               Continue with LinkedIn
             </button>
           </div>
@@ -172,8 +185,6 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-
-
     </div>
   );
 }

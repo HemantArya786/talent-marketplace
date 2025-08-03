@@ -83,7 +83,7 @@ const CompanyPortfolioPage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 font-sans border p-2">
+    <div className="max-w-6xl mx-auto font-sans border p-2">
       <h1 className="text-3xl font-bold mb-4">Company Profile</h1>
 
       {/* Cover Image */}

@@ -5,7 +5,6 @@ import App from "@/App.tsx";
 import "./index.css";
 import Navbar from "@/Navbar.tsx";
 import Footer from "@/Footer";
-import SignUpPage from "./Pages/SignUpPage";
 import LoginPage from "./Pages/LoginPage";
 import ResumeUpload from "./Pages/DeveloperResumeUpload";
 import ManualFormPage from "./Pages/DeveloperManualFillup";
@@ -15,6 +14,8 @@ import CompanyPortfolioPage from "./Pages/CompanyPortfolioPage";
 import DevelopersListPage from "./Pages/FindDeveloper";
 import Inbox from "./Pages/Inbox";
 import RoleSelection from "./Pages/RoleSection";
+import UserSignUp from "./Pages/UserSignUp";
+import ClientSignUp from "./Pages/ClientSignUp";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -32,7 +33,10 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/developer/portfolio" element={<PortfolioPage />} />
         <Route path="/company/manual-fillup" element={<CompanyFormPage />} />
         <Route path="/inbox" element={<Inbox />} />
-        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/signup-client" element={<ClientSignUp />} />
+        <Route path="/signup-user" element={<UserSignUp />} />
+        
+    
 
         <Route path="*" element={<App />} />
       </Routes>

@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "../../public/image.jpg"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, provider } from '@/lib/firebase'
+import { signInWithPopup } from 'firebase/auth'
+
 
 export default function LoginPage() {
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,12 +27,67 @@ export default function LoginPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login Data:", formData);
-    // Implement validation or backend call here
   };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await signInWithPopup(auth, provider);
+      const user = response.user;
+
+      const userData = {
+        name: user.displayName,
+        email: user.email,
+        avatar: user.photoURL,
+        phoneNumber: user.phoneNumber,
+        firebaseToken: await user.getIdToken(),
+      };
+
+      const apiResponse = await fetch('http://localhost:3000/auth/api/google-login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+
+      if (!apiResponse.ok) throw new Error('Login failed');
+
+      const result = await apiResponse.json();
+
+      if (result.success && result.role === 'user') {
+        navigate('/developer/portfolio');
+      }
+      else if (result.success && result.role === 'client') {
+        navigate('/company/portfolio');
+      }
+      else if (result.needsSignup) {
+        navigate('/role-selection');
+      }
+      else {
+        // throw new Error('Unknown response from server');
+        console.log("error from server!");
+        
+      }
+    }
+    catch (error) {
+      console.error('Google login error:', error);
+      alert('Login failed. Please try again.');
+    }
+  }
+
+  const handleLinkedinLogin = () => {
+    const params = new URLSearchParams({
+      response_type: 'code',
+      client_id: import.meta.env.VITE_LINKEDIN_CLIENT_ID,
+      redirect_uri: 'http://localhost:3000/auth/api/linkedin-login',
+      scope: 'openid email profile',
+    });
+
+    window.location.href = `https://www.linkedin.com/oauth/v2/authorization?${params}`
+  }
 
   return (
     <div className="flex h-screen">
- {/* Right: Image */}
+      {/* Right: Image */}
       <div className="hidden md:block w-1/2">
         <img
           src={Image}
@@ -42,11 +103,14 @@ export default function LoginPage() {
 
           {/* Social Login */}
           <div className="flex flex-col gap-4">
-            <button type="button" className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+            <button type="button" onClick={handleGoogleLogin}
+              className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
               Continue with Google
             </button>
-            <button type="button" className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+
+            <button type="button" onClick={handleLinkedinLogin}
+              className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
               <img src="https://www.svgrepo.com/show/448234/linkedin.svg" alt="LinkedIn" className="w-5 h-5" />
               Continue with LinkedIn
             </button>
@@ -111,7 +175,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-     
+
     </div>
   );
 }

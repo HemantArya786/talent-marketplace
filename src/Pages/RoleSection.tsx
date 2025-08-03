@@ -1,6 +1,4 @@
-// src/pages/RoleSelection.tsx
 
-import React from "react";
 import { Link } from "react-router-dom";
 import { Brain, Building2 } from "lucide-react";
 
@@ -17,7 +15,7 @@ const RoleSelection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Link
-            to="/developer/resume"
+            to="/signup-user"
             className="group border border-blue-600 rounded-2xl p-6 bg-white hover:bg-blue-600 transition-all duration-300 hover:text-white shadow-lg hover:shadow-xl"
           >
             <div className="flex flex-col items-center">
@@ -28,7 +26,7 @@ const RoleSelection = () => {
           </Link>
 
           <Link
-            to="/company/manual-fillup"
+            to="/signup-client"
             className="group border border-green-600 rounded-2xl p-6 bg-white hover:bg-green-600 transition-all duration-300 hover:text-white shadow-lg hover:shadow-xl"
           >
             <div className="flex flex-col items-center">

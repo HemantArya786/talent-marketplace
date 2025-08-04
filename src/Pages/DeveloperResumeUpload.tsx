@@ -10,14 +10,30 @@ const ResumeUpload = () => {
     setResumeFile(e.target.files[0]);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!resumeFile) {
       alert("Please upload a resume before submitting.");
       return;
     }
 
-    console.log("Uploaded file:", resumeFile);
-    alert("Resume submitted successfully!");
+    const formData = new FormData();
+    formData.append("resume", resumeFile);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/parser/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to upload resume.");
+
+      const data = await response.json();
+      console.log("Extracted Resume Text:", data.text);
+      alert("Resume submitted successfully! Check console for extracted data.");
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("There was an error uploading the resume.");
+    }
   };
 
   const handleManualFill = () => {
@@ -29,12 +45,18 @@ const ResumeUpload = () => {
       <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-xl w-full animate-fade-in">
         <div className="text-center mb-6">
           <UploadCloud className="mx-auto h-12 w-12 text-blue-600 mb-2" />
-          <h2 className="text-3xl font-extrabold text-gray-800">Resume Uploader</h2>
-          <p className="text-gray-500 mt-1 text-sm">Upload your resume or fill the form manually</p>
+          <h2 className="text-3xl font-extrabold text-gray-800">
+            Resume Uploader
+          </h2>
+          <p className="text-gray-500 mt-1 text-sm">
+            Upload your resume or fill the form manually
+          </p>
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Upload Resume (.pdf or .doc)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Upload Resume (.pdf or .doc)
+          </label>
           <input
             type="file"
             accept=".pdf,.doc,.docx"
@@ -57,7 +79,9 @@ const ResumeUpload = () => {
         </button>
 
         <div className="relative flex items-center justify-center my-4">
-          <span className="absolute bg-white px-2 text-gray-400 text-sm">or</span>
+          <span className="absolute bg-white px-2 text-gray-400 text-sm">
+            or
+          </span>
           <div className="w-full border-t border-gray-300"></div>
         </div>
 

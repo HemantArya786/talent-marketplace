@@ -3,7 +3,6 @@ import Image from "../../public/image.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, provider } from '@/lib/firebase'
 import { signInWithPopup } from 'firebase/auth'
-import Cookies from 'js-cookie';
 
 export default function ClientSignUp() {
 
@@ -88,7 +87,6 @@ export default function ClientSignUp() {
     return (
         <div className="flex h-screen">
 
-            {/* Right Section: Image */}
             <div className="hidden md:block w-1/2">
                 <img
                     src={Image}

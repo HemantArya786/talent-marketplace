@@ -1,7 +1,7 @@
 // Initial structure and logic kept from PortfolioPage
 // Updated to handle company portfolio-specific fields with profile and cover image modal editing
 
-import  { useState } from "react";
+import { useState } from "react";
 import {
   Globe,
   Edit,

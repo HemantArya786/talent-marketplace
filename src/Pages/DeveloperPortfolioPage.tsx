@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Github,
   Linkedin,
@@ -177,7 +177,6 @@ const PortfolioPage = () => {
     }));
   };
 
-  // File Input Handlers
   const handleProfileImgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -193,6 +192,34 @@ const PortfolioPage = () => {
     const url = URL.createObjectURL(file);
     setCoverImgPreview(url);
   };
+
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+
+      try {
+        const response = await fetch("http://localhost:3000/api/users/1", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+        })
+
+        const data = await response.json()
+        console.log(data)
+        // setUser(data)
+      }
+      catch (error) {
+        console.error("Fetch error:", error)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+
 
   // Render
   return (

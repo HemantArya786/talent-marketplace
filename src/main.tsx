@@ -28,7 +28,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/developer/resume" element={<ResumeUpload />} />
         <Route path="/developer/list" element={<DevelopersListPage />} />
-        <Route path="/developer/manual-fillup" element={<ManualFormPage />} />
+        <Route path="/developer/preview" element={<ManualFormPage />} />
         <Route path="/company/portfolio" element={<CompanyPortfolioPage  />} />
         <Route path="/developer/portfolio" element={<PortfolioPage />} />
         <Route path="/company/manual-fillup" element={<CompanyFormPage />} />

@@ -95,7 +95,14 @@ const initialUser: UserType = {
       url: "",
     },
   ],
-  skills: ["Next.js", "Node.js", "Tailwind CSS", "Express.js", "MongoDB", "React"],
+  skills: [
+    "Next.js",
+    "Node.js",
+    "Tailwind CSS",
+    "Express.js",
+    "MongoDB",
+    "React",
+  ],
   trainings: [
     "Full-Stack Web Development - Internshala",
     "Node.js Advanced - Udemy",
@@ -133,7 +140,9 @@ const PortfolioPage = () => {
   const [user, setUser] = useState<UserType>(initialUser);
   const [editSection, setEditSection] = useState<Section | null>(null);
   const [editValues, setEditValues] = useState<any>({});
-  const [profileImgPreview, setProfileImgPreview] = useState<string>(user.profileImg);
+  const [profileImgPreview, setProfileImgPreview] = useState<string>(
+    user.profileImg
+  );
   const [coverImgPreview, setCoverImgPreview] = useState<string>(user.coverImg);
   const [profileImgFile, setProfileImgFile] = useState<File | null>(null);
   const [coverImgFile, setCoverImgFile] = useState<File | null>(null);
@@ -397,7 +406,9 @@ const PortfolioPage = () => {
                   <input
                     type="text"
                     className="border rounded px-2 py-1 w-32"
-                    value={editValues.socials?.[idx]?.platform ?? social.platform}
+                    value={
+                      editValues.socials?.[idx]?.platform ?? social.platform
+                    }
                     onChange={(e) =>
                       setEditValues((prev: any) => {
                         const arr = prev.socials
@@ -508,7 +519,10 @@ const PortfolioPage = () => {
                   <input
                     type="text"
                     className="border rounded px-2 py-1 w-1/3"
-                    value={editValues.education?.[idx]?.institution ?? edu.institution}
+                    value={
+                      editValues.education?.[idx]?.institution ??
+                      edu.institution
+                    }
                     onChange={(e) =>
                       setEditValues((prev: any) => {
                         const arr = prev.education
@@ -565,7 +579,8 @@ const PortfolioPage = () => {
             <ul className="list-disc pl-5">
               {user.education.map((edu, idx) => (
                 <li key={idx}>
-                  <strong>{edu.institution}</strong> – {edu.degree} ({edu.years})
+                  <strong>{edu.institution}</strong> – {edu.degree} ({edu.years}
+                  )
                 </li>
               ))}
             </ul>
@@ -589,7 +604,10 @@ const PortfolioPage = () => {
           {editSection === "projects" ? (
             <div className="grid sm:grid-cols-2 gap-4">
               {user.projects.map((project, idx) => (
-                <div key={idx} className="p-4 border rounded-lg bg-white shadow flex flex-col gap-2">
+                <div
+                  key={idx}
+                  className="p-4 border rounded-lg bg-white shadow flex flex-col gap-2"
+                >
                   <input
                     type="text"
                     className="font-semibold border-b w-full"
@@ -607,7 +625,10 @@ const PortfolioPage = () => {
                   />
                   <textarea
                     className="text-gray-600 border rounded px-2 py-1"
-                    value={editValues.projects?.[idx]?.description ?? project.description}
+                    value={
+                      editValues.projects?.[idx]?.description ??
+                      project.description
+                    }
                     onChange={(e) =>
                       setEditValues((prev: any) => {
                         const arr = prev.projects
@@ -648,7 +669,10 @@ const PortfolioPage = () => {
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {user.projects.map((project, idx) => (
-                <div key={idx} className="p-4 border rounded-lg bg-white shadow">
+                <div
+                  key={idx}
+                  className="p-4 border rounded-lg bg-white shadow"
+                >
                   <h3 className="text-lg font-semibold">{project.name}</h3>
                   <p className="text-gray-600">{project.description}</p>
                   {project.url && project.url.trim() !== "" && (
@@ -685,9 +709,16 @@ const PortfolioPage = () => {
             <>
               <textarea
                 className="w-full border rounded px-2 py-1"
-                value={editValues.skills ? editValues.skills.join(", ") : user.skills.join(", ")}
+                value={
+                  editValues.skills
+                    ? editValues.skills.join(", ")
+                    : user.skills.join(", ")
+                }
                 onChange={(e) =>
-                  handleChange("skills", e.target.value.split(",").map((s) => s.trim()))
+                  handleChange(
+                    "skills",
+                    e.target.value.split(",").map((s) => s.trim())
+                  )
                 }
                 placeholder="Comma separated skills"
               />
@@ -733,9 +764,16 @@ const PortfolioPage = () => {
               <textarea
                 className="w-full border rounded px-2 py-1"
                 rows={3}
-                value={editValues.trainings ? editValues.trainings.join("\n") : user.trainings.join("\n")}
+                value={
+                  editValues.trainings
+                    ? editValues.trainings.join("\n")
+                    : user.trainings.join("\n")
+                }
                 onChange={(e) =>
-                  handleChange("trainings", e.target.value.split("\n").map((s) => s.trim()))
+                  handleChange(
+                    "trainings",
+                    e.target.value.split("\n").map((s) => s.trim())
+                  )
                 }
                 placeholder="One training per line"
               />
@@ -782,7 +820,10 @@ const PortfolioPage = () => {
                     : user.accomplishments.join("\n")
                 }
                 onChange={(e) =>
-                  handleChange("accomplishments", e.target.value.split("\n").map((s) => s.trim()))
+                  handleChange(
+                    "accomplishments",
+                    e.target.value.split("\n").map((s) => s.trim())
+                  )
                 }
                 placeholder="One accomplishment per line"
               />
@@ -829,7 +870,10 @@ const PortfolioPage = () => {
                     : user.extracurricular.join("\n")
                 }
                 onChange={(e) =>
-                  handleChange("extracurricular", e.target.value.split("\n").map((s) => s.trim()))
+                  handleChange(
+                    "extracurricular",
+                    e.target.value.split("\n").map((s) => s.trim())
+                  )
                 }
                 placeholder="One activity per line"
               />

@@ -31,7 +31,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/developer/list" element={<DevelopersListPage />} />
         <Route path="/developer/preview" element={<ManualFormPage />} />
         <Route path="/company/portfolio" element={<CompanyPortfolioPage  />} />
-        <Route path="/developer/portfolio" element={<PortfolioPage />} />
+        <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
         <Route path="/company/manual-fillup" element={<CompanyFormPage />} />
         <Route path="/inbox" element={<Inbox />} />
         <Route path="/signup-client" element={<ClientSignUp />} />

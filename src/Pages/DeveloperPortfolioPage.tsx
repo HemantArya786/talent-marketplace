@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+//@ts-nocheck
+
+import React, { useEffect, useState } from "react";
 import {
   Github,
   Linkedin,
@@ -13,230 +15,129 @@ import {
   Plus,
   X,
 } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 type UserType = {
+
+  userId: number;
   name: string;
-  location: string;
   email: string;
-  phone: string;
-  hourlyRate: string;
-  about: string;
-  education: {
-    institution: string;
-    degree: string;
-    years: string;
-    grade?: string;
-    college?: string;
-    startYear?: string;
-    endYear?: string;
-    current?: boolean;
+  phone: number;
+  avatar?: string;
+  backgroundImageURL?: string;
+  userProfileImageURL?: string;
+  bio: string;
+  location: {
+    country: string;
+    city: string;
+    timezone: string;
+  };
+  socials: {
+    socialType: string;
+    url: string;
   }[];
-  socials: { platform: string; url: string; icon: JSX.Element }[];
-  projects: {
-    name: string;
-    description: string;
-    url?: string;
-    thumbnail?: string;
-    start?: string;
-    end?: string;
-    current?: boolean;
-  }[];
+  role: 'user' | string;
+  authProvider: 'linkedIn' | 'google' | 'email';
+  categories: string[];
   skills: string[];
-  trainings: {
-    courseName: string;
+  title: string;
+  projects: {
+    title: string;
+    techStack: string[];
+    projectLiveURL?: string;
     description: string;
+  }[];
+  experience: {
+    title: string;
+    companyName: string;
+    startDate: string;
+    endDate?: string;
+    Remote: boolean;
+    currentlyWorking: boolean;
     location: string;
-    start?: string;
-    end?: string;
-    current?: boolean;
+    description: string;
+  }[];
+  education: {
+    instituteName: string;
+    degree: 'SSC' | '12th/Intermediate' | 'Bachelors' | 'Masters';
+    fieldOfStudy?: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
+  }[];
+  language: string[];
+  charges: {
+    userRate: number;
+    serviceFeePercent: number;
+    finalRate: number;
+  };
+  training: {
+    title: string;
+    provider: string;
+    location: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
   }[];
   accomplishments: string[];
-  extracurricular: string[];
-  professional: {
-    jobRole: string;
-    companyName: string;
-    location: string;
-    description: string;
-    start?: string;
-    end?: string;
-    current?: boolean;
-  }[];
-  github: string;
-  profileImg: string;
-  coverImg: string;
+  extraCurricular: string[];
+  lastLogin?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 const initialUser: UserType = {
-  name: "Name.",
-  location: "New Delhi, India",
-  email: "gmail@gmail.com",
-  phone: "+91-XXXXXXXXXX",
-  hourlyRate: "$8.00/hr",
-  about:
-    "Hi! I’m a full-stack JavaScript developer with a strong focus on building fast, responsive, and scalable web applications using React.js, Next.js, Node.js, and Express.js.",
-  education: [
-    {
-      institution: "ABC University",
-      degree: "B.Tech Computer Science",
-      years: "2023 - 2025",
-      grade: "8.4 CGPA",
-      college: "ABC University",
-      startYear: "2023",
-      endYear: "2025",
-      current: true,
-    },
-    {
-      institution: "CBSE",
-      degree: "High School",
-      years: "Completed",
-      grade: "92%",
-      college: "XYZ School",
-      startYear: "2021",
-      endYear: "2022",
-      current: false,
-    },
-  ],
-  socials: [
-    {
-      platform: "GitHub",
-      url: "https://github.com/xyz",
-      icon: <Github />,
-    },
-    {
-      platform: "LinkedIn",
-      url: "https://linkedin.com/in/xyz",
-      icon: <Linkedin />,
-    },
-    {
-      platform: "Twitter",
-      url: "https://twitter.com/hemant_jsdev",
-      icon: <Twitter />,
-    },
-    {
-      platform: "Instagram",
-      url: "https://instagram.com/hemant.codes",
-      icon: <Instagram />,
-    },
-    {
-      platform: "Portfolio Website",
-      url: "https://hemantarya.dev",
-      icon: <Globe />,
-    },
-  ],
-  projects: [
-    {
-      name: "Visual(AI)ze",
-      description: "Where MT Agents Come Alive – Visual(AI)ze Features",
-      url: "",
-      thumbnail: "",
-      start: "2024-01",
-      end: "",
-      current: true,
-    },
-    {
-      name: "Coinstax",
-      description: "Secure Crypto Investment Platform",
-      url: "",
-      thumbnail: "",
-      start: "2023-08",
-      end: "2024-01",
-      current: false,
-    },
-    {
-      name: "Audio Guys Institute",
-      description: "Sound engineering institute website",
-      url: "",
-      thumbnail: "",
-      start: "2022-06",
-      end: "2023-01",
-      current: false,
-    },
-  ],
-  skills: [
-    "Next.js",
-    "Node.js",
-    "Tailwind CSS",
-    "Express.js",
-    "MongoDB",
-    "React",
-  ],
-  trainings: [
-    {
-      courseName: "Full-Stack Web Development - Internshala",
-      description: "Learned MERN stack from scratch.",
-      location: "Online",
-      start: "2022-01",
-      end: "2022-04",
-      current: false,
-    },
-    {
-      courseName: "Node.js Advanced - Udemy",
-      description: "Advanced backend with Node.js and Express.",
-      location: "Online",
-      start: "2023-02",
-      end: "",
-      current: true,
-    },
-    {
-      courseName: "React with TypeScript - Coursera",
-      description: "Mastering React with TS.",
-      location: "Online",
-      start: "2023-05",
-      end: "2023-08",
-      current: false,
-    },
-  ],
-  accomplishments: [
-    "Top 10% scorer in Full Stack Dev Test (Upwork)",
-    "Contributed to open-source project on GitHub",
-  ],
-  extracurricular: [
-    "Organized college tech fest",
-    "Mentored juniors in coding bootcamps",
-  ],
-  professional: [
-    {
-      jobRole: "Frontend Developer",
-      companyName: "Techie Ltd.",
-      location: "Remote",
-      description: "Building scalable React.js applications for clients.",
-      start: "2024-01",
-      end: "",
-      current: true,
-    },
-    {
-      jobRole: "Web Intern",
-      companyName: "StartupX",
-      location: "Delhi",
-      description: "Worked on their landing page and user dashboard.",
-      start: "2023-06",
-      end: "2023-11",
-      current: false,
-    },
-  ],
-  github: "https://github.com/",
-  profileImg: "https://avatars.githubusercontent.com/u/123456789?v=4",
-  coverImg:
-    "https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1500&q=80",
+  name: "",
+  email: "",
+  phone: 0,
+  avatar: "",
+  backgroundImageURL: "",
+  userProfileImageURL: "",
+  bio: "",
+  location: {
+    country: "",
+    city: "",
+    timezone: ""
+  },
+  socials: [],
+  categories: [],
+  skills: [],
+  title: "",
+  projects: [],
+  experience: [],
+  education: [],
+  language: [],
+  charges: {
+    userRate: 0,
+    serviceFeePercent: 0,
+    finalRate: 0
+  },
+  training: [],
+  accomplishments: [],
+  extraCurricular: [],
+  lastLogin: "",
 };
+
 
 type Section =
   | "header"
+  | "socials"
   | "about"
-  | "education"
-  | "projects"
   | "skills"
+  | "experience"
+  | "projects"
+  | "education"
   | "trainings"
   | "accomplishments"
-  | "extracurricular"
-  | "socials"
+  | "extraCurricular"
   | "github"
   | "profileImg"
-  | "coverImg"
-  | "professional";
+  | "coverImg";
 
-const getIconForPlatform = (platform: string) => {
-  switch (platform.toLowerCase()) {
+const getIconForPlatform = (socialType: string) => {
+
+  switch (socialType.toLowerCase()) {
+
     case "github":
       return <Github />;
     case "linkedin":
@@ -251,17 +152,43 @@ const getIconForPlatform = (platform: string) => {
       return <Globe />;
   }
 };
-
 const PortfolioPage = () => {
+
   const [user, setUser] = useState<UserType>(initialUser);
   const [editSection, setEditSection] = useState<Section | null>(null);
   const [editValues, setEditValues] = useState<any>({});
-  const [profileImgPreview, setProfileImgPreview] = useState<string>(
-    user.profileImg
-  );
-  const [coverImgPreview, setCoverImgPreview] = useState<string>(user.coverImg);
+  const [profileImgPreview, setProfileImgPreview] = useState<string>(initialUser?.userProfileImageURL);
+  const [coverImgPreview, setCoverImgPreview] = useState<string>(initialUser?.backgroundImageURL);
   const [profileImgFile, setProfileImgFile] = useState<File | null>(null);
   const [coverImgFile, setCoverImgFile] = useState<File | null>(null);
+
+  const { userId } = useParams()
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        })
+
+        if (!response.ok) {
+          console.error("Failed to fetch user data:", response.status)
+          return;
+        }
+
+        const data = await response.json()
+        console.log("User data:", data)
+        setUser(data)
+
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    fetchData()
+  }, [userId])
 
   // Helper functions
   const onEdit = (section: Section) => {
@@ -279,9 +206,9 @@ const PortfolioPage = () => {
     } else if (section === "socials") {
       setUser((u) => ({
         ...u,
-        socials: editValues.socials.map((s: any) => ({
+        socials: editValues.socials.map((s: string) => ({
           ...s,
-          icon: getIconForPlatform(s.platform || ""),
+          icon: getIconForPlatform(s.socialType || ""),
         })),
       }));
     } else if (section === "education") {
@@ -297,12 +224,12 @@ const PortfolioPage = () => {
     } else if (section === "trainings") {
       setUser((u) => ({
         ...u,
-        trainings: editValues.trainings,
+        training: editValues.training,
       }));
-    } else if (section === "professional") {
+    } else if (section === "experience") {
       setUser((u) => ({
         ...u,
-        professional: editValues.professional,
+        experience: editValues.experience,
       }));
     } else {
       setUser({ ...user, ...editValues });
@@ -323,7 +250,7 @@ const PortfolioPage = () => {
     setEditSection(null);
   };
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: string, value: string | number) => {
     setEditValues((prev: any) => ({
       ...prev,
       [field]: value,
@@ -336,7 +263,7 @@ const PortfolioPage = () => {
       const arr =
         prev.socials !== undefined
           ? [...prev.socials]
-          : user.socials.map((s) => ({ platform: s.platform, url: s.url }));
+          : user.socials.map((s) => ({ platform: s.socialType, url: s.url }));
       arr.splice(idx, 1);
       return { ...prev, socials: arr };
     });
@@ -345,8 +272,8 @@ const PortfolioPage = () => {
     setEditValues((prev: any) => ({
       ...prev,
       socials: prev.socials
-        ? [...prev.socials, { platform: "", url: "", icon: <Globe /> }]
-        : [...user.socials, { platform: "", url: "", icon: <Globe /> }],
+        ? [...prev.socials, { socialType: "", url: "", icon: <Globe /> }]
+        : [...user.socials, { socialType: "", url: "", icon: <Globe /> }],
     }));
   };
 
@@ -366,31 +293,27 @@ const PortfolioPage = () => {
       ...prev,
       education: prev.education
         ? [
-            ...prev.education,
-            {
-              institution: "",
-              degree: "",
-              years: "",
-              grade: "",
-              college: "",
-              startYear: "",
-              endYear: "",
-              current: false,
-            },
-          ]
+          ...prev.education,
+          {
+            instituteName: "",
+            degree: "",
+            years: "",
+            fieldOfStudy: "",
+            startYear: "",
+            endYear: "",
+          },
+        ]
         : [
-            ...user.education,
-            {
-              institution: "",
-              degree: "",
-              years: "",
-              grade: "",
-              college: "",
-              startYear: "",
-              endYear: "",
-              current: false,
-            },
-          ],
+          ...user.education,
+          {
+            instituteName: "",
+            degree: "",
+            years: "",
+            fieldOfStudy: "",
+            startYear: "",
+            endYear: "",
+          },
+        ],
     }));
   };
 
@@ -410,29 +333,25 @@ const PortfolioPage = () => {
       ...prev,
       projects: prev.projects
         ? [
-            ...prev.projects,
-            {
-              name: "",
-              description: "",
-              url: "",
-              thumbnail: "",
-              start: "",
-              end: "",
-              current: false,
-            },
-          ]
+          ...prev.projects,
+          {
+            name: "",
+            description: "",
+            url: "",
+            start: "",
+            end: ""
+          }
+        ]
         : [
-            ...user.projects,
-            {
-              name: "",
-              description: "",
-              url: "",
-              thumbnail: "",
-              start: "",
-              end: "",
-              current: false,
-            },
-          ],
+          ...user.projects,
+          {
+            name: "",
+            description: "",
+            url: "",
+            start: "",
+            end: ""
+          }
+        ]
     }));
   };
 
@@ -440,39 +359,39 @@ const PortfolioPage = () => {
   const handleTrainingRemove = (idx: number) => {
     setEditValues((prev: any) => {
       const arr =
-        prev.trainings !== undefined
-          ? [...prev.trainings]
-          : user.trainings.map((t) => ({ ...t }));
+        prev.training !== undefined
+          ? [...prev.training]
+          : user.training.map((t) => ({ ...t }));
       arr.splice(idx, 1);
-      return { ...prev, trainings: arr };
+      return { ...prev, training: arr };
     });
   };
   const handleTrainingAdd = () => {
     setEditValues((prev: any) => ({
       ...prev,
-      trainings: prev.trainings
+      training: prev.training
         ? [
-            ...prev.trainings,
-            {
-              courseName: "",
-              description: "",
-              location: "",
-              start: "",
-              end: "",
-              current: false,
-            },
-          ]
+          ...prev.training,
+          {
+            courseName: "",
+            description: "",
+            location: "",
+            start: "",
+            end: "",
+            current: ""
+          },
+        ]
         : [
-            ...user.trainings,
-            {
-              courseName: "",
-              description: "",
-              location: "",
-              start: "",
-              end: "",
-              current: false,
-            },
-          ],
+          ...user.training,
+          {
+            courseName: "",
+            description: "",
+            location: "",
+            start: "",
+            end: "",
+            current: ""
+          },
+        ],
     }));
   };
 
@@ -480,41 +399,42 @@ const PortfolioPage = () => {
   const handleProfessionalRemove = (idx: number) => {
     setEditValues((prev: any) => {
       const arr =
-        prev.professional !== undefined
-          ? [...prev.professional]
-          : user.professional.map((p) => ({ ...p }));
+        prev.experience !== undefined
+          ? [...prev.experience]
+          : user.experience.map((p) => ({ ...p }));
       arr.splice(idx, 1);
-      return { ...prev, professional: arr };
+      return { ...prev, experience: arr };
     });
   };
+
   const handleProfessionalAdd = () => {
     setEditValues((prev: any) => ({
       ...prev,
-      professional: prev.professional
+      experience: prev.experience
         ? [
-            ...prev.professional,
-            {
-              jobRole: "",
-              companyName: "",
-              location: "",
-              description: "",
-              start: "",
-              end: "",
-              current: false,
-            },
-          ]
+          ...prev.experience,
+          {
+            title: "",
+            companyName: "",
+            location: "",
+            description: "",
+            start: "",
+            end: "",
+            current: false,
+          },
+        ]
         : [
-            ...user.professional,
-            {
-              jobRole: "",
-              companyName: "",
-              location: "",
-              description: "",
-              start: "",
-              end: "",
-              current: false,
-            },
-          ],
+          ...user.experience,
+          {
+            title: "",
+            companyName: "",
+            location: "",
+            description: "",
+            start: "",
+            end: "",
+            current: false,
+          },
+        ],
     }));
   };
 
@@ -537,6 +457,7 @@ const PortfolioPage = () => {
 
   // Render
   return (
+
     <div className="max-w-6xl mx-auto font-sans border p-2 ">
       {/* Cover and Profile Images */}
       <div className="relative">
@@ -685,8 +606,8 @@ const PortfolioPage = () => {
               </>
             ) : (
               <>
-                <h1 className="text-3xl font-bold">{user.name}</h1>
-                <p className="text-gray-600">{user.location}</p>
+                <h1 className="text-3xl font-bold">{user?.name}</h1>
+                <p className="text-gray-600">{user.location.city}, {user.location.country}</p>
                 <p className="text-sm text-gray-500">
                   {user.email} | {user.phone}
                 </p>
@@ -722,89 +643,89 @@ const PortfolioPage = () => {
             <div>
               {editValues.socials
                 ? editValues.socials.map((social: any, idx: number) => (
-                    <div key={idx} className="flex gap-2 items-center mb-2">
-                      <span>{getIconForPlatform(social.platform)}</span>
-                      <input
-                        type="text"
-                        className="border rounded px-2 py-1 w-32"
-                        value={social.platform}
-                        onChange={(e) =>
-                          setEditValues((prev: any) => {
-                            const arr = [...prev.socials];
-                            arr[idx].platform = e.target.value;
-                            arr[idx].icon = getIconForPlatform(e.target.value);
-                            return { ...prev, socials: arr };
-                          })
-                        }
-                        placeholder="Platform"
-                      />
-                      <input
-                        type="text"
-                        className="border rounded px-2 py-1 flex-1"
-                        value={social.url}
-                        onChange={(e) =>
-                          setEditValues((prev: any) => {
-                            const arr = [...prev.socials];
-                            arr[idx].url = e.target.value;
-                            return { ...prev, socials: arr };
-                          })
-                        }
-                        placeholder="URL"
-                      />
-                      <button
-                        className="bg-red-100 text-red-600 p-1 rounded hover:bg-red-200"
-                        onClick={() => handleSocialRemove(idx)}
-                        title="Remove"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ))
+                  <div key={idx} className="flex gap-2 items-center mb-2">
+                    <span>{getIconForPlatform(social.socialType)}</span>
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-32"
+                      value={social.socialType}
+                      onChange={(e) =>
+                        setEditValues((prev: any) => {
+                          const arr = [...prev.social.socialType];
+                          arr[idx].social.socialType = e.target.value;
+                          arr[idx].icon = getIconForPlatform(e.target.value);
+                          return { ...prev, socials: arr };
+                        })
+                      }
+                      placeholder="Platform"
+                    />
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 flex-1"
+                      value={social.url}
+                      onChange={(e) =>
+                        setEditValues((prev: any) => {
+                          const arr = [...prev.socials];
+                          arr[idx].url = e.target.value;
+                          return { ...prev, socials: arr };
+                        })
+                      }
+                      placeholder="URL"
+                    />
+                    <button
+                      className="bg-red-100 text-red-600 p-1 rounded hover:bg-red-200"
+                      onClick={() => handleSocialRemove(idx)}
+                      title="Remove"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))
                 : user.socials.map((social, idx) => (
-                    <div key={idx} className="flex gap-2 items-center mb-2">
-                      <span>{getIconForPlatform(social.platform)}</span>
-                      <input
-                        type="text"
-                        className="border rounded px-2 py-1 w-32"
-                        value={social.platform}
-                        onChange={(e) =>
-                          setEditValues((prev: any) => {
-                            const arr = user.socials.map((s) => ({
-                              platform: s.platform,
-                              url: s.url,
-                            }));
-                            arr[idx].platform = e.target.value;
-                            arr[idx].icon = getIconForPlatform(e.target.value);
-                            return { ...prev, socials: arr };
-                          })
-                        }
-                        placeholder="Platform"
-                      />
-                      <input
-                        type="text"
-                        className="border rounded px-2 py-1 flex-1"
-                        value={social.url}
-                        onChange={(e) =>
-                          setEditValues((prev: any) => {
-                            const arr = user.socials.map((s) => ({
-                              platform: s.platform,
-                              url: s.url,
-                            }));
-                            arr[idx].url = e.target.value;
-                            return { ...prev, socials: arr };
-                          })
-                        }
-                        placeholder="URL"
-                      />
-                      <button
-                        className="bg-red-100 text-red-600 p-1 rounded hover:bg-red-200"
-                        onClick={() => handleSocialRemove(idx)}
-                        title="Remove"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ))}
+                  <div key={idx} className="flex gap-2 items-center mb-2">
+                    <span>{getIconForPlatform(social.socialType)}</span>
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 w-32"
+                      value={social.socialType}
+                      onChange={(e) =>
+                        setEditValues((prev: any) => {
+                          const arr = user.socials.map((s) => ({
+                            platform: s.socialType,
+                            url: s.url,
+                          }));
+                          arr[idx].platform = e.target.value;
+                          arr[idx].icon = getIconForPlatform(e.target.value);
+                          return { ...prev, socials: arr };
+                        })
+                      }
+                      placeholder="Platform"
+                    />
+                    <input
+                      type="text"
+                      className="border rounded px-2 py-1 flex-1"
+                      value={social.url}
+                      onChange={(e) =>
+                        setEditValues((prev: string) => {
+                          const arr = user.socials.map((s) => ({
+                            socialType: s.socialType,
+                            url: s.url,
+                          }));
+                          arr[idx].url = e.target.value;
+                          return { ...prev, socials: arr };
+                        })
+                      }
+                      placeholder="URL"
+                    />
+                    <button
+                      className="bg-red-100 text-red-600 p-1 rounded hover:bg-red-200"
+                      onClick={() => handleSocialRemove(idx)}
+                      title="Remove"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
               <button
                 className="bg-blue-100 text-blue-700 p-1 px-3 rounded flex items-center gap-1 mt-2"
                 onClick={handleSocialAdd}
@@ -822,18 +743,19 @@ const PortfolioPage = () => {
             </div>
           ) : (
             <div className="flex gap-4 flex-wrap">
-              {user.socials.map((social, idx) => (
-                <a
-                  key={idx}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-blue-600 hover:underline"
-                >
-                  {getIconForPlatform(social.platform)}
-                  {social.platform}
-                </a>
-              ))}
+              {user.socials?.filter(s => s?.socialType)
+                .map((social, idx) => (
+                  <a
+                    key={idx}
+                    href={social.url || social.URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-blue-600 hover:underline"
+                  >
+                    {getIconForPlatform(social?.socialType)}
+                    {social?.socialType}
+                  </a>
+                ))}
             </div>
           )}
         </section>
@@ -870,7 +792,7 @@ const PortfolioPage = () => {
               </div>
             </>
           ) : (
-            <p className="text-gray-700">{user.about}</p>
+            <p className="text-gray-700">{user.bio}</p>
           )}
         </section>
 
@@ -888,6 +810,7 @@ const PortfolioPage = () => {
               </button>
             )}
           </h2>
+
           {editSection === "education" ? (
             <div>
               {(editValues.education || user.education).map(
@@ -1033,14 +956,14 @@ const PortfolioPage = () => {
             <ul className="list-disc pl-5">
               {user.education.map((edu, idx) => (
                 <li key={idx}>
-                  <strong>{edu.institution}</strong>
-                  {edu.college && <> – {edu.college}</>}
+                  <strong>{edu.instituteName}</strong>
+                  {edu.degree && <> – {edu.degree}</>}
                   {" | "}
-                  {edu.degree} {edu.grade && <>({edu.grade})</>}
+                  {edu.fieldOfStudy}
                   {", "}
-                  {edu.startYear}
+                  {new Date(edu.startDate).getFullYear()}
                   {" - "}
-                  {edu.current ? "Current" : edu.endYear || edu.years}
+                  {new Date(edu.endDate).getFullYear()}
                 </li>
               ))}
             </ul>
@@ -1167,23 +1090,6 @@ const PortfolioPage = () => {
                         }
                         placeholder="End Date"
                       />
-                      <label className="flex gap-1 items-center text-xs">
-                        <input
-                          type="checkbox"
-                          checked={project.current || false}
-                          onChange={(e) =>
-                            setEditValues((prev: any) => {
-                              const arr = prev.projects
-                                ? [...prev.projects]
-                                : user.projects.map((p) => ({ ...p }));
-                              arr[idx].current = e.target.checked;
-                              if (e.target.checked) arr[idx].end = "";
-                              return { ...prev, projects: arr };
-                            })
-                          }
-                        />
-                        Current
-                      </label>
                     </div>
                   </div>
                 )
@@ -1210,27 +1116,16 @@ const PortfolioPage = () => {
                   key={idx}
                   className="p-4 border rounded-lg bg-white shadow flex flex-col gap-2"
                 >
-                  {project.thumbnail && (
-                    <img
-                      src={project.thumbnail}
-                      alt="Thumbnail"
-                      className="rounded-lg mb-2 h-20 object-cover w-full"
-                    />
-                  )}
-                  <h3 className="text-lg font-semibold">{project.name}</h3>
+                  <h3 className="text-lg font-semibold">{project.title}</h3>
                   <p className="text-gray-600">{project.description}</p>
-                  <div className="text-xs text-gray-500">
-                    {project.start} -{" "}
-                    {project.current ? "Current" : project.end}
-                  </div>
-                  {project.url && project.url.trim() !== "" && (
+                  {project.projectLiveURL && project.projectLiveURL.trim() !== "" && (
                     <a
-                      href={project.url}
+                      href={project.projectLiveURL}
                       className="text-blue-600 hover:underline text-sm mt-1 block"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {project.url}
+                      {project.projectLiveURL}
                     </a>
                   )}
                 </div>
@@ -1309,7 +1204,7 @@ const PortfolioPage = () => {
           </h2>
           {editSection === "trainings" ? (
             <>
-              {(editValues.trainings || user.trainings).map(
+              {(editValues.training || user.training).map(
                 (training: any, idx: number) => (
                   <div
                     key={idx}
@@ -1325,14 +1220,14 @@ const PortfolioPage = () => {
                     <input
                       type="text"
                       className="border rounded px-2 py-1"
-                      value={training.courseName}
+                      value={training.title}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
-                          const arr = prev.trainings
-                            ? [...prev.trainings]
-                            : user.trainings.map((t) => ({ ...t }));
+                          const arr = prev.training
+                            ? [...prev.training]
+                            : user.training.map((t) => ({ ...t }));
                           arr[idx].courseName = e.target.value;
-                          return { ...prev, trainings: arr };
+                          return { ...prev, training: arr };
                         })
                       }
                       placeholder="Course Name"
@@ -1343,11 +1238,11 @@ const PortfolioPage = () => {
                       value={training.location}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
-                          const arr = prev.trainings
-                            ? [...prev.trainings]
-                            : user.trainings.map((t) => ({ ...t }));
+                          const arr = prev.training
+                            ? [...prev.training]
+                            : user.training.map((t) => ({ ...t }));
                           arr[idx].location = e.target.value;
-                          return { ...prev, trainings: arr };
+                          return { ...prev, training: arr };
                         })
                       }
                       placeholder="Location"
@@ -1357,11 +1252,11 @@ const PortfolioPage = () => {
                       value={training.description}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
-                          const arr = prev.trainings
-                            ? [...prev.trainings]
-                            : user.trainings.map((t) => ({ ...t }));
+                          const arr = prev.training
+                            ? [...prev.training]
+                            : user.training.map((t) => ({ ...t }));
                           arr[idx].description = e.target.value;
-                          return { ...prev, trainings: arr };
+                          return { ...prev, training: arr };
                         })
                       }
                       placeholder="Description"
@@ -1370,51 +1265,36 @@ const PortfolioPage = () => {
                       <input
                         type="month"
                         className="border rounded px-2 py-1"
-                        value={training.start || ""}
+                        value={training.startDate || ""}
                         onChange={(e) =>
                           setEditValues((prev: any) => {
-                            const arr = prev.trainings
-                              ? [...prev.trainings]
-                              : user.trainings.map((t) => ({ ...t }));
-                            arr[idx].start = e.target.value;
-                            return { ...prev, trainings: arr };
+                            const arr = prev.training
+                              ? [...prev.training]
+                              : user.training.map((t) => ({ ...t }));
+                            arr[idx].startDate = e.target.value;
+                            return { ...prev, training: arr };
                           })
                         }
                         placeholder="Start Date"
                       />
+
                       <input
                         type="month"
                         className="border rounded px-2 py-1"
-                        value={training.end || ""}
+                        value={training.endDate || ""}
                         disabled={training.current}
                         onChange={(e) =>
                           setEditValues((prev: any) => {
-                            const arr = prev.trainings
-                              ? [...prev.trainings]
-                              : user.trainings.map((t) => ({ ...t }));
-                            arr[idx].end = e.target.value;
-                            return { ...prev, trainings: arr };
+                            const arr = prev.training
+                              ? [...prev.training]
+                              : user.training.map((t) => ({ ...t }));
+                            arr[idx].endDate = e.target.value;
+                            return { ...prev, training: arr };
                           })
                         }
                         placeholder="End Date"
                       />
-                      <label className="flex gap-1 items-center text-xs">
-                        <input
-                          type="checkbox"
-                          checked={training.current || false}
-                          onChange={(e) =>
-                            setEditValues((prev: any) => {
-                              const arr = prev.trainings
-                                ? [...prev.trainings]
-                                : user.trainings.map((t) => ({ ...t }));
-                              arr[idx].current = e.target.checked;
-                              if (e.target.checked) arr[idx].end = "";
-                              return { ...prev, trainings: arr };
-                            })
-                          }
-                        />
-                        Current
-                      </label>
+
                     </div>
                   </div>
                 )
@@ -1436,14 +1316,11 @@ const PortfolioPage = () => {
             </>
           ) : (
             <ul className="list-disc pl-5 text-gray-700">
-              {user.trainings.map((item, idx) => (
+              {user.training.map((item, idx) => (
                 <li key={idx}>
-                  <strong>{item.courseName}</strong>{" "}
+                  <strong>{item.title}, {item.provider}</strong>{" "}
                   {item.location && <>({item.location})</>} <br />
                   <span className="text-xs">{item.description}</span> <br />
-                  <span className="text-xs text-gray-500">
-                    {item.start} - {item.current ? "Current" : item.end}
-                  </span>
                 </li>
               ))}
             </ul>
@@ -1453,20 +1330,20 @@ const PortfolioPage = () => {
         {/* Professional Experience */}
         <section className="mb-8 relative">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-            Professional
-            {editSection !== "professional" && (
+            Experience
+            {editSection !== "experience" && (
               <button
                 className="bg-white p-1 rounded hover:bg-gray-100 shadow"
-                onClick={() => onEdit("professional")}
-                title="Edit Professional"
+                onClick={() => onEdit("experience")}
+                title="Edit experience"
               >
                 <Edit size={16} />
               </button>
             )}
           </h2>
-          {editSection === "professional" ? (
+          {editSection === "experience" ? (
             <>
-              {(editValues.professional || user.professional).map(
+              {(editValues.experience || user.experience).map(
                 (prof: any, idx: number) => (
                   <div
                     key={idx}
@@ -1479,47 +1356,50 @@ const PortfolioPage = () => {
                     >
                       <X size={16} />
                     </button>
+
                     <input
                       type="text"
                       className="border rounded px-2 py-1"
-                      value={prof.jobRole}
+                      value={prof.title}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
-                          const arr = prev.professional
-                            ? [...prev.professional]
-                            : user.professional.map((p) => ({ ...p }));
-                          arr[idx].jobRole = e.target.value;
-                          return { ...prev, professional: arr };
+                          const arr = prev.experience
+                            ? [...prev.experience]
+                            : user.experience.map((p) => ({ ...p }));
+                          arr[idx].title = e.target.value;
+                          return { ...prev, experience: arr };
                         })
                       }
-                      placeholder="Job Role"
+                      placeholder="Job title"
                     />
+
                     <input
                       type="text"
                       className="border rounded px-2 py-1"
                       value={prof.companyName}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
-                          const arr = prev.professional
-                            ? [...prev.professional]
-                            : user.professional.map((p) => ({ ...p }));
+                          const arr = prev.experience
+                            ? [...prev.experience]
+                            : user.experience.map((p) => ({ ...p }));
                           arr[idx].companyName = e.target.value;
-                          return { ...prev, professional: arr };
+                          return { ...prev, experience: arr };
                         })
                       }
                       placeholder="Company Name"
                     />
+
                     <input
                       type="text"
                       className="border rounded px-2 py-1"
                       value={prof.location}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
-                          const arr = prev.professional
-                            ? [...prev.professional]
-                            : user.professional.map((p) => ({ ...p }));
+                          const arr = prev.experience
+                            ? [...prev.experience]
+                            : user.experience.map((p) => ({ ...p }));
                           arr[idx].location = e.target.value;
-                          return { ...prev, professional: arr };
+                          return { ...prev, experience: arr };
                         })
                       }
                       placeholder="Location"
@@ -1529,11 +1409,11 @@ const PortfolioPage = () => {
                       value={prof.description}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
-                          const arr = prev.professional
-                            ? [...prev.professional]
-                            : user.professional.map((p) => ({ ...p }));
+                          const arr = prev.experience
+                            ? [...prev.experience]
+                            : user.experience.map((p) => ({ ...p }));
                           arr[idx].description = e.target.value;
-                          return { ...prev, professional: arr };
+                          return { ...prev, experience: arr };
                         })
                       }
                       placeholder="Description"
@@ -1542,14 +1422,14 @@ const PortfolioPage = () => {
                       <input
                         type="month"
                         className="border rounded px-2 py-1"
-                        value={prof.start || ""}
+                        value={prof.startDate || ""}
                         onChange={(e) =>
                           setEditValues((prev: any) => {
-                            const arr = prev.professional
-                              ? [...prev.professional]
-                              : user.professional.map((p) => ({ ...p }));
-                            arr[idx].start = e.target.value;
-                            return { ...prev, professional: arr };
+                            const arr = prev.experience
+                              ? [...prev.experience]
+                              : user.experience.map((p) => ({ ...p }));
+                            arr[idx].startDate = e.target.value;
+                            return { ...prev, experience: arr };
                           })
                         }
                         placeholder="Start Date"
@@ -1557,15 +1437,15 @@ const PortfolioPage = () => {
                       <input
                         type="month"
                         className="border rounded px-2 py-1"
-                        value={prof.end || ""}
-                        disabled={prof.current}
+                        value={prof.endDate || ""}
+                        disabled={prof.currentlyWoorking}
                         onChange={(e) =>
                           setEditValues((prev: any) => {
-                            const arr = prev.professional
-                              ? [...prev.professional]
-                              : user.professional.map((p) => ({ ...p }));
-                            arr[idx].end = e.target.value;
-                            return { ...prev, professional: arr };
+                            const arr = prev.experience
+                              ? [...prev.experience]
+                              : user.experience.map((p) => ({ ...p }));
+                            arr[idx].endDate = e.target.value;
+                            return { ...prev, experience: arr };
                           })
                         }
                         placeholder="End Date"
@@ -1573,15 +1453,15 @@ const PortfolioPage = () => {
                       <label className="flex gap-1 items-center text-xs">
                         <input
                           type="checkbox"
-                          checked={prof.current || false}
+                          checked={prof.currentlyWoorking || false}
                           onChange={(e) =>
                             setEditValues((prev: any) => {
-                              const arr = prev.professional
-                                ? [...prev.professional]
-                                : user.professional.map((p) => ({ ...p }));
-                              arr[idx].current = e.target.checked;
-                              if (e.target.checked) arr[idx].end = "";
-                              return { ...prev, professional: arr };
+                              const arr = prev.experience
+                                ? [...prev.experience]
+                                : user.experience.map((p) => ({ ...p }));
+                              arr[idx].currentlyWoorking = e.target.checked;
+                              if (e.target.checked) arr[idx].endDate = "";
+                              return { ...prev, experience: arr };
                             })
                           }
                         />
@@ -1595,12 +1475,12 @@ const PortfolioPage = () => {
                 className="bg-blue-100 text-blue-700 p-1 px-3 rounded flex items-center gap-1 mt-2"
                 onClick={handleProfessionalAdd}
               >
-                <Plus size={16} /> Add Professional
+                <Plus size={16} /> Add experience
               </button>
               <div className="mt-2 flex gap-2">
                 <button
                   className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
-                  onClick={() => onSave("professional")}
+                  onClick={() => onSave("experience")}
                 >
                   <Save size={16} /> Save
                 </button>
@@ -1608,16 +1488,18 @@ const PortfolioPage = () => {
             </>
           ) : (
             <ul className="list-disc pl-5 text-gray-700">
-              {user.professional.map((item, idx) => (
+              {user.experience.map((item, idx) => (
+
                 <li key={idx}>
-                  <strong>{item.jobRole}</strong> at {item.companyName} (
+                  <strong>{item.title}</strong> | <i> {item.companyName} </i> (
                   {item.location}) <br />
                   <span className="text-xs">{item.description}</span>
                   <br />
                   <span className="text-xs text-gray-500">
-                    {item.start} - {item.current ? "Current" : item.end}
+                    {new Date(item.startDate).getFullYear()} - {item.currentlyWorking ? "Current" : new Date(item.startDate).getFullYear()}
                   </span>
                 </li>
+
               ))}
             </ul>
           )}
@@ -1677,29 +1559,29 @@ const PortfolioPage = () => {
         <section className="mb-8 relative">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Extracurricular
-            {editSection !== "extracurricular" && (
+            {editSection !== "extraCurricular" && (
               <button
                 className="bg-white p-1 rounded hover:bg-gray-100 shadow"
-                onClick={() => onEdit("extracurricular")}
-                title="Edit extracurricular"
+                onClick={() => onEdit("extraCurricular")}
+                title="Edit extraCurricular"
               >
                 <Edit size={16} />
               </button>
             )}
           </h2>
-          {editSection === "extracurricular" ? (
+          {editSection === "extraCurricular" ? (
             <>
               <textarea
                 className="w-full border rounded px-2 py-1"
                 rows={3}
                 value={
-                  editValues.extracurricular
-                    ? editValues.extracurricular.join("\n")
-                    : user.extracurricular.join("\n")
+                  editValues.extraCurricular
+                    ? editValues.extraCurricular.join("\n")
+                    : user.extraCurricular.join("\n")
                 }
                 onChange={(e) =>
                   handleChange(
-                    "extracurricular",
+                    "extraCurricular",
                     e.target.value.split("\n").map((s) => s.trim())
                   )
                 }
@@ -1708,7 +1590,7 @@ const PortfolioPage = () => {
               <div className="mt-2 flex gap-2">
                 <button
                   className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
-                  onClick={() => onSave("extracurricular")}
+                  onClick={() => onSave("extraCurricular")}
                 >
                   <Save size={16} /> Save
                 </button>
@@ -1716,53 +1598,14 @@ const PortfolioPage = () => {
             </>
           ) : (
             <ul className="list-disc pl-5 text-gray-700">
-              {user.extracurricular.map((item, idx) => (
+              {user.extraCurricular.map((item, idx) => (
                 <li key={idx}>{item}</li>
               ))}
             </ul>
           )}
         </section>
 
-        {/* GitHub */}
-        <section className="mb-12 relative">
-          <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-            GitHub
-            {editSection !== "github" && (
-              <button
-                className="bg-white p-1 rounded hover:bg-gray-100 shadow"
-                onClick={() => onEdit("github")}
-                title="Edit GitHub"
-              >
-                <Edit size={16} />
-              </button>
-            )}
-          </h2>
-          {editSection === "github" ? (
-            <div className="flex gap-2 items-center">
-              <input
-                type="text"
-                className="border rounded px-2 py-1 flex-1"
-                value={editValues.github}
-                onChange={(e) => handleChange("github", e.target.value)}
-              />
-              <button
-                className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
-                onClick={() => onSave("github")}
-              >
-                <Save size={16} /> Save
-              </button>
-            </div>
-          ) : (
-            <a
-              href={user.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              {user.github}
-            </a>
-          )}
-        </section>
+
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { PlusCircle, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const initialClientDetails = () => ({
   clientName: "",
@@ -17,38 +18,42 @@ const initialClientDetails = () => ({
   clientBackgroundImageURL: "",
 });
 
+const client = {
+  name: "",
+  email: "",
+  phone: "",
+  location: "",
+  clientDetails: [initialClientDetails()],
+}
+
 const CompanyFormPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    location: "",
-    clientDetails: [initialClientDetails()],
-  });
+
+  const navigate = useNavigate()
+  const [formData, setFormData] = useState({ client });
 
   // MAIN FIELDS CHANGE HANDLER
   const handleChange =
     (field: string) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+      };
 
   // CLIENT DETAILS FIELD HANDLERS
   const handleClientFieldChange =
     (index: number, field: string) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const updated = [...formData.clientDetails];
-      updated[index][field] = e.target.value;
-      setFormData((prev) => ({ ...prev, clientDetails: updated }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const updated = [...formData.clientDetails];
+        updated[index][field] = e.target.value;
+        setFormData((prev) => ({ ...prev, clientDetails: updated }));
+      };
 
   const handleClientSocialChange =
     (index: number, social: string) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const updated = [...formData.clientDetails];
-      updated[index].socials[social] = e.target.value;
-      setFormData((prev) => ({ ...prev, clientDetails: updated }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const updated = [...formData.clientDetails];
+        updated[index].socials[social] = e.target.value;
+        setFormData((prev) => ({ ...prev, clientDetails: updated }));
+      };
 
   const handleClientTypeChange =
     (index: number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -76,14 +81,38 @@ const CompanyFormPage = () => {
       index: number,
       field: "clientProfileImageURL" | "clientBackgroundImageURL"
     ) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const updated = [...formData.clientDetails];
-      updated[index][field] = e.target.value;
-      setFormData((prev) => ({ ...prev, clientDetails: updated }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const updated = [...formData.clientDetails];
+        updated[index][field] = e.target.value;
+        setFormData((prev) => ({ ...prev, clientDetails: updated }));
+      };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
+
+    try {
+      const res = await fetch("http://localhost:3000/api/clients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        navigate(`/company/portfolio/${data.clientId}`);
+        console.log(data.data);
+      }
+
+      if (!res.ok) throw new Error("Failed to submit form");
+      alert("Form submitted successfully!")
+
+    }
+    catch (err) {
+      alert("Error submitting form");
+      console.error(err);
+    }
+
     console.log("Company Data:", formData);
     alert("Company form submitted!");
   };
@@ -95,7 +124,7 @@ const CompanyFormPage = () => {
           Company & Client Listing Form
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form className="space-y-6">
           {/* MAIN FIELDS */}
           {[
             { name: "name", label: "Name" },
@@ -118,7 +147,7 @@ const CompanyFormPage = () => {
           {/* CLIENT DETAILS */}
           <div>
             <h3 className="text-xl font-semibold mb-2">Client Details</h3>
-            {formData.clientDetails.map((client, idx) => (
+            {formData.client.clientDetails.map((client, idx) => (
               <div
                 key={idx}
                 className="border border-muted p-4 rounded-lg mb-4 relative bg-muted/30"
@@ -127,7 +156,7 @@ const CompanyFormPage = () => {
                   type="button"
                   onClick={() => removeClientDetail(idx)}
                   className="absolute top-2 right-2 text-destructive hover:text-red-700"
-                  disabled={formData.clientDetails.length === 1}
+                  disabled={formData.client.clientDetails.length === 1}
                   title="Remove Client"
                 >
                   <Trash2 size={18} />
@@ -145,18 +174,28 @@ const CompanyFormPage = () => {
                       className="w-full px-4 py-2 rounded-md bg-muted text-foreground border border-input"
                     />
                   </div>
+
                   <div>
-                    <label className="block mb-1 text-sm font-medium">
+                    <label htmlFor="clientSize" className="block mb-2 font-medium text-gray-700">
                       Client Size
                     </label>
-                    <input
-                      type="text"
+                    <select
+                      id="clientSize"
+                      name="clientSize"
+                      className="border rounded px-3 py-2 w-full"
                       value={client.clientSize}
                       onChange={handleClientFieldChange(idx, "clientSize")}
-                      placeholder="Client Size"
-                      className="w-full px-4 py-2 rounded-md bg-muted text-foreground border border-input"
-                    />
+                    >
+                      <option value="">Select client size</option>
+                      <option value="1-9">1-9</option>
+                      <option value="10-25">10-25</option>
+                      <option value="26-50">26-50</option>
+                      <option value="50+">50+</option>
+                      <option value="100+">100+</option>
+                    </select>
+
                   </div>
+
                   <div>
                     <label className="block mb-1 text-sm font-medium">
                       Industry
@@ -241,9 +280,8 @@ const CompanyFormPage = () => {
                             type="text"
                             value={client.socials[social]}
                             onChange={handleClientSocialChange(idx, social)}
-                            placeholder={`Enter ${
-                              social.charAt(0).toUpperCase() + social.slice(1)
-                            } URL`}
+                            placeholder={`Enter ${social.charAt(0).toUpperCase() + social.slice(1)
+                              } URL`}
                             className="w-full px-4 py-2 rounded-md bg-muted text-foreground border border-input"
                           />
                         </div>
@@ -254,18 +292,19 @@ const CompanyFormPage = () => {
               </div>
             ))}
 
-            <button
+            {/* <button
               type="button"
               onClick={addClientDetail}
               className="mt-2 text-sm text-primary flex items-center gap-1 hover:underline"
             >
               <PlusCircle size={18} /> Add Another Client
-            </button>
+            </button> */}
           </div>
 
           <button
             type="submit"
             className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 shadow-sm"
+            onClick={handleSubmit}
           >
             Submit Info
           </button>

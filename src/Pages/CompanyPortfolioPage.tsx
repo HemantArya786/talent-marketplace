@@ -1,38 +1,78 @@
-// Initial structure and logic kept from PortfolioPage
-// Updated to handle company portfolio-specific fields with profile and cover image modal editing
+//@ts-nocheck
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Globe,
   Edit,
   Save,
 } from "lucide-react";
+import { useParams } from "react-router-dom";
+
+type ClientType = {
+  firebaseUid: string;
+  clientId: number,
+  name: string;
+  email: string;
+  phone: number;
+  location: {
+    country: string;
+    city: string;
+    timezone: string;
+  };
+  role: 'client' | string;
+  authProvider: 'linkedIn' | 'google' | 'email';
+  clientDetails: {
+    client_id: string;
+    clientName: string;
+    clientSize: '1-9' | '10-25' | '26-50' | '50+' | '100+';
+    industry: string;
+    socials: {
+      _id: string;
+      socialType: string;
+      URL: string;
+    }[];
+    clientType: 'company' | 'agency' | 'individual';
+    description: string;
+    clientProfileImageURL: string;
+    clientBackgroundImageURL: string;
+    lastLogin: string;
+  };
+};
+
+const initialData: ClientType = {
+  firebaseUid: "",
+  clientId: 0,
+  name: "",
+  email: "",
+  phone: 0,
+  location: {
+    country: "",
+    city: "",
+    timezone: ""
+  },
+  role: "client",
+  authProvider: "email",
+  clientDetails: {
+    client_id: "",
+    clientName: "",
+    clientSize: "1-9",
+    industry: "",
+    socials: [],
+    clientType: "individual",
+    description: "",
+    clientProfileImageURL: "",
+    clientBackgroundImageURL: "",
+    lastLogin: ""
+  }
+}
 
 const CompanyPortfolioPage = () => {
+
   const [editSection, setEditSection] = useState(null);
   const [showModal, setShowModal] = useState(null);
-  const [company, setCompany] = useState({
-    name: "Your Company Name",
-    location: "New Delhi, India",
-    email: "company@email.com",
-    phone: "+91-XXXXXXXXXX",
-    summary: "Brief summary about the company",
-    about: "Detailed information about the company",
-    activity: "Hiring software engineers, designers, PMs",
-    skills: ["React", "Node.js", "UI/UX", "DevOps"],
-    socials: [
-      { platform: "Website", url: "https://companysite.com", icon: <Globe /> },
-    ],
-    companySize: "50-100 employees",
-    founder: "Jane Doe",
-    headOffice: "Bangalore, India",
-    industry: "Information Technology",
-    website: "https://companysite.com",
-    profileImage: null,
-    coverImage: null,
-  });
 
-  const [editValues, setEditValues] = useState({});
+  const [company, setCompany] = useState(initialData)
+  const [editValues, setEditValues] = useState(initialData);
   const [tempImage, setTempImage] = useState(null);
 
   const onEdit = (section) => {
@@ -82,15 +122,41 @@ const CompanyPortfolioPage = () => {
     setTempImage(null);
   };
 
+  const { clientId } = useParams()
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+
+      const response = await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+        method: "GET",
+        headers: { "Content-type": "application/json" }
+      })
+
+
+      if (!response.ok) {
+        console.error("Failed to fetch user data:", response.status)
+        return;
+      }
+
+      const userData = await response.json()
+      setCompany(userData)
+      setEditValues(userData)
+      console.log(userData);
+    }
+    fetchData()
+
+  }, [clientId])
+
   return (
     <div className="max-w-6xl mx-auto font-sans border p-2">
       <h1 className="text-3xl font-bold mb-4">Company Profile</h1>
 
       {/* Cover Image */}
       <div className="relative mb-4 h-48 bg-gray-200 rounded-md overflow-hidden">
-        {company.coverImage ? (
+        {company.clientDetails.clientBackgroundImageURL ? (
           <img
-            src={company.coverImage}
+            src={company.clientDetails.clientBackgroundImageURL}
             alt="Cover"
             className="w-full h-full object-cover"
           />
@@ -109,15 +175,15 @@ const CompanyPortfolioPage = () => {
 
       {/* Profile Image */}
       <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-white -mt-16 ml-4">
-        {company.profileImage ? (
+        {company.clientDetails.clientProfileImageURL ? (
           <img
-            src={company.profileImage}
+            src={company.clientDetails.clientProfileImageURL}
             alt="Profile"
             className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600">
-            No Image
+            Please update your Profile photo
           </div>
         )}
         <button
@@ -128,7 +194,7 @@ const CompanyPortfolioPage = () => {
         </button>
       </div>
 
-      {/* Modals */}
+      Modals
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-4 rounded shadow w-96">
@@ -179,7 +245,7 @@ const CompanyPortfolioPage = () => {
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.location}
+              value={editValues.location.city}
               onChange={(e) => handleChange("location", e.target.value)}
               placeholder="Location"
             />
@@ -205,7 +271,7 @@ const CompanyPortfolioPage = () => {
         ) : (
           <div>
             <p><strong>Name:</strong> {company.name}</p>
-            <p><strong>Location:</strong> {company.location}</p>
+            <p><strong>Location:</strong> {company.location.city}</p>
             <p><strong>Email:</strong> {company.email}</p>
             <p><strong>Phone:</strong> {company.phone}</p>
             <button
@@ -227,7 +293,7 @@ const CompanyPortfolioPage = () => {
             <textarea
               className="w-full border rounded px-2 py-1"
               rows={3}
-              value={editValues.summary}
+              value={editValues.clientDetails.description}
               onChange={(e) => handleChange("summary", e.target.value)}
             />
             <button
@@ -239,7 +305,7 @@ const CompanyPortfolioPage = () => {
           </>
         ) : (
           <div>
-            <p>{company.summary}</p>
+            <p>{company.clientDetails.description}</p>
             <button
               onClick={() => onEdit("summary")}
               className="absolute top-0 right-0 bg-white p-1 rounded shadow"
@@ -258,7 +324,7 @@ const CompanyPortfolioPage = () => {
             <textarea
               className="w-full border rounded px-2 py-1"
               rows={3}
-              value={editValues.about}
+              value={editValues.clientDetails.clientType}
               onChange={(e) => handleChange("about", e.target.value)}
             />
             <button
@@ -270,7 +336,7 @@ const CompanyPortfolioPage = () => {
           </>
         ) : (
           <div>
-            <p>{company.about}</p>
+            <p>{company.clientDetails.clientType}</p>
             <button
               onClick={() => onEdit("about")}
               className="absolute top-0 right-0 bg-white p-1 rounded shadow"
@@ -290,7 +356,7 @@ const CompanyPortfolioPage = () => {
             <textarea
               className="w-full border rounded px-2 py-1"
               rows={2}
-              value={editValues.activity}
+              value={editValues.activity || ""}
               onChange={(e) => handleChange("activity", e.target.value)}
             />
             <button
@@ -314,7 +380,7 @@ const CompanyPortfolioPage = () => {
         )}
       </section>
 
-      {/* Skills and Expertise */}
+      {/* Skills and Expertise
       <section className="mb-6 relative">
         <h2 className="text-xl font-semibold mb-2">Skills and Expertise</h2>
         {editSection === "skills" ? (
@@ -368,7 +434,7 @@ const CompanyPortfolioPage = () => {
             </button>
           </div>
         )}
-      </section>
+      </section> */}
 
       {/* Company Details */}
       <section className="mb-6 relative">
@@ -377,31 +443,31 @@ const CompanyPortfolioPage = () => {
           <>
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.founder}
+              value={editValues.clientDetails.clientName}
               onChange={(e) => handleChange("founder", e.target.value)}
               placeholder="Founder"
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.headOffice}
+              value={editValues.location.city}
               onChange={(e) => handleChange("headOffice", e.target.value)}
               placeholder="Head Office"
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.companySize}
+              value={editValues.clientDetails.clientSize}
               onChange={(e) => handleChange("companySize", e.target.value)}
               placeholder="Company Size"
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.industry}
+              value={editValues.clientDetails.industry}
               onChange={(e) => handleChange("industry", e.target.value)}
               placeholder="Industry"
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.website}
+              value={editValues.clientDetails.socials}
               onChange={(e) => handleChange("website", e.target.value)}
               placeholder="Website"
             />
@@ -414,19 +480,19 @@ const CompanyPortfolioPage = () => {
           </>
         ) : (
           <div>
-            <p><strong>Founder:</strong> {company.founder}</p>
-            <p><strong>Head Office:</strong> {company.headOffice}</p>
-            <p><strong>Company Size:</strong> {company.companySize}</p>
-            <p><strong>Industry:</strong> {company.industry}</p>
+            <p><strong>Founder:</strong> {company.name}</p>
+            <p><strong>Head Office:</strong> {company.location.city}, {company.location.country}</p>
+            <p><strong>Company Size:</strong> {company.clientDetails.clientSize}</p>
+            <p><strong>Industry:</strong> {company.clientDetails.industry}</p>
             <p>
               <strong>Website:</strong>{" "}
               <a
-                href={company.website}
+                href={company.clientDetails.socials}
                 className="text-blue-600 underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {company.website}
+                {company.clientDetails.socials}
               </a>
             </p>
             <button

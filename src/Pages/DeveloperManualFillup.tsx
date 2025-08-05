@@ -59,7 +59,6 @@ const ManualFormPage = () => {
     backgroundImageURL: "",
     location: { country: "", city: "", timezone: "" },
     socials: [{ ...initialSocialLink }],
-    categories: [""],
     skills: [""],
     projects: [{ ...initialProject }],
     experience: [{ ...initialExperience }],
@@ -69,7 +68,7 @@ const ManualFormPage = () => {
     training: [{ ...initialTraining }],
     accomplishment: "",
     extraCurricularActivities: "",
-    category: "", // new field for main category
+    category: "",
   });
 
   const navigate = useNavigate();
@@ -77,11 +76,11 @@ const ManualFormPage = () => {
   // --- Simple string list fields (skills, categories, language) ---
   const handleStringListChange =
     (field: "skills" | "categories" | "language", idx: number) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const updated = [...(formData[field] as string[])];
-      updated[idx] = e.target.value;
-      setFormData((prev) => ({ ...prev, [field]: updated }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const updated = [...(formData[field] as string[])];
+        updated[idx] = e.target.value;
+        setFormData((prev) => ({ ...prev, [field]: updated }));
+      };
   const addStringField = (field: "skills" | "categories" | "language") =>
     setFormData((prev) => ({
       ...prev,
@@ -109,11 +108,11 @@ const ManualFormPage = () => {
     }));
   const handleProjectChange =
     (index: number, key: keyof typeof initialProject) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const updated = [...formData.projects];
-      updated[index][key] = e.target.value;
-      setFormData((prev) => ({ ...prev, projects: updated }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const updated = [...formData.projects];
+        updated[index][key] = e.target.value;
+        setFormData((prev) => ({ ...prev, projects: updated }));
+      };
 
   // --- Education ---
   const addEducation = () =>
@@ -129,15 +128,15 @@ const ManualFormPage = () => {
   // PATCH: degree as dropdown
   const handleEducationChange =
     (index: number, key: keyof typeof initialEducation) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >
-    ) => {
-      const updated = [...formData.education];
-      updated[index][key] = e.target.value;
-      setFormData((prev) => ({ ...prev, education: updated }));
-    };
+      (
+        e: React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
+      ) => {
+        const updated = [...formData.education];
+        updated[index][key] = e.target.value;
+        setFormData((prev) => ({ ...prev, education: updated }));
+      };
 
   // --- Experience ---
   const addExperience = () =>
@@ -152,15 +151,15 @@ const ManualFormPage = () => {
     }));
   const handleExperienceChange =
     (index: number, key: keyof typeof initialExperience) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const updated = [...formData.experience];
-      if (key === "currentlyWorking" || key === "Remote") {
-        updated[index][key] = (e.target as HTMLInputElement).checked;
-      } else {
-        updated[index][key] = e.target.value;
-      }
-      setFormData((prev) => ({ ...prev, experience: updated }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const updated = [...formData.experience];
+        if (key === "currentlyWorking" || key === "Remote") {
+          updated[index][key] = (e.target as HTMLInputElement).checked;
+        } else {
+          updated[index][key] = e.target.value;
+        }
+        setFormData((prev) => ({ ...prev, experience: updated }));
+      };
 
   // --- Training ---
   const addTraining = () =>
@@ -175,19 +174,19 @@ const ManualFormPage = () => {
     }));
   const handleTrainingChange =
     (index: number, key: keyof typeof initialTraining) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-      >
-    ) => {
-      const updated = [...formData.training];
-      if (key === "currentlyPursuing") {
-        updated[index][key] = (e.target as HTMLInputElement).checked;
-      } else {
-        updated[index][key] = e.target.value;
-      }
-      setFormData((prev) => ({ ...prev, training: updated }));
-    };
+      (
+        e: React.ChangeEvent<
+          HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >
+      ) => {
+        const updated = [...formData.training];
+        if (key === "currentlyPursuing") {
+          updated[index][key] = (e.target as HTMLInputElement).checked;
+        } else {
+          updated[index][key] = e.target.value;
+        }
+        setFormData((prev) => ({ ...prev, training: updated }));
+      };
 
   // --- Social Links ---
   const addSocialLink = () =>
@@ -202,18 +201,18 @@ const ManualFormPage = () => {
     }));
   const handleSocialLinkChange =
     (index: number, key: keyof typeof initialSocialLink) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const updated = [...formData.socials];
-      updated[index][key] = e.target.value;
-      setFormData((prev) => ({ ...prev, socials: updated }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const updated = [...formData.socials];
+        updated[index][key] = e.target.value;
+        setFormData((prev) => ({ ...prev, socials: updated }));
+      };
 
   // --- Simple (non-list) field change ---
   const handleFieldChange =
     (field: keyof typeof formData) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-    };
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+      };
 
   // --- CATEGORY DROPDOWN (top-level) ---
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -281,12 +280,19 @@ const ManualFormPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalFormData),
       });
-      if (!res.ok) throw new Error("Failed to submit form");
-      alert("Form submitted successfully!");
 
-      navigate("/developer/portfolio");
-      console.log(formData);
-    } catch (err) {
+      const data = await res.json();
+      if (res.ok) {
+        navigate(`/developer/portfolio/${data.userId}`);
+        console.log(data.data);
+      }
+
+      if (!res.ok) throw new Error("Failed to submit form");
+      alert("Form submitted successfully!")
+
+
+    }
+    catch (err) {
       alert("Error submitting form");
       console.error(err);
     }

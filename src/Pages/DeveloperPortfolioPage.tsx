@@ -644,9 +644,9 @@ const PortfolioPage = () => {
       )}
 
       {/* Main Content */}
-      <div className="mt-16 px-6 sm:px-12">
+      <div className="mt-16 px-6 sm:px-12 ">
         {/* Header Info */}
-        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-8 relative">
+        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-8 relative border p-5 rounded-lg bg-gray-100">
           <div>
             {editSection === "header" ? (
               <>
@@ -705,7 +705,7 @@ const PortfolioPage = () => {
         </div>
 
         {/* Social Media Links */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
             Social Media
             {editSection !== "socials" && (
@@ -839,7 +839,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* About */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             About Me
             {editSection !== "about" && (
@@ -875,7 +875,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Education */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Education
             {editSection !== "education" && (
@@ -1048,7 +1048,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Projects */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Projects
             {editSection !== "projects" && (
@@ -1240,7 +1240,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Skills */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Skills
             {editSection !== "skills" && (
@@ -1294,7 +1294,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Trainings */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Trainings
             {editSection !== "trainings" && (
@@ -1451,7 +1451,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Professional Experience */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Professional
             {editSection !== "professional" && (
@@ -1624,7 +1624,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Accomplishments */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Accomplishments
             {editSection !== "accomplishments" && (
@@ -1674,7 +1674,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Extracurricular */}
-        <section className="mb-8 relative">
+        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Extracurricular
             {editSection !== "extracurricular" && (
@@ -1724,7 +1724,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* GitHub */}
-        <section className="mb-12 relative">
+        {/* <section className="mb-12 relative">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             GitHub
             {editSection !== "github" && (
@@ -1762,7 +1762,7 @@ const PortfolioPage = () => {
               {user.github}
             </a>
           )}
-        </section>
+        </section> */}
       </div>
     </div>
   );

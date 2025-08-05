@@ -156,7 +156,7 @@ const PortfolioPage = () => {
 
   const [user, setUser] = useState<UserType>(initialUser);
   const [editSection, setEditSection] = useState<Section | null>(null);
-  const [editValues, setEditValues] = useState<any>({});
+  const [editValues, setEditValues] = useState<UserType>(user);
   const [profileImgPreview, setProfileImgPreview] = useState<string>(initialUser?.userProfileImageURL);
   const [coverImgPreview, setCoverImgPreview] = useState<string>(initialUser?.backgroundImageURL);
   const [profileImgFile, setProfileImgFile] = useState<File | null>(null);
@@ -198,6 +198,7 @@ const PortfolioPage = () => {
 
   const onSave = (section: Section) => {
     if (section === "profileImg") {
+
       setUser((u) => ({ ...u, profileImg: profileImgPreview }));
       setProfileImgFile(null);
     } else if (section === "coverImg") {
@@ -211,27 +212,130 @@ const PortfolioPage = () => {
           icon: getIconForPlatform(s.socialType || ""),
         })),
       }));
-    } else if (section === "education") {
-      setUser((u) => ({
-        ...u,
-        education: editValues.education,
-      }));
-    } else if (section === "projects") {
-      setUser((u) => ({
-        ...u,
-        projects: editValues.projects,
-      }));
-    } else if (section === "trainings") {
-      setUser((u) => ({
-        ...u,
-        training: editValues.training,
-      }));
     } else if (section === "experience") {
+      const updatedExperiences = editValues.experience;
+
+      for (const exp of updatedExperiences) {
+        const experienceId = exp._id;
+
+        const updateData = async () => {
+          const response = await fetch(`http://localhost:3000/api/users/${userId}/experience/${experienceId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(exp),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to update experience with ID ${experienceId}`);
+          }
+
+          console.log("Experience updated successfully!");
+        };
+
+        updateData();
+      }
+
       setUser((u) => ({
         ...u,
-        experience: editValues.experience,
+        experience: updatedExperiences,
       }));
-    } else {
+    }
+
+    else if (section === "trainings") {
+      const updatedTrainings = editValues.training;
+
+      for (const training of updatedTrainings) {
+        const trainingId = training._id;
+
+        const updateData = async () => {
+          const response = await fetch(`http://localhost:3000/api/users/${userId}/training/${trainingId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(training),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to update training with ID ${trainingId}`);
+          }
+
+          console.log("Training updated successfully!");
+        };
+
+        updateData();
+      }
+
+      setUser((u) => ({
+        ...u,
+        training: updatedTrainings,
+      }));
+    }
+    else if (section === "education") {
+      const updatedEducation = editValues.education;
+
+      for (const edu of updatedEducation) {
+        const educationId = edu._id;
+
+        const updateData = async () => {
+          const response = await fetch(`http://localhost:3000/api/users/${userId}/education/${educationId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(edu),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to update education with ID ${educationId}`);
+          }
+
+          console.log("Education updated successfully!");
+        };
+
+        updateData();
+      }
+
+      setUser((u) => ({
+        ...u,
+        education: updatedEducation,
+      }));
+    }
+
+    else if (section === "projects") {
+      const updatedProjects = editValues.projects;
+
+      for (const proj of updatedProjects) {
+        const projectId = proj._id;
+
+        const updateData = async () => {
+
+          const response = await fetch(`http://localhost:3000/api/users/${userId}/projects/${projectId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(proj),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to update project with ID ${projectId}`);
+          }
+
+          console.log("Project updated successfully!");
+        };
+
+        updateData();
+      }
+
+      setUser((u) => ({
+        ...u,
+        projects: updatedProjects,
+      }));
+    }
+    else {
       setUser({ ...user, ...editValues });
     }
     setEditSection(null);
@@ -580,9 +684,19 @@ const PortfolioPage = () => {
                 <input
                   type="text"
                   className="text-gray-600 w-full border-b"
-                  value={editValues.location}
-                  onChange={(e) => handleChange("location", e.target.value)}
+                  value={editValues.location?.city || ""}
+                  onChange={(e) =>
+                    setEditValues((prev) => ({
+                      ...prev,
+                      location: {
+                        ...prev.location,
+                        city: e.target.value,
+                      },
+                    }))
+                  }
+                  placeholder="City"
                 />
+
                 <input
                   type="text"
                   className="text-sm text-gray-500 w-full border-b"
@@ -614,6 +728,7 @@ const PortfolioPage = () => {
               </>
             )}
           </div>
+
           {editSection !== "header" && (
             <button
               className="absolute top-0 right-0 bg-white p-1 rounded hover:bg-gray-100 shadow"
@@ -779,7 +894,7 @@ const PortfolioPage = () => {
               <textarea
                 className="w-full border rounded px-2 py-1"
                 rows={3}
-                value={editValues.about}
+                value={editValues.bio}
                 onChange={(e) => handleChange("about", e.target.value)}
               />
               <div className="mt-2 flex gap-2">
@@ -813,7 +928,7 @@ const PortfolioPage = () => {
 
           {editSection === "education" ? (
             <div>
-              {(editValues.education || user.education).map(
+              {(editValues.education).map(
                 (edu: any, idx: number) => (
                   <div
                     key={idx}
@@ -822,37 +937,23 @@ const PortfolioPage = () => {
                     <input
                       type="text"
                       className="border rounded px-2 py-1 w-40"
-                      value={edu.institution}
+                      value={edu.instituteName}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
                           const arr = prev.education
                             ? [...prev.education]
                             : user.education.map((e) => ({ ...e }));
-                          arr[idx].institution = e.target.value;
+                          arr[idx].instituteName = e.target.value;
                           return { ...prev, education: arr };
                         })
                       }
-                      placeholder="Institution"
+                      placeholder="Institute Name"
                     />
+
                     <input
                       type="text"
                       className="border rounded px-2 py-1 w-32"
-                      value={edu.college || ""}
-                      onChange={(e) =>
-                        setEditValues((prev: any) => {
-                          const arr = prev.education
-                            ? [...prev.education]
-                            : user.education.map((e) => ({ ...e }));
-                          arr[idx].college = e.target.value;
-                          return { ...prev, education: arr };
-                        })
-                      }
-                      placeholder="College"
-                    />
-                    <input
-                      type="text"
-                      className="border rounded px-2 py-1 w-32"
-                      value={edu.degree}
+                      value={edu.degree || ""}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
                           const arr = prev.education
@@ -864,69 +965,54 @@ const PortfolioPage = () => {
                       }
                       placeholder="Degree"
                     />
+
                     <input
                       type="text"
-                      className="border rounded px-2 py-1 w-20"
-                      value={edu.grade || ""}
+                      className="border rounded px-2 py-1 w-52"
+                      value={edu.fieldOfStudy}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
                           const arr = prev.education
                             ? [...prev.education]
                             : user.education.map((e) => ({ ...e }));
-                          arr[idx].grade = e.target.value;
+                          arr[idx].fieldOfStudy = e.target.value;
                           return { ...prev, education: arr };
                         })
                       }
-                      placeholder="Grade"
+                      placeholder="Field of Study"
                     />
+
                     <input
-                      type="text"
+                      type="date"
                       className="border rounded px-2 py-1 w-20"
-                      value={edu.startYear || ""}
+                      value={edu.startDate}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
                           const arr = prev.education
                             ? [...prev.education]
                             : user.education.map((e) => ({ ...e }));
-                          arr[idx].startYear = e.target.value;
+                          arr[idx].startDate = e.target.value;
                           return { ...prev, education: arr };
                         })
                       }
                       placeholder="Start year"
                     />
                     <input
-                      type="text"
+                      type="date"
                       className="border rounded px-2 py-1 w-20"
-                      value={edu.endYear || ""}
-                      disabled={edu.current}
+                      value={edu.endDate || ""}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
                           const arr = prev.education
                             ? [...prev.education]
                             : user.education.map((e) => ({ ...e }));
-                          arr[idx].endYear = e.target.value;
+                          arr[idx].endDate = e.target.value;
                           return { ...prev, education: arr };
                         })
                       }
                       placeholder="End year"
                     />
-                    <label className="flex gap-1 items-center text-xs">
-                      <input
-                        type="checkbox"
-                        checked={edu.current || false}
-                        onChange={(e) =>
-                          setEditValues((prev: any) => {
-                            const arr = prev.education
-                              ? [...prev.education]
-                              : user.education.map((e) => ({ ...e }));
-                            arr[idx].current = e.target.checked;
-                            if (e.target.checked) arr[idx].endYear = "";
-                            return { ...prev, education: arr };
-                          })
-                        }
-                      />
-                      Current
-                    </label>
+
                     <button
                       className="bg-red-100 text-red-600 p-1 rounded hover:bg-red-200"
                       onClick={() => handleEducationRemove(idx)}
@@ -937,6 +1023,7 @@ const PortfolioPage = () => {
                   </div>
                 )
               )}
+
               <button
                 className="bg-blue-100 text-blue-700 p-1 px-3 rounded flex items-center gap-1 mt-2"
                 onClick={handleEducationAdd}
@@ -986,7 +1073,7 @@ const PortfolioPage = () => {
           </h2>
           {editSection === "projects" ? (
             <div className="grid sm:grid-cols-2 gap-4">
-              {(editValues.projects || user.projects).map(
+              {(editValues.projects).map(
                 (project: any, idx: number) => (
                   <div
                     key={idx}
@@ -1002,7 +1089,7 @@ const PortfolioPage = () => {
                     <input
                       type="text"
                       className="font-semibold border-b w-full"
-                      value={project.name}
+                      value={project.title}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
                           const arr = prev.projects
@@ -1012,7 +1099,7 @@ const PortfolioPage = () => {
                           return { ...prev, projects: arr };
                         })
                       }
-                      placeholder="Project Name"
+                      placeholder="Project Title"
                     />
                     <textarea
                       className="text-gray-600 border rounded px-2 py-1"
@@ -1031,7 +1118,7 @@ const PortfolioPage = () => {
                     <input
                       type="text"
                       className="border rounded px-2 py-1"
-                      value={project.url}
+                      value={project.projectLiveURL}
                       onChange={(e) =>
                         setEditValues((prev: any) => {
                           const arr = prev.projects
@@ -1043,54 +1130,6 @@ const PortfolioPage = () => {
                       }
                       placeholder="Project URL (optional)"
                     />
-                    <input
-                      type="text"
-                      className="border rounded px-2 py-1"
-                      value={project.thumbnail}
-                      onChange={(e) =>
-                        setEditValues((prev: any) => {
-                          const arr = prev.projects
-                            ? [...prev.projects]
-                            : user.projects.map((p) => ({ ...p }));
-                          arr[idx].thumbnail = e.target.value;
-                          return { ...prev, projects: arr };
-                        })
-                      }
-                      placeholder="Thumbnail Image URL"
-                    />
-                    <div className="flex gap-2 flex-wrap items-center">
-                      <input
-                        type="month"
-                        className="border rounded px-2 py-1"
-                        value={project.start || ""}
-                        onChange={(e) =>
-                          setEditValues((prev: any) => {
-                            const arr = prev.projects
-                              ? [...prev.projects]
-                              : user.projects.map((p) => ({ ...p }));
-                            arr[idx].start = e.target.value;
-                            return { ...prev, projects: arr };
-                          })
-                        }
-                        placeholder="Start Date"
-                      />
-                      <input
-                        type="month"
-                        className="border rounded px-2 py-1"
-                        value={project.end || ""}
-                        disabled={project.current}
-                        onChange={(e) =>
-                          setEditValues((prev: any) => {
-                            const arr = prev.projects
-                              ? [...prev.projects]
-                              : user.projects.map((p) => ({ ...p }));
-                            arr[idx].end = e.target.value;
-                            return { ...prev, projects: arr };
-                          })
-                        }
-                        placeholder="End Date"
-                      />
-                    </div>
                   </div>
                 )
               )}
@@ -1605,7 +1644,6 @@ const PortfolioPage = () => {
           )}
         </section>
 
-      
       </div>
     </div>
   );

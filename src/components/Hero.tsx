@@ -1,6 +1,41 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
+const dummyData = [
+  "AI Engineer - John Doe - San Francisco",
+  "ML Specialist - Jane Smith - New York",
+  "Data Scientist - Alex Johnson - London",
+  "Computer Vision Expert - Priya Sharma - Delhi",
+  "NLP Engineer - Chen Wei - Beijing",
+  "AI Architect - Michael Brown - Berlin",
+  "Data Analyst - Aisha Khan - Dubai",
+  "ML Researcher - Ivan Petrov - Moscow",
+  "AI Developer - Lucas Silva - São Paulo",
+  "Deep Learning Expert - Hiro Tanaka - Tokyo",
+  "AI Consultant - Emma Davis - Toronto",
+  "Robotics Engineer - Arjun Mehta - Mumbai",
+  "Generative AI Expert - Sarah Lee - Seoul",
+];
+
 export default function Hero() {
+  const [search, setSearch] = useState("");
+  const [results, setResults] = useState([]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    if (value.trim() === "") {
+      setResults([]);
+      return;
+    }
+
+    const filtered = dummyData.filter((item) =>
+      item.toLowerCase().includes(value.toLowerCase())
+    );
+    setResults(filtered.slice(0, 20)); // Limit to top 20
+  };
+
   return (
     <section
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center pt-20"
@@ -43,6 +78,8 @@ export default function Hero() {
           <div className="relative">
             <input
               type="text"
+              value={search}
+              onChange={handleSearchChange}
               placeholder="Search by role, skills, or keywords"
               className="w-full px-6 py-4 pr-20 rounded-lg border border-gray-300 text-gray-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -50,6 +87,24 @@ export default function Hero() {
               <i className="ri-search-line"></i>
               Search
             </button>
+
+            {/* Dropdown */}
+            {results.length > 0 && (
+              <ul className="absolute z-10 mt-2 left-0 right-0 bg-white text-gray-800 rounded-lg border max-h-60 overflow-y-auto shadow-lg text-left">
+                {results.map((item, index) => (
+                  <li
+                    key={index}
+                    className="px-6 py-3 hover:bg-gray-100 cursor-pointer border-b"
+                    onClick={() => {
+                      setSearch(item);
+                      setResults([]);
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="flex flex-wrap justify-center gap-8 mt-8 text-gray-600">

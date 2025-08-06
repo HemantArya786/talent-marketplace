@@ -32,7 +32,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/developer/preview/user/:userId" element={<ManualFormPage />} />
         <Route path="/company/portfolio/:clientId" element={<CompanyPortfolioPage  />} />
         <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
-        <Route path="/company/manual-fillup" element={<CompanyFormPage />} />
+        <Route path="/company/preview/:clientId" element={<CompanyFormPage />} />
         <Route path="/inbox" element={<Inbox />} />
         <Route path="/signup-client" element={<ClientSignUp />} />
         <Route path="/signup-user" element={<UserSignUp />} />

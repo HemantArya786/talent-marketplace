@@ -78,7 +78,6 @@ const ManualFormPage = () => {
 
         console.log(data);
 
-
         if (res.ok && data) {
           // Map backend data to form structure
           setFormData({

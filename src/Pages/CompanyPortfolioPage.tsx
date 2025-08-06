@@ -245,7 +245,7 @@ const CompanyPortfolioPage = () => {
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.location.city}
+              // value={editValues.location.city}
               onChange={(e) => handleChange("location", e.target.value)}
               placeholder="Location"
             />
@@ -271,7 +271,7 @@ const CompanyPortfolioPage = () => {
         ) : (
           <div>
             <p><strong>Name:</strong> {company.name}</p>
-            <p><strong>Location:</strong> {company.location.city}</p>
+            {/* <p><strong>Location:</strong> {company.location.city}</p> */}
             <p><strong>Email:</strong> {company.email}</p>
             <p><strong>Phone:</strong> {company.phone}</p>
             <button
@@ -449,7 +449,7 @@ const CompanyPortfolioPage = () => {
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.location.city}
+              // value={editValues.location.city}
               onChange={(e) => handleChange("headOffice", e.target.value)}
               placeholder="Head Office"
             />
@@ -481,7 +481,7 @@ const CompanyPortfolioPage = () => {
         ) : (
           <div>
             <p><strong>Founder:</strong> {company.name}</p>
-            <p><strong>Head Office:</strong> {company.location.city}, {company.location.country}</p>
+            {/* <p><strong>Head Office:</strong> {company.location.city}, {company.location.country}</p> */}
             <p><strong>Company Size:</strong> {company.clientDetails.clientSize}</p>
             <p><strong>Industry:</strong> {company.clientDetails.industry}</p>
             <p>

@@ -29,7 +29,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/developer/resume" element={<ResumeUpload />} />
         <Route path="/developer/list" element={<DevelopersListPage />} />
-        <Route path="/developer/preview" element={<ManualFormPage />} />
+        <Route path="/developer/preview/user/:userId" element={<ManualFormPage />} />
         <Route path="/company/portfolio/:clientId" element={<CompanyPortfolioPage  />} />
         <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
         <Route path="/company/manual-fillup" element={<CompanyFormPage />} />

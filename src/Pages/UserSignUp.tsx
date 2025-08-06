@@ -61,17 +61,18 @@ export default function UserSignUp() {
 
             const responseData = await apiResponse.json()
 
+            const userId = responseData.user.userId
             alert('Signup successful');
             console.log(responseData)
 
-            navigate('/developer/resume')
+            navigate(`/developer/preview/user/${userId}`)
         } catch (error) {
             console.log(error)
         }
-
     }
-
+    
     const handleLinkedinLogin = () => {
+
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: import.meta.env.VITE_LINKEDIN_CLIENT_ID,

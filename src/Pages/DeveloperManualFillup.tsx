@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusCircle, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate, useParams } from "react-router-dom";
 
 // Initial object templates for each array-of-object field
 const initialProject = {
@@ -40,14 +40,11 @@ const initialSocialLink = { socialType: "", URL: "" };
 // Degree options for dropdown
 const degreeOptions = ["SSC", "12th/Intermediate", "Bachelors", "Masters"];
 
-const categoryOptions = ["GTM Expert", "AI Developer"];
+const categoryOptions = ["GTM Expertise", "AI Expertise"];
 
 const ManualFormPage = () => {
   const [userProfile, setUserProfile] = useState("");
   const [coverProfile, setCoverProfile] = useState("");
-
-  // Add a new top-level category field (dropdown)
-  const [selectedCategory, setSelectedCategory] = useState(""); // new
 
   const [formData, setFormData] = useState({
     name: "",
@@ -70,6 +67,75 @@ const ManualFormPage = () => {
     extraCurricularActivities: "",
     category: "",
   });
+
+  const { userId } = useParams()
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+        const data = await res.json();
+
+        console.log(data);
+
+
+        if (res.ok && data) {
+          // Map backend data to form structure
+          setFormData({
+            ...formData,
+            ...data,  // assume backend keys match your formData keys
+            skills: data.skills?.length ? data.skills : [""],
+            projects: data.projects?.length ? data.projects : [{ title: "", description: "", projectLiveURL: "" }],
+            education: data.education?.length ? data.education : [{ instituteName: "", degree: "", fieldOfStudy: "", startDate: "", endDate: "", description: "" }],
+            socials: data.socials?.length ? data.socials : [{ socialType: "", URL: "" }],
+            experience: data.experience?.length ? data.experience : [{ title: "", companyName: "", location: "", startDate: "", endDate: "", currentlyWorking: false, Remote: false, description: "" }],
+            training: data.training?.length ? data.training : [{ title: "", provider: "", location: "", startDate: "", endDate: "", currentlyPursuing: false, description: "" }]
+          });
+
+          setUserProfile(data.userProfileImageURL || "");
+          setCoverProfile(data.backgroundImageURL || "");
+          setSelectedCategory(data.category || "");
+        } else {
+          console.error("Failed to fetch user data");
+        }
+      } catch (err) {
+        console.error("Error fetching user data", err);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+
+
+  // useEffect(() => {
+
+  //   const fetchData = async () => {
+
+  //     const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "content-type": "application/json"
+  //       }
+  //     })
+
+  //     const data = await res.json()
+  //     setUser(data)
+  //     console.log(data);
+
+  //     if (!res.ok) {
+  //       console.log("Data failed to fetch!");
+  //     }
+  //   }
+
+  //   fetchData()
+
+
+  // }, [userId])
+
+  // Add a new top-level category field (dropdown)
+  const [selectedCategory, setSelectedCategory] = useState(""); // new
+
 
   const navigate = useNavigate();
 
@@ -220,7 +286,7 @@ const ManualFormPage = () => {
     setFormData((prev) => ({ ...prev, category: e.target.value }));
   };
 
-  // --- IMAGE UPLOAD (your logic, unchanged) ---
+  //! --- IMAGE UPLOAD ---
   const handleImageChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "profile" | "cover"
@@ -264,7 +330,6 @@ const ManualFormPage = () => {
     }
   };
 
-  // --- SUBMIT ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -272,31 +337,63 @@ const ManualFormPage = () => {
       ...formData,
       userProfileImageURL: userProfile,
       backgroundImageURL: coverProfile,
+      category: selectedCategory,
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/users", {
-        method: "POST",
+      const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+        method: "PUT",  // better to use PUT for updating
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalFormData),
       });
 
       const data = await res.json();
       if (res.ok) {
+        alert("Form updated successfully!");
         navigate(`/developer/portfolio/${data.userId}`);
-        console.log(data.data);
+      } else {
+        throw new Error(data.message || "Failed to update form");
       }
-
-      if (!res.ok) throw new Error("Failed to submit form");
-      alert("Form submitted successfully!")
-
-
-    }
-    catch (err) {
-      alert("Error submitting form");
+    } catch (err) {
+      alert("Error updating form");
       console.error(err);
     }
   };
+
+
+  // --- SUBMIT ---
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   const finalFormData = {
+  //     ...formData,
+  //     userProfileImageURL: userProfile,
+  //     backgroundImageURL: coverProfile,
+  //   };
+
+  //   try {
+  //     const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(finalFormData),
+  //     });
+
+  //     const data = await res.json();
+  //     if (res.ok) {
+  //       navigate(`/developer/portfolio/${data.userId}`);
+  //       console.log(data.data);
+  //     }
+
+  //     if (!res.ok) throw new Error("Failed to submit form");
+  //     alert("Form submitted successfully!")
+
+
+  //   }
+  //   catch (err) {
+  //     alert("Error submitting form");
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -383,7 +480,7 @@ const ManualFormPage = () => {
               Professional Summary
             </label>
             <textarea
-              value={formData.bio}
+              value={formData.bio || ""}
               onChange={handleFieldChange("bio")}
               rows={3}
               placeholder="Brief summary of your background"
@@ -400,7 +497,7 @@ const ManualFormPage = () => {
               <div key={idx} className="flex gap-2 mb-2">
                 <input
                   type="text"
-                  value={item}
+                  value={item || ""}
                   onChange={handleStringListChange("skills", idx)}
                   placeholder="Enter skill"
                   className="flex-1 px-4 py-2 rounded-md bg-muted text-foreground border border-input placeholder:text-muted-foreground"
@@ -434,7 +531,7 @@ const ManualFormPage = () => {
                 <input
                   type="text"
                   placeholder="Project Title"
-                  value={project.title}
+                  value={project.title || ""}
                   onChange={handleProjectChange(idx, "title")}
                   className="w-full px-4 py-2 rounded-md border border-input bg-background text-foreground"
                 />

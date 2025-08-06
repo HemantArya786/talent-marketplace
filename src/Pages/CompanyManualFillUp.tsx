@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const initialClientDetails = () => ({

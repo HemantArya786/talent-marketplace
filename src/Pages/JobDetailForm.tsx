@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -50,11 +51,18 @@ const JobDetailsForm = () => {
     setExperiences(updated);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Job Experiences:", experiences);
-    // Submit to API or handle logic
-    navigate("/next-step"); // Replace with actual route
+    try {
+      const response = await axios.put("/api/user/job-experiences", {
+        experiences,
+      });
+      console.log("Successfully submitted:", response.data);
+      navigate("/next-step"); // navigate to the next page
+    } catch (error) {
+      console.error("Error submitting job experiences:", error);
+      alert("Failed to submit job experiences.");
+    }
   };
 
   const handleSkip = () => {

@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import axios from "axios";
 
 const PersonalDetailsForm = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     about: "",
     phone: "",
-    location: "",
+    country: "",
+    city: "",
     email: "",
   });
 
@@ -17,100 +21,152 @@ const PersonalDetailsForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handlePhoneChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      phone: value,
+    }));
+  };
+
+  // Handle form submission update
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // You can send this data to your API here
+
+    try {
+      const response = await axios.put(
+        "https://your-api.com/api/user",
+        formData
+      );
+      console.log("Form submitted successfully:", response.data);
+    } catch (error) {
+      console.error(
+        "Error submitting form:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Personal Details
-        </h2>
+    <div className="h-screen w-screen flex">
+      {/* Image Section */}
+      <div className="w-1/2 h-full hidden md:block">
+        <img
+          src="https://create.microsoft.com/_next/image?url=https%3A%2F%2Fcdn.create.microsoft.com%2Fcmsassets%2FAIJobSearch-HERO.webp&w=1920&q=75"
+          alt="Personal"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Full Name
-          </label>
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="John Doe"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">About</label>
-          <textarea
-            name="about"
-            value={formData.about}
-            onChange={handleChange}
-            rows="3"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Tell us something about yourself"
-            required
-          ></textarea>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Phone Number
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="+91 1234567890"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Location
-          </label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="City, State"
-            required
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="you@example.com"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+      {/* Form Section */}
+      <div className="w-full md:w-1/2 h-full flex items-center justify-center bg-white">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-xl p-8 w-full max-w-lg"
         >
-          Submit
-        </button>
-      </form>
+          <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+            Personal Details
+          </h2>
+
+          {/* Full Name */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="John Doe"
+              required
+            />
+          </div>
+
+          {/* Bio */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Bio</label>
+            <textarea
+              name="about"
+              value={formData.about}
+              onChange={handleChange}
+              rows="3"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Tell us something about yourself"
+              required
+            ></textarea>
+          </div>
+
+          {/* Phone */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Phone Number
+            </label>
+            <PhoneInput
+              country={"in"}
+              value={formData.phone}
+              onChange={handlePhoneChange}
+              inputClass="!w-full !py-2 !pl-14 !pr-4 !border-gray-300 !rounded-md focus:!ring-2 focus:!ring-blue-500"
+              buttonClass="!bg-white !border-gray-300"
+              inputStyle={{ width: "100%" }}
+            />
+          </div>
+
+          {/* Country */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Country
+            </label>
+            <input
+              type="text"
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="India"
+              required
+            />
+          </div>
+
+          {/* City */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">City</label>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Delhi"
+              required
+            />
+          </div>
+
+          {/* Email */}
+          <div className="mb-6">
+            <label className="block text-gray-700 font-medium mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

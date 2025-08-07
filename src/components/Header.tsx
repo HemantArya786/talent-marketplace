@@ -81,7 +81,9 @@ export default function Header() {
                     alt="Profile"
                     className="w-8 h-8 rounded-full"
                   />
-                  <span className="text-gray-700 font-medium">{user.name}</span>
+                  <span className="text-gray-700 font-medium">
+                    {user?.name}
+                  </span>
                   <i className="ri-arrow-down-s-line"></i>
                 </button>
 

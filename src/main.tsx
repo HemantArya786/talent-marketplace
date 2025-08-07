@@ -18,8 +18,12 @@ import ClientSignUp from "./Pages/ClientSignUp";
 import Header from "./components/Header";
 import PersonalDetailsForm from "./Pages/PersonalDetailsForm";
 import ProjectDetailsForm from "./Pages/ProjectDetailForm";
+<<<<<<< HEAD
 import JobDetailsForm from "./Pages/JobDetailForm";
 import { ContextApi } from './context/ContextApi';
+=======
+import ProfileImageUpload from "./Pages/ProfileImageUplaodPage";
+>>>>>>> 6f8b6b9a6beb445239c2aee60f145a577a4a581c
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -28,6 +32,7 @@ createRoot(document.getElementById("root")!).render(
       <ContextApi>
         <Header />
 
+<<<<<<< HEAD
         <div className="pt-16">
           <Routes>
             <Route path="/" element={<App />} />
@@ -35,6 +40,16 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route path="/signup-client" element={<ClientSignUp />} />
             <Route path="/signup-user" element={<UserSignUp />} />
+=======
+          <Route
+            path="/profile-image-upload"
+            element={<ProfileImageUpload />}
+          />
+
+          <Route path="*" element={<App />} />
+        </Routes>
+      </div>
+>>>>>>> 6f8b6b9a6beb445239c2aee60f145a577a4a581c
 
             <Route path="/inbox" element={<Inbox />} />
 

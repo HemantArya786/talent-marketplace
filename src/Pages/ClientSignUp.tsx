@@ -29,7 +29,6 @@ export default function ClientSignUp() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Form Data:", formData);
-        // Add validation or backend API call here
     };
 
     const handleGoogleLogin = async () => {
@@ -56,7 +55,7 @@ export default function ClientSignUp() {
             })
 
             if (!apiResponse.ok) {
-                
+
                 const errorData = await apiResponse.json();
                 console.error('Backend error:', errorData);
                 throw new Error(`Failed to sign in: ${errorData.error || apiResponse.statusText}`);
@@ -65,7 +64,7 @@ export default function ClientSignUp() {
             const responseData = await apiResponse.json()
 
             console.log(responseData);
-            navigate('/company/manual-fillup')
+            navigate(`/company/preview/${responseData.client.clientId}`)
         }
         catch (error) {
             console.log(error)

@@ -5,7 +5,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Replace this mock user with your real auth logic
+
   const user = null; // <-- user is null if not logged in
   const isLoggedIn = !!user;
 

@@ -66,11 +66,12 @@ export default function UserSignUp() {
             console.log(responseData)
 
             navigate(`/developer/preview/user/${userId}`)
+            
         } catch (error) {
             console.log(error)
         }
     }
-    
+
     const handleLinkedinLogin = () => {
 
         const params = new URLSearchParams({

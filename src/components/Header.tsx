@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/ContextApi";
+
 
 export default function Header() {
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-
-  const user = null; // <-- user is null if not logged in
-  const isLoggedIn = !!user;
+  const { user, userLoginned, setUser, setUserLoginned } = useAuth();
 
   const navigate = useNavigate()
 
@@ -16,15 +17,14 @@ export default function Header() {
     try {
       await fetch('http:localhost:3000/auth/api/logout', { method: 'POST', credentials: 'include' });
 
-      navigate(`/role-selection`)
+      setUser(null);
+      setUserLoginned(false);
+      navigate(`/`)
     }
     catch (error) {
       console.error("Logout failed", error);
     }
   }
-
-
-
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
@@ -74,7 +74,7 @@ export default function Header() {
 
           {/* Desktop buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            {!isLoggedIn ? (
+            {!userLoginned ? (
               <>
                 <Link to={"/login"}>
                   <button className="text-gray-700 hover:text-blue-600 font-medium">

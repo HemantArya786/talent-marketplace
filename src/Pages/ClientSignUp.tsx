@@ -3,8 +3,12 @@ import Image from "../../public/image.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, provider } from '@/lib/firebase'
 import { signInWithPopup } from 'firebase/auth'
+import { useAuth } from "@/context/ContextApi";
 
 export default function ClientSignUp() {
+
+    const { user, userLoginned, setUser, setUserLoginned } = useAuth();
+
 
     const [formData, setFormData] = useState({
         firstName: "",
@@ -62,6 +66,9 @@ export default function ClientSignUp() {
             }
 
             const responseData = await apiResponse.json()
+
+            setUser(responseData)
+            setUserLoginned(true)
 
             console.log(responseData);
             navigate(`/company/preview/${responseData.client.clientId}`)

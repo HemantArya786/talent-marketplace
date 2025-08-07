@@ -1,19 +1,18 @@
-
-//@ts-nocheck
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext()
+const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-
-    const [user, setUser] = useState(null)
-    const [userLoginned, setUserLoginned] = useState(false)
+export const ContextApi = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [userLoginned, setUserLoginned] = useState(false);
 
     useEffect(() => {
-
-        fetch('http://localhost:3000/api/users', { credentials: "include" })
-            .then((res) => res.ok ? res.json() : null)
+        // ✅ Always check the current logged-in user
+        fetch("http://localhost:3000/api/users/check", {
+            method:"GET",
+            credentials: "include",
+        })
+            .then((res) => (res.ok ? res.json() : null))
             .then((data) => {
                 if (data?.user) {
                     setUser(data.user);

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function Header() {
@@ -8,6 +8,23 @@ export default function Header() {
 
   const user = null; // <-- user is null if not logged in
   const isLoggedIn = !!user;
+
+  const navigate = useNavigate()
+
+  async function handleLogout() {
+
+    try {
+      await fetch('http:localhost:3000/auth/api/logout', { method: 'POST', credentials: 'include' });
+
+      navigate(`/role-selection`)
+    }
+    catch (error) {
+      console.error("Logout failed", error);
+    }
+  }
+
+
+
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
@@ -96,9 +113,7 @@ export default function Header() {
                       View Portfolio
                     </Link>
                     <button
-                      onClick={() => {
-                        // TODO: Logout logic here
-                      }}
+                      onClick={handleLogout}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
                     >
                       Log out

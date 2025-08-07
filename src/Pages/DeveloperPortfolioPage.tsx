@@ -169,6 +169,7 @@ const PortfolioPage = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+          withCredentials: true,
           method: "GET",
           headers: { "Content-Type": "application/json" },
         })

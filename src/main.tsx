@@ -19,6 +19,7 @@ import Header from "./components/Header";
 import PersonalDetailsForm from "./Pages/PersonalDetailsForm";
 import JobDetailsForm from "./Pages/JobDetailForm";
 import ProjectDetailsForm from "./Pages/ProjectDetailForm";
+import ProfileImageUpload from "./Pages/ProfileImageUplaodPage";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -51,6 +52,11 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/apply" element={<PersonalDetailsForm />} />
           <Route path="/job-form" element={<JobDetailsForm />} />
           <Route path="/project-form" element={<ProjectDetailsForm />} />
+
+          <Route
+            path="/profile-image-upload"
+            element={<ProfileImageUpload />}
+          />
 
           <Route path="*" element={<App />} />
         </Routes>

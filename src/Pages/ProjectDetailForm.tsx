@@ -1,22 +1,37 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProjectDetailsForm = () => {
+
   const navigate = useNavigate();
+  const { userId } = useParams()
 
   const [projects, setProjects] = useState([
     {
+      _id:"",
       title: "",
       description: "",
       startDate: "",
       endDate: "",
-      isOngoing: false,
-      liveUrl: "",
+      workingCurrently: false,
+      url: "",
       thumbnail: null,
-      images: [],
     },
   ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+      const res = await fetch(`http://localhost:3000/api/users/${userId}`)
+      const data = await res.json()
+
+      setProjects(data.projects)
+      console.log(data.projects);
+
+    }
+    fetchData()
+  },[userId])
 
   const handleChange = (index, e) => {
     const { name, value, type, checked, files } = e.target;
@@ -42,14 +57,14 @@ const ProjectDetailsForm = () => {
     setProjects([
       ...projects,
       {
+        _id:"",
         title: "",
         description: "",
         startDate: "",
         endDate: "",
-        isOngoing: false,
-        liveUrl: "",
+        workingCurrently: false,
+        url: "",
         thumbnail: null,
-        images: [],
       },
     ]);
   };
@@ -59,52 +74,37 @@ const ProjectDetailsForm = () => {
     setProjects(newProjects);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const formData = new FormData();
+  try {
+    const requests = projects.map((project) => {
+      const proj = { ...project };
 
-      // Append each project separately
-      projects.forEach((project, index) => {
-        formData.append(`projects[${index}][title]`, project.title);
-        formData.append(`projects[${index}][description]`, project.description);
-        formData.append(`projects[${index}][startDate]`, project.startDate);
-        formData.append(`projects[${index}][endDate]`, project.endDate);
-        formData.append(`projects[${index}][isOngoing]`, project.isOngoing);
-        formData.append(`projects[${index}][liveUrl]`, project.liveUrl);
+      if (!proj._id) delete proj._id;
 
-        if (project.thumbnail) {
-          formData.append(`projects[${index}][thumbnail]`, project.thumbnail);
-        }
+      if (proj._id) {
+        return axios.put(
+          `http://localhost:3000/api/users/${userId}/projects/${proj._id}`,
+          proj
+        );
+      } else {
 
-        if (project.images && project.images.length > 0) {
-          project.images.forEach((img, imgIndex) => {
-            formData.append(`projects[${index}][images][${imgIndex}]`, img);
-          });
-        }
-      });
+        return axios.post(
+          `http://localhost:3000/api/users/${userId}/projects`,
+          proj
+        );
+      }
+    });
 
-      // Send PUT request
-      const response = await axios.put(
-        "https://your-backend-api.com/api/projects/update", // 🔁 Replace with your real API endpoint
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      console.log("Projects updated:", response.data);
-      alert("Projects submitted successfully!");
-      // Optionally navigate to next page
-      // navigate("/next-page");
-    } catch (error) {
-      console.error("Error submitting projects:", error);
-      alert("Something went wrong. Please try again.");
-    }
-  };
+    await Promise.all(requests);
+    alert("Projects saved successfully!");
+    navigate(`/developer/next-step/${userId}`); // update route as needed
+  } catch (error) {
+    console.error("Error submitting projects:", error);
+    alert("Failed to submit projects.");
+  }
+};
 
   const handleSkip = () => {
     navigate("/next-page"); // Replace with your actual route
@@ -148,8 +148,8 @@ const ProjectDetailsForm = () => {
                   <label className="block text-gray-700 mb-1">Live URL</label>
                   <input
                     type="url"
-                    name="liveUrl"
-                    value={project.liveUrl}
+                    name="url"
+                    value={project.url}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-3 py-2 border rounded-md"
                     placeholder="https://yourproject.com"
@@ -159,9 +159,9 @@ const ProjectDetailsForm = () => {
                 <div>
                   <label className="block text-gray-700 mb-1">Start Date</label>
                   <input
-                    type="date"
+                    type="month"
                     name="startDate"
-                    value={project.startDate}
+                    value={project.startDate.slice(0,7)|| ""}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-3 py-2 border rounded-md"
                     required
@@ -173,20 +173,20 @@ const ProjectDetailsForm = () => {
                     End Date
                     <input
                       type="checkbox"
-                      name="isOngoing"
-                      checked={project.isOngoing}
+                      name="workingCurrently"
+                      checked={project?.workingCurrently || false}
                       onChange={(e) => handleChange(index, e)}
                       className="ml-2"
                     />
                     <span className="text-sm text-gray-500">
-                      Currently Ongoing
+                      Currently Working
                     </span>
                   </label>
-                  {!project.isOngoing && (
+                  {!project.workingCurrently && (
                     <input
-                      type="date"
+                      type="month"
                       name="endDate"
-                      value={project.endDate}
+                      value={project.startDate.slice(0,7)|| ""}
                       onChange={(e) => handleChange(index, e)}
                       className="w-full px-3 py-2 border rounded-md"
                     />
@@ -222,19 +222,6 @@ const ProjectDetailsForm = () => {
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-1">
-                  Additional Images
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  name="images"
-                  multiple
-                  onChange={(e) => handleChange(index, e)}
-                  className="w-full"
-                />
-              </div>
 
               {projects.length > 1 && (
                 <button
@@ -257,6 +244,7 @@ const ProjectDetailsForm = () => {
           </button>
           <div className="flex flex-col md:flex-row gap-4">
             <button
+            onClick={handleSubmit}
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
             >

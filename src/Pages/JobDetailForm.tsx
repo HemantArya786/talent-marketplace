@@ -1,24 +1,57 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const JobDetailsForm = () => {
   const navigate = useNavigate();
+  const { userId } = useParams()
 
-  const [experiences, setExperiences] = useState([
-    {
-      title: "",
-      company: "",
-      location: "",
-      startDate: "",
-      endDate: "",
-      currentlyWorking: false,
-      workType: "",
-      description: "",
-    },
-  ]);
+  type Experience = {
+    _id: string,
+    title: string;
+    companyName: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    currentlyWorking: boolean;
+    workType: string;
+    description: string;
+  };
+
+  const [experiences, setExperiences] = useState<Experience[]>([{
+    _id: "",
+    title: "",
+    companyName: "",
+    location: "",
+    startDate: "",
+    endDate: "",
+    currentlyWorking: false,
+    workType: "",
+    description: "",
+  }]);
+
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+        const data = await res.json();
+
+        if (Array.isArray(data.experience) && data.experience.length > 0) {
+          setExperiences(data.experience);
+        }
+      } catch (error) {
+        console.error("Failed to fetch experiences:", error);
+      }
+    };
+
+    fetchData();
+  }, [userId]);
+
 
   const handleChange = (index, e) => {
+
     const { name, value, type, checked } = e.target;
     const newExperiences = [...experiences];
     newExperiences[index][name] = type === "checkbox" ? checked : value;
@@ -34,8 +67,9 @@ const JobDetailsForm = () => {
     setExperiences([
       ...experiences,
       {
+        _id: "",
         title: "",
-        company: "",
+        companyName: "",
         location: "",
         startDate: "",
         endDate: "",
@@ -53,20 +87,40 @@ const JobDetailsForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.put("/api/user/job-experiences", {
-        experiences,
+      const requests = experiences.map((experience) => {
+        const exp = { ...experience };
+
+        if (!exp._id) delete exp._id;
+
+        //!If updating the existing experience will be required in future while parsing the data
+        if (exp._id) {
+          return axios.put(
+            `http://localhost:3000/api/users/${userId}/experience/${exp._id}`,
+            exp
+          );
+        }
+        else {
+          return axios.post(
+            `http://localhost:3000/api/users/${userId}/experience`,
+            exp
+          );
+        }
       });
-      console.log("Successfully submitted:", response.data);
-      navigate("/next-step"); // navigate to the next page
-    } catch (error) {
+
+      await Promise.all(requests);
+      alert("Projects added successfully!");
+      navigate(`/developer/project-details/${userId}`);
+    }
+    catch (error) {
       console.error("Error submitting job experiences:", error);
       alert("Failed to submit job experiences.");
     }
   };
 
   const handleSkip = () => {
-    navigate("/next-step"); // Replace with actual route
+    navigate(`/developer/project-details/${userId}`);
   };
 
   return (
@@ -117,8 +171,8 @@ const JobDetailsForm = () => {
                   <label className="block text-gray-700 mb-1">Company</label>
                   <input
                     type="text"
-                    name="company"
-                    value={exp.company}
+                    name="companyName"
+                    value={exp.companyName || ""}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-3 py-2 border rounded-md"
                     placeholder="e.g. Google"
@@ -157,7 +211,7 @@ const JobDetailsForm = () => {
                   <input
                     type="month"
                     name="startDate"
-                    value={exp.startDate}
+                    value={exp.startDate ? exp.startDate.slice(0, 7) : ""}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-3 py-2 border rounded-md"
                     required
@@ -168,7 +222,7 @@ const JobDetailsForm = () => {
                   <input
                     type="month"
                     name="endDate"
-                    value={exp.endDate}
+                    value={exp.endDate ? exp.endDate.slice(0, 7) : ""}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-3 py-2 border rounded-md"
                     disabled={exp.currentlyWorking}
@@ -219,7 +273,7 @@ const JobDetailsForm = () => {
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
             >
-              Submit
+              Next
             </button>
             <button
               type="button"

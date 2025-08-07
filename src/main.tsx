@@ -18,12 +18,9 @@ import ClientSignUp from "./Pages/ClientSignUp";
 import Header from "./components/Header";
 import PersonalDetailsForm from "./Pages/PersonalDetailsForm";
 import ProjectDetailsForm from "./Pages/ProjectDetailForm";
-<<<<<<< HEAD
 import JobDetailsForm from "./Pages/JobDetailForm";
 import { ContextApi } from './context/ContextApi';
-=======
 import ProfileImageUpload from "./Pages/ProfileImageUplaodPage";
->>>>>>> 6f8b6b9a6beb445239c2aee60f145a577a4a581c
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -32,47 +29,42 @@ createRoot(document.getElementById("root")!).render(
       <ContextApi>
         <Header />
 
-<<<<<<< HEAD
         <div className="pt-16">
+
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/login" element={<LoginPage />} />
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route path="/signup-client" element={<ClientSignUp />} />
             <Route path="/signup-user" element={<UserSignUp />} />
-=======
-          <Route
-            path="/profile-image-upload"
-            element={<ProfileImageUpload />}
-          />
 
-          <Route path="*" element={<App />} />
-        </Routes>
-      </div>
->>>>>>> 6f8b6b9a6beb445239c2aee60f145a577a4a581c
+            <Route path="/login" element={<LoginPage />} />
 
+            <Route path="*" element={<App />} />
             <Route path="/inbox" element={<Inbox />} />
 
             <Route path="/developer/resume" element={<ResumeUpload />} />
-            <Route path="/developer/list" element={<DevelopersListPage />} />
 
-            <Route path="/developer/personal-details" element={<PersonalDetailsForm />} />
-            <Route path="/developer/project-details" element={<ProjectDetailsForm />} />
-            <Route path="/developer/experience-details" element={<JobDetailsForm />} />
+            <Route path="/developer/personal-details/:userId" element={<PersonalDetailsForm />} />
+            <Route path="/developer/experience-details/:userId" element={<JobDetailsForm />} />
+            <Route path="/developer/project-details/:userId" element={<ProjectDetailsForm />} />
+            <Route path="developer/profile-image/:userId" element={<ProfileImageUpload />} />
             <Route path="/developer/preview/:userId" element={<ManualFormPage />} />
             <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
-
 
             <Route path="/company/portfolio/:clientId" element={<CompanyPortfolioPage />} />
             <Route path="/company/preview/:clientId" element={<CompanyFormPage />} />
 
-            <Route path="*" element={<App />} />
+            <Route path="/developer/list" element={<DevelopersListPage />} />
+
           </Routes>
         </div>
 
         <Footer />
 
-      </ContextApi>
-    </BrowserRouter>
-  </StrictMode>
+      </ContextApi >
+    </BrowserRouter >
+  </StrictMode >
+
+
+
 );

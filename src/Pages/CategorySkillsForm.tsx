@@ -1,56 +1,180 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 
-const categoryOptions = ["AI Developer", "GTM Expert"];
+const categoryOptions = [
+  "Generative AI",
+  "Machine Learning Engineering",
+  "Natural Language Processing (NLP)",
+  "Computer Vision",
+  "AI Infrastructure & MLOps",
+  "Applied AI",
+  "AI Research",
+  "AI Product & Strategy",
+  "Ethical AI & Governance",
+  "Speech & Audio AI",
+  "Data Engineering for AI",
+  "Robotics & Autonomous Systems",
+  "Creative AI"
+];
 
 const skillsData = {
-  "AI Developer": [
-    "Machine Learning",
-    "Deep Learning",
-    "Python",
+  "Generative AI": [
+    "Prompt Engineering",
+    "LLM Engineering",
+    "Fine-Tuning",
+    "RAG Systems",
+    "Conversational AI",
+    "Diffusion Models",
+    "GenAI Research",
+    "Text Generation",
+    "Image Generation",
+    "Audio/Video Generation"
+  ],
+  "Machine Learning Engineering": [
+    "Model Training",
+    "Supervised Learning",
+    "Unsupervised Learning",
+    "Model Evaluation",
+    "Scikit-learn",
     "TensorFlow",
     "PyTorch",
-    "Data Analysis",
-    "Natural Language Processing",
-    "Computer Vision",
-    "MLOps",
-    "Data Engineering",
+    "Model Deployment"
+  ],
+  "Natural Language Processing (NLP)": [
+    "Text Classification",
+    "Named Entity Recognition",
+    "Tokenization",
+    "Text Summarization",
+    "Translation",
+    "Sentiment Analysis",
+    "Hugging Face Transformers"
+  ],
+  "Computer Vision": [
+    "Image Classification",
+    "Object Detection",
+    "Semantic Segmentation",
+    "Facial Recognition",
+    "OCR",
+    "OpenCV",
+    "YOLO",
+    "Transformers for Vision"
+  ],
+  "AI Infrastructure & MLOps": [
+    "MLflow",
+    "Kubeflow",
+    "Docker",
+    "Kubernetes",
+    "CI/CD for ML",
+    "Model Monitoring",
+    "Data Versioning",
+    "AWS SageMaker",
+    "Vertex AI",
+    "Azure ML"
+  ],
+  "Applied AI": [
+    "AI for Healthcare",
+    "AI in Finance",
+    "Recommendation Systems",
+    "Chatbots",
+    "Voice Assistants",
+    "Search Ranking",
+    "Fraud Detection"
+  ],
+  "AI Research": [
+    "Model Architectures",
+    "Transfer Learning",
     "Reinforcement Learning",
-    "AI Ethics",
+    "Self-Supervised Learning",
+    "Research Paper Implementation",
+    "ArXiv Reading",
+    "Benchmarking"
   ],
-  "GTM Expert": [
-    "Market Research",
-    "Product Positioning",
-    "Lead Generation",
-    "Sales Funnel Optimization",
-    "SEO",
-    "Content Marketing",
-    "Paid Ads",
-    "Customer Journey Mapping",
-    "Partnership Strategy",
-    "Brand Messaging",
-    "Analytics",
-    "Email Marketing",
+  "AI Product & Strategy": [
+    "AI Product Management",
+    "AI Roadmapping",
+    "A/B Testing",
+    "UX for AI",
+    "AI Product Metrics",
+    "Cross-functional Collaboration"
   ],
+  "Ethical AI & Governance": [
+    "Bias Detection",
+    "Fairness in AI",
+    "Explainable AI (XAI)",
+    "Privacy-preserving AI",
+    "AI Regulations",
+    "Responsible AI",
+    "Model Transparency"
+  ],
+  "Speech & Audio AI": [
+    "Speech Recognition",
+    "Voice Cloning",
+    "Text-to-Speech",
+    "Audio Classification",
+    "Audio Generation",
+    "ASR",
+    "Whisper by OpenAI"
+  ],
+  "Data Engineering for AI": [
+    "Data Cleaning",
+    "Data Pipelines",
+    "ETL for ML",
+    "Data Lakes",
+    "Apache Spark",
+    "Feature Engineering",
+    "BigQuery"
+  ],
+  "Robotics & Autonomous Systems": [
+    "SLAM",
+    "Path Planning",
+    "Reinforcement Learning",
+    "Computer Vision for Robotics",
+    "ROS (Robot Operating System)"
+  ],
+  "Creative AI": [
+    "AI Music Composition",
+    "AI Art Generation",
+    "Style Transfer",
+    "Video Generation",
+    "Creative Prompting",
+    "Generative Design"
+  ]
 };
 
 export default function CategorySkillsForm() {
-  const [category, setCategory] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [skills, setSkills] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [accomplishments, setAccomplishments] = useState("");
   const [extracurricular, setExtracurricular] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
   const [warning, setWarning] = useState("");
 
-  const dropdownRef = useRef(null);
+  // Get all skills from selected categories
+  const combinedSkills = selectedCategories.flatMap(
+    (cat) => skillsData[cat] || []
+  );
+  const uniqueSkills = [...new Set(combinedSkills)];
+  const filteredSkills = uniqueSkills.filter((skill) =>
+    skill.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const filteredSkills =
-    category && skillsData[category]
-      ? skillsData[category].filter((skill) =>
-          skill.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      : [];
+  const handleCategorySelect = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+      setSkills((prev) =>
+        prev.filter((s) => !(skillsData[category] || []).includes(s))
+      );
+    } else {
+      if (selectedCategories.length < 3) {
+        setSelectedCategories([...selectedCategories, category]);
+      } else {
+        setWarning("You can select a maximum of 3 categories.");
+        setTimeout(() => setWarning(""), 2000);
+      }
+    }
+  };
 
   const handleSkillSelect = (skill) => {
     if (skills.includes(skill)) {
@@ -72,20 +196,14 @@ export default function CategorySkillsForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const payload = {
-      category,
+      categories: selectedCategories,
       skills,
       accomplishments,
       extracurricular,
     };
-
     try {
-      const res = await axios.put(
-        "https://your-api-endpoint.com/update-profile", // replace with your API
-        payload
-      );
-      console.log("Data saved:", res.data);
+      await axios.put("https://your-api-endpoint.com/update-profile", payload);
       alert("Form submitted successfully!");
     } catch (err) {
       console.error("Error submitting form:", err);
@@ -94,121 +212,140 @@ export default function CategorySkillsForm() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Left Side - Image */}
+    <div className="flex min-h-screen ">
+      {/* Left Side */}
       <div className="w-1/2 hidden md:block">
         <img
-          src="https://images.pexels.com/photos/7376/startup-photos.jpg?_gl=1*vs7dzp*_ga*MjExOTU2ODc1OS4xNzU0NjQwMjEy*_ga_8JE65Q40S6*czE3NTQ2NDI5MDQkbzIkZzEkdDE3NTQ2NDI5NTkkajUkbDAkaDA."
+          src="https://images.pexels.com/photos/7376/startup-photos.jpg"
           alt="Form Illustration"
           className="w-full h-full object-cover"
         />
       </div>
 
-      {/* Right Side - Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6">
+      {/* Right Side */}
+      <div className="w-full md:w-1/2 flex items-center  justify-center p-6">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-lg bg-white p-6 rounded-xl shadow-lg space-y-5"
+          className="w-full  bg-white space-y-5"
         >
           <h2 className="text-3xl font-bold mb-4">Fill Your Details</h2>
 
-          {/* Category */}
-          <div>
-            <label className="block mb-1 font-medium">Category</label>
-            <select
-              value={category}
-              onChange={(e) => {
-                setCategory(e.target.value);
-                setSkills([]);
-              }}
-              className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 outline-none"
+       {/* Category Multi-Select */}
+<div
+  className="relative"
+  onMouseLeave={() => setIsCategoryDropdownOpen(false)}
+>
+  <label className="block mb-1 font-medium">Categories</label>
+  <div
+    className="w-full border border-gray-300 rounded-md p-2 bg-white cursor-pointer flex justify-between items-center"
+    onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+  >
+    {selectedCategories.length > 0
+      ? `${selectedCategories.length} category(ies) selected`
+      : "Select categories"}
+    <span className="text-gray-400">▼</span>
+  </div>
+
+  {isCategoryDropdownOpen && (
+    <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+      {categoryOptions.map((cat, idx) => (
+        <label
+          key={idx}
+          className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
+        >
+          <input
+            type="checkbox"
+            checked={selectedCategories.includes(cat)}
+            onChange={() => handleCategorySelect(cat)}
+          />
+          {cat}
+        </label>
+      ))}
+    </div>
+  )}
+
+  {/* Fixed space for warning */}
+  <div className="min-h-[20px]">
+    {warning && <p className="text-red-500 text-sm">{warning}</p>}
+  </div>
+</div>
+
+{/* Skills Multi-Select */}
+{selectedCategories.length > 0 && (
+  <div
+    className="relative"
+    onMouseLeave={() => setIsSkillDropdownOpen(false)}
+  >
+    <label className="block mb-1 font-medium">Skills</label>
+    <div
+      className="w-full border border-gray-300 rounded-md p-2 bg-white cursor-pointer flex justify-between items-center"
+      onClick={() => setIsSkillDropdownOpen(!isSkillDropdownOpen)}
+    >
+      {skills.length > 0
+        ? `${skills.length} skill(s) selected`
+        : "Select skills"}
+      <span className="text-gray-400">▼</span>
+    </div>
+
+    {isSkillDropdownOpen && (
+      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-64 overflow-y-auto">
+        <input
+          type="text"
+          placeholder="Search skills..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full border-b border-gray-200 p-2 text-sm outline-none"
+        />
+        {filteredSkills.length > 0 ? (
+          filteredSkills.map((skill, idx) => (
+            <label
+              key={idx}
+              className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
             >
-              <option value="">Select a category</option>
-              {categoryOptions.map((cat, idx) => (
-                <option key={idx} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
+              <input
+                type="checkbox"
+                checked={skills.includes(skill)}
+                onChange={() => handleSkillSelect(skill)}
+              />
+              {skill}
+            </label>
+          ))
+        ) : (
+          <div className="px-3 py-2 text-gray-400">No skills found</div>
+        )}
+      </div>
+    )}
 
-          {/* Skills Dropdown */}
-          {category && (
-            <div
-              className="relative"
-              ref={dropdownRef}
-              onMouseLeave={() => setIsDropdownOpen(false)}
-            >
-              <label className="block mb-1 font-medium">Skills</label>
-              <div
-                className="w-full border border-gray-300 rounded-md p-2 bg-white cursor-pointer flex justify-between items-center"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                {skills.length > 0
-                  ? `${skills.length} skill(s) selected`
-                  : "Select skills"}
-                <span className="text-gray-400">▼</span>
-              </div>
+    {/* Selected Skills */}
+    <div className="flex flex-wrap gap-2 mt-2">
+      {skills.map((s, idx) => (
+        <span
+          key={idx}
+          className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs flex items-center gap-1"
+        >
+          {s}
+          <button
+            type="button"
+            className="text-blue-500 hover:text-red-500"
+            onClick={() => handleRemoveSkill(s)}
+          >
+            ×
+          </button>
+        </span>
+      ))}
+    </div>
 
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg animate-fadeIn max-h-56 overflow-y-auto">
-                  <input
-                    type="text"
-                    placeholder="Search skills..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full border-b border-gray-200 p-2 text-sm outline-none"
-                  />
-                  {filteredSkills.length > 0 ? (
-                    filteredSkills.map((skill, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => handleSkillSelect(skill)}
-                        className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                          skills.includes(skill) ? "bg-blue-100" : ""
-                        }`}
-                      >
-                        {skill}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="px-3 py-2 text-gray-400">
-                      No skills found
-                    </div>
-                  )}
-                </div>
-              )}
+    {/* Fixed space for warnings */}
+    <div className="min-h-[20px]">
+      {warning && <p className="text-red-500 text-sm">{warning}</p>}
+    </div>
 
-              {/* Selected Skills Tags */}
-              <div className="flex flex-wrap gap-2 mt-2">
-                {skills.map((s, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs flex items-center gap-1"
-                  >
-                    {s}
-                    <button
-                      type="button"
-                      className="text-blue-500 hover:text-red-500"
-                      onClick={() => handleRemoveSkill(s)}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
+    <p className="mt-1 text-sm text-gray-600">
+      Selected Skills: {skills.length} / 10
+    </p>
+  </div>
+)}
 
-              {/* Warning Message */}
-              {warning && (
-                <p className="text-red-500 text-sm mt-1">{warning}</p>
-              )}
-
-              <p className="mt-1 text-sm text-gray-600">
-                Selected Skills: {skills.length} / 10
-              </p>
-            </div>
-          )}
 
           {/* Accomplishments */}
           <div>
@@ -221,11 +358,9 @@ export default function CategorySkillsForm() {
             ></textarea>
           </div>
 
-          {/* Extracurricular Activities */}
+          {/* Extracurricular */}
           <div>
-            <label className="block mb-1 font-medium">
-              Extracurricular Activities
-            </label>
+            <label className="block mb-1 font-medium">Extracurricular Activities</label>
             <textarea
               value={extracurricular}
               onChange={(e) => setExtracurricular(e.target.value)}
@@ -236,16 +371,15 @@ export default function CategorySkillsForm() {
 
           {/* Buttons */}
           <div className="flex space-y-2 flex-col justify-between pt-4">
-           
             <button
               type="submit"
-              className="px-4  py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
             >
               Submit
             </button>
-             <button
+            <button
               type="button"
-              className="px-4    py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
               onClick={() => console.log("Skipped")}
             >
               Skip this page

@@ -8,6 +8,7 @@ const CompanyProfileImageUpload = () => {
   const [coverImage, setCoverImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
+  const [socialLinks, setSocialLinks] = useState([{ title: "", url: "" }]);
   const navigate = useNavigate();
 
   const handleProfileChange = (e) => {
@@ -26,17 +27,33 @@ const CompanyProfileImageUpload = () => {
     }
   };
 
+  const handleSocialChange = (index, field, value) => {
+    const updatedLinks = [...socialLinks];
+    updatedLinks[index][field] = value;
+    setSocialLinks(updatedLinks);
+  };
+
+  const addSocialLink = () => {
+    setSocialLinks([...socialLinks, { title: "", url: "" }]);
+  };
+
+  const removeSocialLink = (index) => {
+    const updatedLinks = socialLinks.filter((_, i) => i !== index);
+    setSocialLinks(updatedLinks);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!profileImage && !coverImage) {
-      alert("Please select at least one image before submitting.");
+    if (!profileImage && !coverImage && socialLinks.every(l => !l.url)) {
+      alert("Please select at least one image or social link before submitting.");
       return;
     }
 
     const formData = new FormData();
     if (profileImage) formData.append("profileImage", profileImage);
     if (coverImage) formData.append("coverImage", coverImage);
+    formData.append("socialLinks", JSON.stringify(socialLinks));
 
     try {
       const response = await axios.put(
@@ -50,11 +67,11 @@ const CompanyProfileImageUpload = () => {
       );
 
       console.log("Upload success:", response.data);
-      alert("Images uploaded successfully!");
+      alert("Data uploaded successfully!");
       navigate("/next-page");
     } catch (error) {
-      console.error("Error uploading images:", error);
-      alert("Image upload failed. Please try again.");
+      console.error("Error uploading data:", error);
+      alert("Upload failed. Please try again.");
     }
   };
 
@@ -66,9 +83,9 @@ const CompanyProfileImageUpload = () => {
     <div className="min-h-screen flex flex-col">
       <div className="flex flex-1">
         {/* Left Upload Panel */}
-        <div className="w-full md:w-1/2 p-10 flex flex-col justify-center bg-white ">
+        <div className="w-full md:w-1/2 p-10 flex flex-col justify-center bg-white">
           <h2 className="text-3xl font-bold mb-6 text-gray-800">
-            Upload Your Images
+            Upload Company Images
           </h2>
 
           {/* Cover Preview */}
@@ -123,7 +140,51 @@ const CompanyProfileImageUpload = () => {
             </div>
           </div>
 
-          <div className="flex w-1/2 mt-20 flex-col md:flex-row gap-4">
+          {/* Social Media Links */}
+          <div className="mt-20">
+            <h3 className="text-lg font-semibold mb-4">Social Media Links</h3>
+            {socialLinks.map((link, index) => (
+              <div key={index} className="flex gap-2 mb-3">
+                <input
+                  type="text"
+                  placeholder="Title (e.g., LinkedIn)"
+                  value={link.title}
+                  onChange={(e) =>
+                    handleSocialChange(index, "title", e.target.value)
+                  }
+                  className="w-1/3 border border-gray-300 rounded-md px-3 py-2"
+                />
+                <input
+                  type="url"
+                  placeholder="URL (e.g., https://linkedin.com/...)"
+                  value={link.url}
+                  onChange={(e) =>
+                    handleSocialChange(index, "url", e.target.value)
+                  }
+                  className="w-2/3 border border-gray-300 rounded-md px-3 py-2"
+                />
+                {socialLinks.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeSocialLink(index)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 rounded-md"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addSocialLink}
+              className="text-blue-600 hover:underline"
+            >
+              + Add More
+            </button>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex w-1/2 mt-8 flex-col md:flex-row gap-4">
             <button
               type="submit"
               onClick={handleSubmit}

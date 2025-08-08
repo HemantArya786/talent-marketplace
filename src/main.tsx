@@ -25,6 +25,7 @@ import EducationForm from "./Pages/EducationFormPage";
 import CategorySkillsForm from "./Pages/CategorySkillsForm";
 import CompanyDetailsPage from "./Pages/CompanyDetailPage";
 import CompanyProfileImageUpload from "./Pages/CompanyProfileUploadPage";
+import CompanyPersonDetailsForm from "./Pages/CompanyPersonDetailsForm";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -35,20 +36,16 @@ createRoot(document.getElementById("root")!).render(
 
         <div className="pt-16">
 
-          <Routes>
+          <Routes>  
             <Route path="/" element={<App />} />
             <Route path="/role-selection" element={<RoleSelection />} />
             <Route path="/signup-client" element={<ClientSignUp />} />
             <Route path="/signup-user" element={<UserSignUp />} />
-
             <Route path="/login" element={<LoginPage />} />
-
             <Route path="*" element={<App />} />
             <Route path="/inbox" element={<Inbox />} />
-
             <Route path="/developer/resume" element={<ResumeUpload />} />
-
-            <Route path="/developer/personal-details/:userId" element={<PersonalDetailsForm />} />
+            <Route path="/developer/personal-details/userId" element={<PersonalDetailsForm />} />
             <Route path="/developer/experience-details/:userId" element={<JobDetailsForm />} />
             <Route path="/developer/project-details/:userId" element={<ProjectDetailsForm />} />
             <Route path="developer/profile-image/:userId" element={<ProfileImageUpload />} />
@@ -58,9 +55,10 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/developer/category" element={<CategorySkillsForm />} /> 
 
             <Route path="/company/portfolio/:clientId" element={<CompanyPortfolioPage />} />
-            <Route path="/company/preview/:userId" element={<CompanyFormPage />} />
+            <Route path="/company/preview" element={<CompanyFormPage />} />
 
             <Route path="/company/company-details" element={<CompanyDetailsPage />} />
+            <Route path="/company/person-details" element={<CompanyPersonDetailsForm />} />
             <Route path="company/profile-image" element={<CompanyProfileImageUpload />} />
             <Route path="/developer/list" element={<DevelopersListPage />} />
             

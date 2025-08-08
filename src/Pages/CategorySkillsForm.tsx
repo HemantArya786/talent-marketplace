@@ -1,37 +1,159 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 
-const categoryOptions = ["AI Developer", "GTM Expert"];
+const categoryOptions = [
+  "Generative AI",
+  "Machine Learning Engineering",
+  "Natural Language Processing (NLP)",
+  "Computer Vision",
+  "AI Infrastructure & MLOps",
+  "Applied AI",
+  "AI Research",
+  "AI Product & Strategy",
+  "Ethical AI & Governance",
+  "Speech & Audio AI",
+  "Data Engineering for AI",
+  "Robotics & Autonomous Systems",
+  "Creative AI"];
 
 const skillsData = {
-  "AI Developer": [
-    "Machine Learning",
-    "Deep Learning",
-    "Python",
+
+  "Generative AI": [
+    "Prompt Engineering",
+    "LLM Engineering",
+    "Fine-Tuning",
+    "RAG Systems",
+    "Conversational AI",
+    "Diffusion Models",
+    "GenAI Research",
+    "Text Generation",
+    "Image Generation",
+    "Audio/Video Generation"
+  ],
+  "Machine Learning Engineering": [
+    "Model Training",
+    "Supervised Learning",
+    "Unsupervised Learning",
+    "Model Evaluation",
+    "Scikit-learn",
     "TensorFlow",
     "PyTorch",
-    "Data Analysis",
-    "Natural Language Processing",
-    "Computer Vision",
-    "MLOps",
-    "Data Engineering",
+    "Model Deployment"
+  ],
+  "Natural Language Processing (NLP)": [
+    "Text Classification",
+    "Named Entity Recognition",
+    "Tokenization",
+    "Text Summarization",
+    "Translation",
+    "Sentiment Analysis",
+    "Hugging Face Transformers"
+  ],
+  "Computer Vision": [
+    "Image Classification",
+    "Object Detection",
+    "Semantic Segmentation",
+    "Facial Recognition",
+    "OCR",
+    "OpenCV",
+    "YOLO",
+    "Transformers for Vision"
+  ],
+  "AI Infrastructure & MLOps": [
+    "MLflow",
+    "Kubeflow",
+    "Docker",
+    "Kubernetes",
+    "CI/CD for ML",
+    "Model Monitoring",
+    "Data Versioning",
+    "AWS SageMaker",
+    "Vertex AI",
+    "Azure ML"
+  ],
+  "Applied AI": [
+    "AI for Healthcare",
+    "AI in Finance",
+    "Recommendation Systems",
+    "Chatbots",
+    "Voice Assistants",
+    "Search Ranking",
+    "Fraud Detection"
+  ],
+  "AI Research": [
+    "Model Architectures",
+    "Transfer Learning",
     "Reinforcement Learning",
-    "AI Ethics",
+    "Self-Supervised Learning",
+    "Research Paper Implementation",
+    "ArXiv Reading",
+    "Benchmarking"
   ],
-  "GTM Expert": [
-    "Market Research",
-    "Product Positioning",
-    "Lead Generation",
-    "Sales Funnel Optimization",
-    "SEO",
-    "Content Marketing",
-    "Paid Ads",
-    "Customer Journey Mapping",
-    "Partnership Strategy",
-    "Brand Messaging",
-    "Analytics",
-    "Email Marketing",
+  "AI Product & Strategy": [
+    "AI Product Management",
+    "AI Roadmapping",
+    "A/B Testing",
+    "UX for AI",
+    "AI Product Metrics",
+    "Cross-functional Collaboration"
   ],
+  "Ethical AI & Governance": [
+    "Bias Detection",
+    "Fairness in AI",
+    "Explainable AI (XAI)",
+    "Privacy-preserving AI",
+    "AI Regulations",
+    "Responsible AI",
+    "Model Transparency"
+  ],
+  "Speech & Audio AI": [
+    "Speech Recognition",
+    "Voice Cloning",
+    "Text-to-Speech",
+    "Audio Classification",
+    "Audio Generation",
+    "ASR",
+    "Whisper by OpenAI"
+  ],
+  "Data Engineering for AI": [
+    "Data Cleaning",
+    "Data Pipelines",
+    "ETL for ML",
+    "Data Lakes",
+    "Apache Spark",
+    "Feature Engineering",
+    "BigQuery"
+  ],
+  "Robotics & Autonomous Systems": [
+    "SLAM",
+    "Path Planning",
+    "Reinforcement Learning",
+    "Computer Vision for Robotics",
+    "ROS (Robot Operating System)"
+  ],
+  "Creative AI": [
+    "AI Music Composition",
+    "AI Art Generation",
+    "Style Transfer",
+    "Video Generation",
+    "Creative Prompting",
+    "Generative Design"
+  ]
+
+  // "GTM Expert": [
+  //   "Market Research",
+  //   "Product Positioning",
+  //   "Lead Generation",
+  //   "Sales Funnel Optimization",
+  //   "SEO",
+  //   "Content Marketing",
+  //   "Paid Ads",
+  //   "Customer Journey Mapping",
+  //   "Partnership Strategy",
+  //   "Brand Messaging",
+  //   "Analytics",
+  //   "Email Marketing",
+  // ],
 };
 
 export default function CategorySkillsForm() {
@@ -48,8 +170,8 @@ export default function CategorySkillsForm() {
   const filteredSkills =
     category && skillsData[category]
       ? skillsData[category].filter((skill) =>
-          skill.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        skill.toLowerCase().includes(searchTerm.toLowerCase())
+      )
       : [];
 
   const handleSkillSelect = (skill) => {
@@ -165,9 +287,8 @@ export default function CategorySkillsForm() {
                       <div
                         key={idx}
                         onClick={() => handleSkillSelect(skill)}
-                        className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                          skills.includes(skill) ? "bg-blue-100" : ""
-                        }`}
+                        className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${skills.includes(skill) ? "bg-blue-100" : ""
+                          }`}
                       >
                         {skill}
                       </div>
@@ -236,14 +357,14 @@ export default function CategorySkillsForm() {
 
           {/* Buttons */}
           <div className="flex space-y-2 flex-col justify-between pt-4">
-           
+
             <button
               type="submit"
               className="px-4  py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
             >
               Submit
             </button>
-             <button
+            <button
               type="button"
               className="px-4    py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
               onClick={() => console.log("Skipped")}

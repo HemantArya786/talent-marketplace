@@ -9,7 +9,7 @@ const ProjectDetailsForm = () => {
 
   const [projects, setProjects] = useState([
     {
-      _id:"",
+      _id: "",
       title: "",
       description: "",
       startDate: "",
@@ -31,7 +31,7 @@ const ProjectDetailsForm = () => {
 
     }
     fetchData()
-  },[userId])
+  }, [userId])
 
   const handleChange = (index, e) => {
     const { name, value, type, checked, files } = e.target;
@@ -57,7 +57,7 @@ const ProjectDetailsForm = () => {
     setProjects([
       ...projects,
       {
-        _id:"",
+        _id: "",
         title: "",
         description: "",
         startDate: "",
@@ -74,37 +74,37 @@ const ProjectDetailsForm = () => {
     setProjects(newProjects);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const requests = projects.map((project) => {
-      const proj = { ...project };
+    try {
+      const requests = projects.map((project) => {
+        const proj = { ...project };
 
-      if (!proj._id) delete proj._id;
+        if (!proj._id) delete proj._id;
 
-      if (proj._id) {
-        return axios.put(
-          `http://localhost:3000/api/users/${userId}/projects/${proj._id}`,
-          proj
-        );
-      } else {
+        if (proj._id) {
+          return axios.put(
+            `http://localhost:3000/api/users/${userId}/projects/${proj._id}`,
+            proj
+          );
+        } else {
 
-        return axios.post(
-          `http://localhost:3000/api/users/${userId}/projects`,
-          proj
-        );
-      }
-    });
+          return axios.post(
+            `http://localhost:3000/api/users/${userId}/projects`,
+            proj
+          );
+        }
+      });
 
-    await Promise.all(requests);
-    alert("Projects saved successfully!");
-    navigate(`/developer/next-step/${userId}`); // update route as needed
-  } catch (error) {
-    console.error("Error submitting projects:", error);
-    alert("Failed to submit projects.");
-  }
-};
+      await Promise.all(requests);
+      alert("Projects saved successfully!");
+      navigate(`/developer/next-step/${userId}`); // update route as needed
+    } catch (error) {
+      console.error("Error submitting projects:", error);
+      alert("Failed to submit projects.");
+    }
+  };
 
   const handleSkip = () => {
     navigate("/next-page"); // Replace with your actual route
@@ -161,7 +161,7 @@ const handleSubmit = async (e) => {
                   <input
                     type="month"
                     name="startDate"
-                    value={project.startDate.slice(0,7)|| ""}
+                    value={project.startDate.slice(0, 7) || ""}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-3 py-2 border rounded-md"
                     required
@@ -186,7 +186,7 @@ const handleSubmit = async (e) => {
                     <input
                       type="month"
                       name="endDate"
-                      value={project.startDate.slice(0,7)|| ""}
+                      value={project.startDate.slice(0, 7) || ""}
                       onChange={(e) => handleChange(index, e)}
                       className="w-full px-3 py-2 border rounded-md"
                     />
@@ -244,7 +244,7 @@ const handleSubmit = async (e) => {
           </button>
           <div className="flex flex-col md:flex-row gap-4">
             <button
-            onClick={handleSubmit}
+              onClick={handleSubmit}
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
             >

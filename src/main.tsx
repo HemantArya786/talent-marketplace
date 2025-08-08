@@ -54,17 +54,16 @@ createRoot(document.getElementById("root")!).render(
             <Route path="developer/profile-image/:userId" element={<ProfileImageUpload />} />
             <Route path="/developer/preview/:userId" element={<ManualFormPage />} />
             <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
-            {/*  2 new pages were added for developer */}
-            <Route path="/developer/education" element={<EducationForm />} />
+            <Route path="/developer/education/:userId" element={<EducationForm />} />
             <Route path="/developer/category" element={<CategorySkillsForm />} /> 
 
             <Route path="/company/portfolio/:clientId" element={<CompanyPortfolioPage />} />
             <Route path="/company/preview/:userId" element={<CompanyFormPage />} />
 
-            {/*  2 new pages were added for company */}
             <Route path="/company/company-details" element={<CompanyDetailsPage />} />
             <Route path="company/profile-image" element={<CompanyProfileImageUpload />} />
             <Route path="/developer/list" element={<DevelopersListPage />} />
+            
 
           </Routes>
         </div>

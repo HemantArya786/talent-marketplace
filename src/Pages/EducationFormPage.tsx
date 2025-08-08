@@ -1,25 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const degreeOptions = ['SSC', '12th/Intermediate', 'Bachelors', 'Masters', 'Others'];
 
 const EducationForm = () => {
   const [educationList, setEducationList] = useState([
     {
-      schoolName: '',
+      _id:'',
+      instituteName: '',
+      degree: '',
       fieldOfStudy: '',
       startDate: '',
       endDate: '',
-      location: '',
       description: '',
-      degree: '',
     },
   ]);
 
   const scrollContainerRef = useRef(null);
   const lastEducationRef = useRef(null);
   const navigate = useNavigate();
+  const { userId } = useParams()
 
   const handleChange = (index, e) => {
     const { name, value } = e.target;
@@ -32,13 +33,13 @@ const EducationForm = () => {
     setEducationList((prevList) => [
       ...prevList,
       {
-        schoolName: '',
+        _id: '',
+        instituteName: '',
+        degree: '',
         fieldOfStudy: '',
         startDate: '',
         endDate: '',
-        location: '',
         description: '',
-        degree: '',
       },
     ]);
   };
@@ -48,29 +49,50 @@ const EducationForm = () => {
     setEducationList(updatedList);
   };
 
-  // Scroll to bottom when new block is added
+
   useEffect(() => {
     if (lastEducationRef.current) {
       lastEducationRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [educationList.length]);
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.put(
-        'http://localhost:5000/api/education', // <-- Change to your backend endpoint
-        { education: educationList }
-      );
-      console.log('Education data updated:', response.data);
-      navigate('/next-page'); // <-- Change to the page you want to go after submit
-    } catch (error) {
-      console.error('Error updating education data:', error);
+      const requests = educationList.map((edu) => {
+        const education = { ...edu };
+
+        if (!education._id) delete education._id;
+
+        if (education._id) {
+          return axios.put(
+            `http://localhost:3000/api/users/${userId}/educations/${education._id}`,
+            education
+          );
+
+        }
+        else {
+          return axios.post(
+            `http://localhost:3000/api/users/${userId}/educations`,
+            education
+          );
+        }
+      });
+
+      await Promise.all(requests);
+      alert("Education details saved successfully!");
+      navigate(`/developer/preview/${userId}`); 
+    } 
+    catch (error) {
+      console.error("Error submitting education details:", error);
+      alert("Failed to submit education details.");
     }
   };
 
   const handleSkip = () => {
-    navigate('/next-page'); // <-- Change this route to skip target
+    navigate('/next-page');
   };
 
   return (
@@ -122,20 +144,25 @@ const EducationForm = () => {
                 required
               />
 
+              <select
+                name="degree"
+                value={education.degree}
+                onChange={(e) => handleChange(index, e)}
+                className="w-full border px-4 py-2 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Degree</option>
+                {degreeOptions.map((deg) => (
+                  <option key={deg} value={deg}>
+                    {deg}
+                  </option>
+                ))}
+              </select>
+
               <input
                 type="text"
                 name="fieldOfStudy"
                 placeholder="Field of Study"
                 value={education.fieldOfStudy}
-                onChange={(e) => handleChange(index, e)}
-                className="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-
-              <input
-                type="text"
-                name="location"
-                placeholder="Location"
-                value={education.location}
                 onChange={(e) => handleChange(index, e)}
                 className="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -156,20 +183,6 @@ const EducationForm = () => {
                   className="w-1/2 border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-
-              <select
-                name="degree"
-                value={education.degree}
-                onChange={(e) => handleChange(index, e)}
-                className="w-full border px-4 py-2 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select Degree</option>
-                {degreeOptions.map((deg) => (
-                  <option key={deg} value={deg}>
-                    {deg}
-                  </option>
-                ))}
-              </select>
 
               <textarea
                 name="description"
@@ -193,18 +206,21 @@ const EducationForm = () => {
           {/* Submit & Skip */}
           <div className="flex space-x-4 w-full pt-3">
             <button
-              type="submit"
-              className="px-6 py-2 w-1/2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
-              Submit
-            </button>
-            <button
               type="button"
               onClick={handleSkip}
               className="px-6 py-2 w-1/2 bg-gray-500 text-white rounded hover:bg-gray-600"
             >
               Skip
             </button>
+
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="px-6 py-2 w-1/2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Submit
+            </button>
+
           </div>
         </form>
       </div>

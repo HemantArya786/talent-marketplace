@@ -23,6 +23,8 @@ import { ContextApi } from './context/ContextApi';
 import ProfileImageUpload from "./Pages/ProfileImageUplaodPage";
 import EducationForm from "./Pages/EducationFormPage";
 import CategorySkillsForm from "./Pages/CategorySkillsForm";
+import CompanyDetailsPage from "./Pages/CompanyDetailPage";
+import CompanyProfileImageUpload from "./Pages/CompanyProfileUploadPage";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -50,15 +52,18 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/developer/experience-details/:userId" element={<JobDetailsForm />} />
             <Route path="/developer/project-details/:userId" element={<ProjectDetailsForm />} />
             <Route path="developer/profile-image/:userId" element={<ProfileImageUpload />} />
-            <Route path="/developer/preview" element={<ManualFormPage />} />
+            <Route path="/developer/preview/:userId" element={<ManualFormPage />} />
             <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
+            {/*  2 new pages were added for developer */}
             <Route path="/developer/education" element={<EducationForm />} />
-                        <Route path="/developer/category" element={<CategorySkillsForm />} />  
-
+            <Route path="/developer/category" element={<CategorySkillsForm />} /> 
 
             <Route path="/company/portfolio/:clientId" element={<CompanyPortfolioPage />} />
-            <Route path="/company/preview/:clientId" element={<CompanyFormPage />} />
+            <Route path="/company/preview/:userId" element={<CompanyFormPage />} />
 
+            {/*  2 new pages were added for company */}
+            <Route path="/company/company-details" element={<CompanyDetailsPage />} />
+            <Route path="company/profile-image" element={<CompanyProfileImageUpload />} />
             <Route path="/developer/list" element={<DevelopersListPage />} />
 
           </Routes>

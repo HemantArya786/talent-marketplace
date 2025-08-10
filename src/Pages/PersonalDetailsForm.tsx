@@ -81,7 +81,6 @@ const PersonalDetailsForm = () => {
   const navigate = useNavigate()
 
   //!On submit user details will be updated!
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

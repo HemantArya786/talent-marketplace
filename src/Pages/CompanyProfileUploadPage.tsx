@@ -92,6 +92,7 @@ const CompanyProfileImageUpload = () => {
   // Submission logic
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const payload = {
       clientProfileImageURL: profileImageUrl,
       clientBackgroundImageURL: coverImageUrl,
@@ -99,7 +100,7 @@ const CompanyProfileImageUpload = () => {
     };
 
     try {
-      const res = await axios.put(`http://localhost:3000/api/clients/${clientId}`, payload);
+      const res = await axios.post(`http://localhost:3000/api/clients/${clientId}/client-details`, payload);
       alert("Company profile updated!");
       console.log(res.data.details);
     } catch (err) {

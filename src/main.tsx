@@ -72,24 +72,21 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/developer/project-details/:userId" element={<ProjectDetailsForm />} />
             <Route path="/developer/profile-image/:userId" element={<ProfileImageUpload />} />
             <Route path="/developer/preview/:userId" element={<ManualFormPage />} />
-            <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
+            {/* <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} /> */}
             <Route path="/developer/education/:userId" element={<EducationForm />} />
             <Route path="/developer/category/:userId" element={<CategorySkillsForm />} /> 
 
             {/* //new add change */}
-            <Route path="/developer/portfolio" element={<DeveloperLayout><PortfolioPage/></DeveloperLayout> } />
+            <Route path="/developer/portfolio/:userId" element={<DeveloperLayout><PortfolioPage/></DeveloperLayout> } />
             <Route path="/inbox" element={<DeveloperLayout><Inbox/></DeveloperLayout>}/>
-            {/*  2 new pages were added for developer */}
-            <Route path="/developer/education" element={<EducationForm />} />
-            <Route path="/developer/category" element={<CategorySkillsForm />} /> 
 
-            <Route path="/company/portfolio" element={<CompanyLayout> <CompanyPortfolioPage /></CompanyLayout>} />
-            <Route path="/company/preview" element={<CompanyFormPage />} />
+            <Route path="/company/portfolio/:clientId" element={<CompanyLayout> <CompanyPortfolioPage /></CompanyLayout>} />
+            <Route path="/company/preview/:clientId" element={<CompanyFormPage />} />
 
             {/*  2 new pages were added for company */}
-            <Route path="/company/company-details" element={<CompanyDetailsPage />} />
-            <Route path="/company/person-details" element={<CompanyPersonDetailsForm />} />
-            <Route path="company/profile-image" element={<CompanyProfileImageUpload />} />
+            <Route path="/company/company-details/:clientId" element={<CompanyDetailsPage />} />
+            <Route path="/company/personal-details/:clientId" element={<CompanyPersonDetailsForm />} />
+            <Route path="company/profile-image/:clientId" element={<CompanyProfileImageUpload />} />
             
             <Route path="/test" element={<Test />} />
 

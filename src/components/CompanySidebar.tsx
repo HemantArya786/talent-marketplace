@@ -5,7 +5,7 @@ export default function CompanySidebar() {
 
   const menuItems = [
     { name: "dashboard", path: "/company/dashboard" },
-    { name: "view profile", path: "/company/portfolio" },
+    { name: "view profile", path: "/company/portfolio/:clientId" },
     { name: "find developers", path: "/developer/list" },
     { name: "post a job", path: "/company/post-job" },
     { name: "list of applicants", path: "/company/applicants" },

@@ -8,25 +8,26 @@ const CompanyPersonDetailsForm = () => {
     fullName: "",
     designation: "",
     email: "",
-    officialEmail: "",
   });
 
+  const {clientId} = useParams()
+
   useEffect(() => {
+
     const fetchData = async () => {
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+      const res = await fetch(`http://localhost:3000/api/clients/${clientId}`);
       const data = await res.json();
 
       const normalizedData = {
         fullName: data.fullName || data.name || "",
         designation: data.designation || "",
         email: data.email || "",
-        officialEmail: data.officialEmail || "",
       };
       setFormData(normalizedData);
     };
 
     fetchData();
-  }, [userId]);
+  }, [clientId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,15 +40,19 @@ const CompanyPersonDetailsForm = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+    
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/users/${userId}`,
+        `http://localhost:3000/api/clients/${clientId}`,
         formData
       );
+
       console.log("Form submitted successfully:", response.data);
       alert("Personal details updated successfully!");
-      navigate(`/developer/experience-details/${userId}`);
+      navigate(`/company/client-details/${userId}`);
+
     } catch (error) {
       console.error(
         "Error submitting form:",
@@ -109,17 +114,17 @@ const CompanyPersonDetailsForm = () => {
             />
           </div>
 
-          
+
 
           {/* Official Email */}
           <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-2">
-              Official Email
+              Personal Email
             </label>
             <input
               type="email"
-              name="officialEmail"
-              value={formData.officialEmail || ""}
+              name="email"
+              value={formData.email || ""}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="official@example.com"
@@ -130,6 +135,7 @@ const CompanyPersonDetailsForm = () => {
           {/* Submit */}
           <button
             type="submit"
+            onClick={handleSubmit}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
           >
             Next

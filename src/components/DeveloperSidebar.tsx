@@ -4,8 +4,8 @@ export default function DeveloperSidebar() {
   const location = useLocation();
 
   const menuItems = [
-    { name: "dashboard", path: "/" },
-    { name: "view profile", path: "/developer/portfolio" },
+    // { name: "dashboard", path: "/" },
+    { name: "view profile", path: "/developer/portfolio/:userId" },
     // { name: "find Company", path: "/developer/list" },
     // { name: "post a job", path: "/company/post-job" },
     // { name: "list of applicants", path: "/applicants" },

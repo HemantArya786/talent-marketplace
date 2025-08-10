@@ -11,9 +11,11 @@ const CompanyDetailsPage = () => {
     companyName: "",
     phone: "",
     email: "",
-    address: "",
-    registeredIn: "",
-    sinceYears: "",
+    location: {
+      country: "",
+      city: ""
+    },
+    establishedYear: "",
     employees: "",
     about: "",
     website: "",
@@ -23,6 +25,13 @@ const CompanyDetailsPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleChangeEmployees =
+    (field: string) =>
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+      };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,20 +83,24 @@ const CompanyDetailsPage = () => {
           </div>
 
           {/* Phone */}
-          <div>
-            <label className="block font-medium mb-1">Landline / Phone</label>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              Landline | Phone Number
+            </label>
             <PhoneInput
               country={"in"}
-              value={formData.phone}
+              name="phone"
+              value={formData.phone || ""}
               onChange={(phone) => setFormData((prev) => ({ ...prev, phone }))}
-              inputClass="!w-full !border !p-2 !rounded"
-              placeholder="e.g. +91 9876543210"
+              inputClass="!w-full !py-2 !pl-14 !pr-4 !border-gray-300 !rounded-md focus:!ring-2 focus:!ring-blue-500"
+              buttonClass="!bg-white !border-gray-300"
+              inputStyle={{ width: "100%" }}
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block font-medium mb-1">Email</label>
+            <label className="block font-medium mb-1">Business Email</label>
             <input
               type="email"
               name="email"
@@ -101,12 +114,12 @@ const CompanyDetailsPage = () => {
 
           {/* Address */}
           <div>
-            <label className="block font-medium mb-1">Address</label>
+            <label className="block font-medium mb-1">City</label>
             <input
               type="text"
               name="address"
               placeholder="e.g. 123, Business Park, New Delhi"
-              value={formData.address}
+              value={formData.location.city}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
@@ -114,12 +127,12 @@ const CompanyDetailsPage = () => {
 
           {/* Registered In */}
           <div>
-            <label className="block font-medium mb-1">Registered In</label>
+            <label className="block font-medium mb-1">Country</label>
             <input
               type="text"
               name="registeredIn"
               placeholder="e.g. India"
-              value={formData.registeredIn}
+              value={formData.location.country}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
@@ -132,7 +145,7 @@ const CompanyDetailsPage = () => {
               type="number"
               name="sinceYears"
               placeholder="e.g. 10"
-              value={formData.sinceYears}
+              value={formData.establishedYear}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
@@ -140,15 +153,24 @@ const CompanyDetailsPage = () => {
 
           {/* Number of Employees */}
           <div>
-            <label className="block font-medium mb-1">Number of Employees</label>
-            <input
-              type="number"
-              name="employees"
-              placeholder="e.g. 250"
+            <label htmlFor="clientSize" className="block mb-2 font-medium text-gray-700">
+              Client Size
+            </label>
+            <select
+              id="clientSize"
+              name="clientSize"
+              className="border rounded px-3 py-2 w-full"
               value={formData.employees}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
+              onChange={handleChangeEmployees("clientSize")}
+            >
+              <option value="">Select client size</option>
+              <option value="1-9">1-9</option>
+              <option value="10-25">10-25</option>
+              <option value="26-50">26-50</option>
+              <option value="50+">50+</option>
+              <option value="100+">100+</option>
+            </select>
+
           </div>
 
           {/* About */}

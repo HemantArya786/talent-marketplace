@@ -7,8 +7,13 @@ import { useNavigate } from "react-router-dom";
 const CompanyDetailsPage = () => {
   const navigate = useNavigate();
 
+  // Generate years dropdown (from current year to 1900)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i);
+
   const [formData, setFormData] = useState({
     companyName: "",
+    clientType: "",
     phone: "",
     email: "",
     location: {
@@ -36,7 +41,6 @@ const CompanyDetailsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       alert("Please enter a valid email address.");
@@ -57,7 +61,7 @@ const CompanyDetailsPage = () => {
       {/* Left Section - Image */}
       <div className="w-1/2 bg-gray-200 flex items-center justify-center">
         <img
-          src="https://images.pexels.com/photos/3183165/pexels-photo-3183165.jpeg?_gl=1*1rg7887*_ga*MjExOTU2ODc1OS4xNzU0NjQwMjEy*_ga_8JE65Q40S6*czE3NTQ2NDI5MDQkbzIkZzEkdDE3NTQ2NDQxMzckajU0JGwwJGgw"
+          src="https://images.pexels.com/photos/3183165/pexels-photo-3183165.jpeg"
           alt="Company"
           className="max-w-full max-h-full object-cover"
         />
@@ -80,6 +84,23 @@ const CompanyDetailsPage = () => {
               className="w-full border p-2 rounded"
               required
             />
+          </div>
+
+          {/* Client Type */}
+          <div>
+            <label className="block font-medium mb-1">Client Type</label>
+            <select
+              name="clientType"
+              value={formData.clientType}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+              required
+            >
+              <option value="">Select client type</option>
+              <option value="company">Company</option>
+              <option value="agency">Agency</option>
+              <option value="individual">Individual</option>
+            </select>
           </div>
 
           {/* Phone */}
@@ -125,12 +146,12 @@ const CompanyDetailsPage = () => {
             />
           </div>
 
-          {/* Registered In */}
+          {/* Country */}
           <div>
             <label className="block font-medium mb-1">Country</label>
             <input
               type="text"
-              name="registeredIn"
+              name="country"
               placeholder="e.g. India"
               value={formData.location.country}
               onChange={handleChange}
@@ -138,39 +159,53 @@ const CompanyDetailsPage = () => {
             />
           </div>
 
-          {/* Since How Many Years */}
+          {/* City */}
           <div>
-            <label className="block font-medium mb-1">Since (Years)</label>
+            <label className="block font-medium mb-1">City</label>
             <input
-              type="number"
-              name="sinceYears"
-              placeholder="e.g. 10"
-              value={formData.establishedYear}
+              type="text"
+              name="city"
+              placeholder="e.g. New Delhi"
+              value={formData.location.city}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
           </div>
 
+          {/* Established Year */}
+          <div>
+            <label className="block font-medium mb-1">Established Year</label>
+            <select
+              name="establishedYear"
+              value={formData.establishedYear}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            >
+              <option value="">Select year</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Number of Employees */}
           <div>
-            <label htmlFor="clientSize" className="block mb-2 font-medium text-gray-700">
-              Client Size
-            </label>
+            <label className="block font-medium mb-1">Number of Employees</label>
             <select
-              id="clientSize"
-              name="clientSize"
-              className="border rounded px-3 py-2 w-full"
+              name="employees"
               value={formData.employees}
-              onChange={handleChangeEmployees("clientSize")}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
             >
-              <option value="">Select client size</option>
+              <option value="">Select range</option>
               <option value="1-9">1-9</option>
               <option value="10-25">10-25</option>
               <option value="26-50">26-50</option>
               <option value="50+">50+</option>
               <option value="100+">100+</option>
             </select>
-
           </div>
 
           {/* About */}

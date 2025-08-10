@@ -9,7 +9,7 @@ import { useAuth } from "@/context/ContextApi";
 
 export default function UserSignUp() {
 
-    const { user, userLoginned, setUser, setUserLoginned } = useAuth();
+    const { setUser, setUserLoginned } = useAuth();
 
 
     const [formData, setFormData] = useState({
@@ -64,16 +64,21 @@ export default function UserSignUp() {
             if (!apiResponse.ok) {
                 throw new Error('Failed to login.')
             }
+            if (apiResponse.status === 302) {
 
+                alert('User already exists, redirecting to login...');
+                navigate('/login');
+            }
             const responseData = await apiResponse.json()
 
             const userId = responseData.user.userId
             setUser(responseData)
             setUserLoginned(true)
+
             alert('Signup successful');
             console.log(responseData)
 
-            // navigate(`/developer/preview/user/${userId}`)
+            navigate(`/developer/personal-details/${userId}`)
 
         } catch (error) {
             console.log(error)

@@ -341,7 +341,7 @@ const ManualFormPage = () => {
 
     try {
       const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
-        method: "PUT",  // better to use PUT for updating
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalFormData),
       });
@@ -359,40 +359,6 @@ const ManualFormPage = () => {
     }
   };
 
-
-  // --- SUBMIT ---
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   const finalFormData = {
-  //     ...formData,
-  //     userProfileImageURL: userProfile,
-  //     backgroundImageURL: coverProfile,
-  //   };
-
-  //   try {
-  //     const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(finalFormData),
-  //     });
-
-  //     const data = await res.json();
-  //     if (res.ok) {
-  //       navigate(`/developer/portfolio/${data.userId}`);
-  //       console.log(data.data);
-  //     }
-
-  //     if (!res.ok) throw new Error("Failed to submit form");
-  //     alert("Form submitted successfully!")
-
-
-  //   }
-  //   catch (err) {
-  //     alert("Error submitting form");
-  //     console.error(err);
-  //   }
-  // };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

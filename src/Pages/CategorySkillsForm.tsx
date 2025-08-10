@@ -1,7 +1,6 @@
-//@ts-nocheck
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 
 const categoryOptions = [
   "Generative AI",
@@ -16,10 +15,10 @@ const categoryOptions = [
   "Speech & Audio AI",
   "Data Engineering for AI",
   "Robotics & Autonomous Systems",
-  "Creative AI"];
+  "Creative AI"
+];
 
 const skillsData = {
-
   "Generative AI": [
     "Prompt Engineering",
     "LLM Engineering",
@@ -144,6 +143,7 @@ const skillsData = {
 };
 
 export default function CategorySkillsForm() {
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [skills, setSkills] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -153,7 +153,6 @@ export default function CategorySkillsForm() {
   const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
   const [warning, setWarning] = useState("");
 
-  // Get all skills from selected categories
   const combinedSkills = selectedCategories.flatMap(
     (cat) => skillsData[cat] || []
   );
@@ -172,6 +171,7 @@ export default function CategorySkillsForm() {
       if (selectedCategories.length < 3) {
         setSelectedCategories([...selectedCategories, category]);
       } else {
+        setIsCategoryDropdownOpen(false)
         setWarning("You can select a maximum of 3 categories.");
         setTimeout(() => setWarning(""), 2000);
       }
@@ -186,6 +186,7 @@ export default function CategorySkillsForm() {
         setSkills([...skills, skill]);
         setWarning("");
       } else {
+        setIsSkillDropdownOpen(false)
         setWarning("You can select a maximum of 10 skills.");
         setTimeout(() => setWarning(""), 2000);
       }
@@ -196,6 +197,33 @@ export default function CategorySkillsForm() {
     setSkills(skills.filter((s) => s !== skill));
   };
 
+  const navigate = useNavigate()
+  const { userId } = useParams()
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+
+      const res = await fetch(`http://localhost:3000/api/users/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "content-type": "application/json"
+          }
+        }
+      )
+
+      const data = await res.json()
+      console.log(data);
+
+      setSelectedCategories(data.categories)
+      setAccomplishments(data.accomplishments)
+      setExtracurricular(data.extraCurricular)
+      setSkills(data.skills)
+    }
+    fetchData()
+  }, [userId])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
@@ -204,9 +232,14 @@ export default function CategorySkillsForm() {
       accomplishments,
       extracurricular,
     };
+
     try {
-      await axios.put("https://your-api-endpoint.com/update-profile", payload);
-      alert("Form submitted successfully!");
+      await axios.put(`http://localhost:3000/api/users/${userId}`, payload);
+
+      alert("Categories and skills added successfully!");
+      console.log(payload);
+      navigate(`/developer/experience-details/${userId}`)
+
     } catch (err) {
       console.error("Error submitting form:", err);
       alert("Something went wrong. Please try again.");
@@ -232,114 +265,66 @@ export default function CategorySkillsForm() {
         >
           <h2 className="text-3xl font-bold mb-4">Fill Your Details</h2>
 
-       {/* Category Multi-Select */}
-<div
-  className="relative"
-  onMouseLeave={() => setIsCategoryDropdownOpen(false)}
->
-  <label className="block mb-1 font-medium">Categories</label>
-  <div
-    className="w-full border border-gray-300 rounded-md p-2 bg-white cursor-pointer flex justify-between items-center"
-    onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-  >
-    {selectedCategories.length > 0
-      ? `${selectedCategories.length} category(ies) selected`
-      : "Select categories"}
-    <span className="text-gray-400">▼</span>
-  </div>
-
-  {isCategoryDropdownOpen && (
-    <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
-      {categoryOptions.map((cat, idx) => (
-        <label
-          key={idx}
-          className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
-        >
-          <input
-            type="checkbox"
-            checked={selectedCategories.includes(cat)}
-            onChange={() => handleCategorySelect(cat)}
-          />
-          {cat}
-        </label>
-      ))}
-    </div>
-  )}
-
-  {/* Fixed space for warning */}
-  <div className="min-h-[20px]">
-    {warning && <p className="text-red-500 text-sm">{warning}</p>}
-  </div>
-</div>
-
-{/* Skills Multi-Select */}
-{selectedCategories.length > 0 && (
-  <div
-    className="relative"
-    onMouseLeave={() => setIsSkillDropdownOpen(false)}
-  >
-    <label className="block mb-1 font-medium">Skills</label>
-    <div
-      className="w-full border border-gray-300 rounded-md p-2 bg-white cursor-pointer flex justify-between items-center"
-      onClick={() => setIsSkillDropdownOpen(!isSkillDropdownOpen)}
-    >
-      {skills.length > 0
-        ? `${skills.length} skill(s) selected`
-        : "Select skills"}
-      <span className="text-gray-400">▼</span>
-    </div>
-
-    {isSkillDropdownOpen && (
-      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-64 overflow-y-auto">
-        <input
-          type="text"
-          placeholder="Search skills..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full border-b border-gray-200 p-2 text-sm outline-none"
-        />
-        {filteredSkills.length > 0 ? (
-          filteredSkills.map((skill, idx) => (
-            <label
-              key={idx}
-              className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
-            >
-              <input
-                type="checkbox"
-                checked={skills.includes(skill)}
-                onChange={() => handleSkillSelect(skill)}
-              />
-              {skill}
-            </label>
-          ))
-        ) : (
-          <div className="px-3 py-2 text-gray-400">No skills found</div>
-        )}
-      </div>
-    )}
-
-    {/* Selected Skills */}
-    <div className="flex flex-wrap gap-2 mt-2">
-      {skills.map((s, idx) => (
-        <span
-          key={idx}
-          className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs flex items-center gap-1"
-        >
-          {s}
-          <button
-            type="button"
-            className="text-blue-500 hover:text-red-500"
-            onClick={() => handleRemoveSkill(s)}
+          {/* Category Multi-Select */}
+          <div
+            className="relative"
+            onMouseLeave={() => setIsCategoryDropdownOpen(false)}
           >
-            ×
-          </button>
-        </span>
-      ))}
-    </div>
+            <label className="block mb-1 font-medium">Categories</label>
+            <div
+              className="w-full border border-gray-300 rounded-md p-2 bg-white cursor-pointer flex justify-between items-center"
+              onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+            >
+              {selectedCategories.length > 0
+                ? `${selectedCategories.length} category(ies) selected`
+                : "Select categories"}
+              <span className="text-gray-400">▼</span>
+            </div>
 
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg animate-fadeIn max-h-56 overflow-y-auto">
+            {isCategoryDropdownOpen && (
+              <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                {categoryOptions.map((cat, idx) => (
+                  <label
+                    key={idx}
+                    className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(cat)}
+                      onChange={() => handleCategorySelect(cat)}
+                    />
+                    {cat}
+                  </label>
+                ))}
+              </div>
+            )}
+
+            {/* Fixed space for warning */}
+            <div className="min-h-[20px]">
+              {warning && <p className="text-red-500 text-sm">{warning}</p>}
+            </div>
+
+          </div>
+
+          {/* Skills Multi-Select */}
+          {selectedCategories.length > 0 && (
+            <div
+              className="relative"
+              onMouseLeave={() => setIsSkillDropdownOpen(false)}
+            >
+              <label className="block mb-1 font-medium">Skills</label>
+              <div
+                className="w-full border border-gray-300 rounded-md p-2 bg-white cursor-pointer flex justify-between items-center"
+                onClick={() => setIsSkillDropdownOpen(!isSkillDropdownOpen)}
+              >
+                {skills.length > 0
+                  ? `${skills.length} skill(s) selected`
+                  : "Select skills"}
+                <span className="text-gray-400">▼</span>
+              </div>
+
+              {isSkillDropdownOpen && (
+                <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-64 overflow-y-auto">
                   <input
                     type="text"
                     placeholder="Search skills..."
@@ -349,32 +334,53 @@ export default function CategorySkillsForm() {
                   />
                   {filteredSkills.length > 0 ? (
                     filteredSkills.map((skill, idx) => (
-                      <div
+                      <label
                         key={idx}
-                        onClick={() => handleSkillSelect(skill)}
-                        className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${skills.includes(skill) ? "bg-blue-100" : ""
-                          }`}
+                        className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
                       >
+                        <input
+                          type="checkbox"
+                          checked={skills.includes(skill)}
+                          onChange={() => handleSkillSelect(skill)}
+                        />
                         {skill}
-                      </div>
+                      </label>
                     ))
                   ) : (
-                    <div className="px-3 py-2 text-gray-400">
-                      No skills found
-                    </div>
+                    <div className="px-3 py-2 text-gray-400">No skills found</div>
                   )}
                 </div>
               )}
-    {/* Fixed space for warnings */}
-    <div className="min-h-[20px]">
-      {warning && <p className="text-red-500 text-sm">{warning}</p>}
-    </div>
 
-    <p className="mt-1 text-sm text-gray-600">
-      Selected Skills: {skills.length} / 10
-    </p>
-  </div>
-)}
+              {/* Selected Skills */}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {skills.map((s, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs flex items-center gap-1"
+                  >
+                    {s}
+                    <button
+                      type="button"
+                      className="text-blue-500 hover:text-red-500"
+                      onClick={() => handleRemoveSkill(s)}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+
+              {/* Fixed space for warnings */}
+              <div className="min-h-[20px]">
+                {warning && <p className="text-red-500 text-sm">{warning}</p>}
+              </div>
+
+              <p className="mt-1 text-sm text-gray-600">
+                Selected Skills: {skills.length} / 10
+              </p>
+            </div>
+          )}
 
 
           {/* Accomplishments */}

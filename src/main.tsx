@@ -86,8 +86,8 @@ createRoot(document.getElementById("root")!).render(
             {/*  2 new pages were added for company */}
             <Route path="/company/company-details" element={<CompanyDetailsPage />} />
             <Route path="/company/person-details" element={<CompanyPersonDetailsForm />} />
-            <Route path="company/profile-image" element={<CompanyProfileImageUpload />} />
-            
+            <Route path="/company/profile-image" element={<CompanyProfileImageUpload />} />
+
             <Route path="/test" element={<Test />} />
 
 {/* add change please check do correct mapping */}

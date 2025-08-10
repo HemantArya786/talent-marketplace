@@ -565,109 +565,109 @@ const PortfolioPage = () => {
 
     <div className="max-w-6xl mx-auto font-sans border p-2 ">
       {/* Cover and Profile Images */}
-      <div className="relative">
-        <img
-          src={coverImgPreview}
-          alt="Cover"
-          className="w-full h-64 object-cover rounded-b-3xl"
-        />
-        <div className="absolute top-4 right-4 flex gap-2">
-          <button
-            className="bg-white p-1 rounded hover:bg-gray-100 shadow"
-            onClick={() => onEdit("coverImg")}
-            title="Edit cover image"
-          >
-            <Edit size={18} />
-          </button>
-        </div>
-        <img
-          src={profileImgPreview}
-          alt="Profile"
-          className="w-32 h-32 rounded-full border-4 border-white absolute bottom-[-2rem] left-6 shadow-lg object-cover"
-        />
-        <div className="absolute left-40 bottom-2 flex gap-2">
-          <button
-            className="bg-white p-1 rounded hover:bg-gray-100 shadow"
-            onClick={() => onEdit("profileImg")}
-            title="Edit profile image"
-          >
-            <Edit size={18} />
-          </button>
-        </div>
-      </div>
-
-      {/* Cover Image Upload UI */}
-      {editSection === "coverImg" && (
-        <div className="flex flex-col items-start gap-2 px-6 mt-3">
-          <label className="font-medium flex items-center gap-2 text-sm mb-1">
-            <Image size={18} className="text-gray-500" /> Change Cover Image
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleCoverImgChange}
-            className="block border rounded p-1"
-          />
-          {coverImgPreview && (
-            <img
-              src={coverImgPreview}
-              alt="Preview"
-              className="rounded-lg mt-2 shadow border h-32 object-cover"
-              style={{ maxWidth: 320 }}
-            />
-          )}
-          <div className="mt-2 flex gap-2">
-            <button
-              className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
-              onClick={() => onSave("coverImg")}
-            >
-              <Save size={16} /> Save
-            </button>
-            <button
-              className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
-              onClick={() => onDelete("coverImg")}
-            >
-              <Trash2 size={16} /> Delete
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Profile Image Upload UI */}
-      {editSection === "profileImg" && (
-        <div className="flex flex-col items-start gap-2 px-6 mt-3">
-          <label className="font-medium flex items-center gap-2 text-sm mb-1">
-            <Image size={18} className="text-gray-500" /> Change Profile Image
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleProfileImgChange}
-            className="block border rounded p-1"
-          />
-          {profileImgPreview && (
-            <img
-              src={profileImgPreview}
-              alt="Preview"
-              className="rounded-full mt-2 shadow border h-24 w-24 object-cover"
-            />
-          )}
-          <div className="mt-2 flex gap-2">
-            <button
-              className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
-              onClick={() => onSave("profileImg")}
-            >
-              <Save size={16} /> Save
-            </button>
-            <button
-              className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
-              onClick={() => onDelete("profileImg")}
-            >
-              <Trash2 size={16} /> Delete
-            </button>
-          </div>
-        </div>
-      )}
+            <div className="relative">
+              <img
+                src={coverImgPreview}
+                alt="Cover"
+                className="w-full h-64 object-cover rounded-b-3xl"
+              />
+              <div className="absolute top-4 right-4 flex gap-2">
+                <button
+                  className="bg-white p-1 rounded hover:bg-gray-100 shadow"
+                  onClick={() => onEdit("coverImg")}
+                  title="Edit cover image"
+                >
+                  <Edit size={18} />
+                </button>
+              </div>
+              <img
+                src={profileImgPreview}
+                alt="Profile"
+                className="w-32 h-32 rounded-full border-4 border-white absolute bottom-[-2rem] left-6 shadow-lg object-cover"
+              />
+              <div className="absolute left-40 bottom-2 flex gap-2">
+                <button
+                  className="bg-white p-1 rounded hover:bg-gray-100 shadow"
+                  onClick={() => onEdit("profileImg")}
+                  title="Edit profile image"
+                >
+                  <Edit size={18} />
+                </button>
+              </div>
+            </div>
+      
+            {/* Cover Image Upload UI */}
+            {editSection === "coverImg" && (
+              <div className="flex flex-col items-start gap-2 px-6 mt-3">
+                <label className="font-medium flex items-center gap-2 text-sm mb-1">
+                  <Image size={18} className="text-gray-500" /> Change Cover Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCoverImgChange}
+                  className="block border rounded p-1"
+                />
+                {coverImgPreview && (
+                  <img
+                    src={coverImgPreview}
+                    alt="Preview"
+                    className="rounded-lg mt-2 shadow border h-32 object-cover"
+                    style={{ maxWidth: 320 }}
+                  />
+                )}
+                <div className="mt-2 flex gap-2">
+                  <button
+                    className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
+                    onClick={() => onSave("coverImg")}
+                  >
+                    <Save size={16} /> Save
+                  </button>
+                  <button
+                    className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
+                    onClick={() => onDelete("coverImg")}
+                  >
+                    <Trash2 size={16} /> Delete
+                  </button>
+                </div>
+              </div>
+            )}
+      
+            {/* Profile Image Upload UI */}
+            {editSection === "profileImg" && (
+              <div className="flex flex-col items-start gap-2 px-6 mt-3">
+                <label className="font-medium flex items-center gap-2 text-sm mb-1">
+                  <Image size={18} className="text-gray-500" /> Change Profile Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfileImgChange}
+                  className="block border rounded p-1"
+                />
+                {profileImgPreview && (
+                  <img
+                    src={profileImgPreview}
+                    alt="Preview"
+                    className="rounded-full mt-2 shadow border h-24 w-24 object-cover"
+                  />
+                )}
+                <div className="mt-2 flex gap-2">
+                  <button
+                    className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
+                    onClick={() => onSave("profileImg")}
+                  >
+                    <Save size={16} /> Save
+                  </button>
+                  <button
+                    className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
+                    onClick={() => onDelete("profileImg")}
+                  >
+                    <Trash2 size={16} /> Delete
+                  </button>
+                </div>
+              </div>
+            )}
 
       {/* Main Content */}
       <div className="mt-16 px-6 sm:px-12 ">

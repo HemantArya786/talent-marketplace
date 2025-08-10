@@ -1,4 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+const categoryOptions = [
+  "Generative AI",
+  "Machine Learning Engineering",
+  "Natural Language Processing (NLP)",
+  "Computer Vision",
+  "AI Infrastructure & MLOps",
+  "Applied AI",
+  "AI Research",
+  "AI Product & Strategy",
+  "Ethical AI & Governance",
+  "Speech & Audio AI",
+  "Data Engineering for AI",
+  "Robotics & Autonomous Systems",
+  "Creative AI"
+];
+
+const skillsData: Record<string, string[]> = {
+  "Generative AI": ["Prompt Engineering", "LLM Engineering", "Fine-Tuning", "RAG Systems", "Conversational AI", "Diffusion Models", "GenAI Research", "Text Generation", "Image Generation", "Audio/Video Generation"],
+  "Machine Learning Engineering": ["Model Training", "Supervised Learning", "Unsupervised Learning", "Model Evaluation", "Scikit-learn", "TensorFlow", "PyTorch", "Model Deployment"],
+  "Natural Language Processing (NLP)": ["Text Classification", "Named Entity Recognition", "Tokenization", "Text Summarization", "Translation", "Sentiment Analysis", "Hugging Face Transformers"],
+  "Computer Vision": ["Image Classification", "Object Detection", "Semantic Segmentation", "Facial Recognition", "OCR", "OpenCV", "YOLO", "Transformers for Vision"],
+  "AI Infrastructure & MLOps": ["MLflow", "Kubeflow", "Docker", "Kubernetes", "CI/CD for ML", "Model Monitoring", "Data Versioning", "AWS SageMaker", "Vertex AI", "Azure ML"],
+  "Applied AI": ["AI for Healthcare", "AI in Finance", "Recommendation Systems", "Chatbots", "Voice Assistants", "Search Ranking", "Fraud Detection"],
+  "AI Research": ["Model Architectures", "Transfer Learning", "Reinforcement Learning", "Self-Supervised Learning", "Research Paper Implementation", "ArXiv Reading", "Benchmarking"],
+  "AI Product & Strategy": ["AI Product Management", "AI Roadmapping", "A/B Testing", "UX for AI", "AI Product Metrics", "Cross-functional Collaboration"],
+  "Ethical AI & Governance": ["Bias Detection", "Fairness in AI", "Explainable AI (XAI)", "Privacy-preserving AI", "AI Regulations", "Responsible AI", "Model Transparency"],
+  "Speech & Audio AI": ["Speech Recognition", "Voice Cloning", "Text-to-Speech", "Audio Classification", "Audio Generation", "ASR", "Whisper by OpenAI"],
+  "Data Engineering for AI": ["Data Cleaning", "Data Pipelines", "ETL for ML", "Data Lakes", "Apache Spark", "Feature Engineering", "BigQuery"],
+  "Robotics & Autonomous Systems": ["SLAM", "Path Planning", "Reinforcement Learning", "Computer Vision for Robotics", "ROS (Robot Operating System)"],
+  "Creative AI": ["AI Music Composition", "AI Art Generation", "Style Transfer", "Video Generation", "Creative Prompting", "Generative Design"]
+};
 
 type Developer = {
   id: number;
@@ -6,169 +38,216 @@ type Developer = {
   about: string;
   profilePic: string;
   skills: string[];
-  experience: number; // in years
+  experience: number;
   location: string;
+  category: string;
+  education: string;
 };
 
-const developers: Developer[] = Array.from({ length: 30 }, (_, i) => ({
-  id: i + 1,
-  name: `Developer ${i + 1}`,
-  about: "Experienced in full-stack web development.",
-  profilePic: `https://i.pravatar.cc/150?img=${i + 10}`,
-  skills: i % 2 === 0 ? ["React", "Node.js"] : ["Next.js", "TailwindCSS"],
-  experience: (i % 5) + 1,
-  location: i % 3 === 0 ? "Delhi" : i % 3 === 1 ? "Bangalore" : "Mumbai",
-}));
+const locations = ["Delhi", "Bangalore", "Mumbai"];
+const educations = ["B.Tech", "M.Tech", "PhD", "MSc AI", "BSc Computer Science"];
 
-const uniqueSkills = Array.from(new Set(developers.flatMap((d) => d.skills)));
-const uniqueLocations = Array.from(new Set(developers.map((d) => d.location)));
+const generateDummyDevelopers = (count: number): Developer[] => {
+  return Array.from({ length: count }, (_, i) => {
+    const category = categoryOptions[Math.floor(Math.random() * categoryOptions.length)];
+    const categorySkills = skillsData[category];
+    const randomSkills = categorySkills.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    return {
+      id: i + 1,
+      name: `Developer ${i + 1}`,
+      about: `Experienced ${category} specialist with strong expertise in ${randomSkills[0]}.`,
+      profilePic: `https://i.pravatar.cc/150?img=${i + 10}`,
+      skills: randomSkills,
+      experience: Math.floor(Math.random() * 5) + 1,
+      location: locations[Math.floor(Math.random() * locations.length)],
+      category,
+      education: educations[Math.floor(Math.random() * educations.length)],
+    };
+  });
+};
+
+const MultiSelectDropdown = ({
+  label,
+  options,
+  selectedValues,
+  onChange
+}: {
+  label: string;
+  options: string[];
+  selectedValues: string[];
+  onChange: (values: string[]) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const toggleValue = (value: string) => {
+    if (selectedValues.includes(value)) {
+      onChange(selectedValues.filter((v) => v !== value));
+    } else {
+      onChange([...selectedValues, value]);
+    }
+  };
+
+  const filteredOptions = options.filter((option) =>
+    option.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full p-2 border border-blue-300 bg-blue-50 rounded flex justify-between items-center hover:bg-blue-100 transition"
+      >
+        {label} ({selectedValues.length})
+        <span>{open ? "▲" : "▼"}</span>
+      </button>
+
+      {open && (
+        <div
+          className="absolute z-10 bg-white border rounded shadow-md mt-1 w-full max-h-60 overflow-y-auto"
+          onMouseLeave={() => setOpen(false)}
+        >
+          <div className="sticky top-0 bg-white p-2 border-b">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={`Search ${label.toLowerCase()}...`}
+              className="w-full border rounded px-2 py-1 text-sm"
+            />
+          </div>
+
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option) => (
+              <label
+                key={option}
+                className="flex items-center px-3 py-2 hover:bg-blue-50 cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedValues.includes(option)}
+                  onChange={() => toggleValue(option)}
+                  className="mr-2"
+                />
+                {option}
+              </label>
+            ))
+          ) : (
+            <div className="px-3 py-2 text-gray-500 text-sm">No results found</div>
+          )}
+        </div>
+      )}
+
+      {selectedValues.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {selectedValues.map((value) => (
+            <span
+              key={value}
+              className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs flex items-center"
+            >
+              {value}
+              <button
+                onClick={() => toggleValue(value)}
+                className="ml-1 text-red-500"
+              >
+                x
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const DevelopersListPage = () => {
+  const [developers, setDevelopers] = useState<Developer[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedSkill, setSelectedSkill] = useState("");
-  const [selectedExperience, setSelectedExperience] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
+  const [selectedEducation, setSelectedEducation] = useState<string[]>([]);
 
   const developersPerPage = 10;
 
+  useEffect(() => {
+    setDevelopers(generateDummyDevelopers(50));
+  }, []);
+
   const filteredDevelopers = developers.filter((dev) => {
     return (
-      (!selectedSkill || dev.skills.includes(selectedSkill)) &&
-      (!selectedExperience || dev.experience === parseInt(selectedExperience)) &&
-      (!selectedLocation || dev.location === selectedLocation)
+      (selectedSkills.length === 0 || selectedSkills.some((skill) => dev.skills.includes(skill))) &&
+      (selectedExperience.length === 0 || selectedExperience.includes(dev.experience.toString())) &&
+      (selectedLocation.length === 0 || selectedLocation.includes(dev.location)) &&
+      (selectedCategory.length === 0 || selectedCategory.includes(dev.category)) &&
+      (selectedEducation.length === 0 || selectedEducation.includes(dev.education))
     );
   });
 
   const totalPages = Math.ceil(filteredDevelopers.length / developersPerPage);
-  const indexOfLast = currentPage * developersPerPage;
-  const indexOfFirst = indexOfLast - developersPerPage;
-  const currentDevelopers = filteredDevelopers.slice(indexOfFirst, indexOfLast);
-
-  const handleMessageClick = (devName: string) => {
-    alert(`Message request sent to ${devName}`);
-  };
-
-  const goToNext = () => currentPage < totalPages && setCurrentPage((p) => p + 1);
-  const goToPrevious = () => currentPage > 1 && setCurrentPage((p) => p - 1);
-
-  const handleFilterChange = () => setCurrentPage(1); // Reset page on filter change
+  const currentDevelopers = filteredDevelopers.slice((currentPage - 1) * developersPerPage, currentPage * developersPerPage);
 
   return (
-    <div className="p-6 max-w-5xl mx-auto border">
-      <h1 className="text-3xl font-bold mb-8 text-center">Developer Directory</h1>
+    <div className="p-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 bg-gradient-to-r from-blue-50 to-purple-50 min-h-screen">
+      <div className="bg-white p-4 rounded-lg shadow-md space-y-4 border border-gray-200">
+        <h2 className="text-lg font-semibold mb-2 text-blue-700">Filters</h2>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <select
-          className="p-2 border rounded w-full sm:w-auto"
-          value={selectedSkill}
-          onChange={(e) => {
-            setSelectedSkill(e.target.value);
-            handleFilterChange();
-          }}
-        >
-          <option value="">All Skills</option>
-          {uniqueSkills.map((skill) => (
-            <option key={skill} value={skill}>
-              {skill}
-            </option>
-          ))}
-        </select>
-
-        <select
-          className="p-2 border rounded w-full sm:w-auto"
-          value={selectedExperience}
-          onChange={(e) => {
-            setSelectedExperience(e.target.value);
-            handleFilterChange();
-          }}
-        >
-          <option value="">All Experience</option>
-          {[1, 2, 3, 4, 5].map((year) => (
-            <option key={year} value={year}>
-              {year}+ Years
-            </option>
-          ))}
-        </select>
-
-        <select
-          className="p-2 border rounded w-full sm:w-auto"
-          value={selectedLocation}
-          onChange={(e) => {
-            setSelectedLocation(e.target.value);
-            handleFilterChange();
-          }}
-        >
-          <option value="">All Locations</option>
-          {uniqueLocations.map((loc) => (
-            <option key={loc} value={loc}>
-              {loc}
-            </option>
-          ))}
-        </select>
+        <MultiSelectDropdown label="Location" options={locations} selectedValues={selectedLocation} onChange={setSelectedLocation} />
+        <MultiSelectDropdown label="Category" options={categoryOptions} selectedValues={selectedCategory} onChange={setSelectedCategory} />
+        <MultiSelectDropdown label="Experience" options={["1", "2", "3", "4", "5"]} selectedValues={selectedExperience} onChange={setSelectedExperience} />
+        <MultiSelectDropdown label="Education" options={educations} selectedValues={selectedEducation} onChange={setSelectedEducation} />
+        <MultiSelectDropdown label="Skills" options={Object.values(skillsData).flat()} selectedValues={selectedSkills} onChange={setSelectedSkills} />
       </div>
 
-      {/* Developer Cards */}
-      <div className="flex flex-col gap-6">
-        {currentDevelopers.map((dev) => (
-          <div
-            key={dev.id}
-            className="bg-white rounded-2xl shadow-md p-5 flex flex-col sm:flex-row items-center sm:items-start sm:text-left text-center hover:shadow-lg transition-all"
-          >
-            <img
-              src={dev.profilePic}
-              alt={dev.name}
-              className="w-24 h-24 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6"
-            />
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold">{dev.name}</h2>
-              <p className="text-sm text-gray-600 mt-1 mb-2">{dev.about}</p>
-              <p className="text-sm text-gray-500 mb-2">
-                Experience: {dev.experience} year(s) | Location: {dev.location}
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {dev.skills.map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs"
-                  >
-                    {skill}
-                  </span>
-                ))}
+      <div className="md:col-span-3">
+        <h1 className="text-3xl font-bold mb-8 text-center text-purple-700">Developer Directory</h1>
+        <div className="flex flex-col gap-6">
+          {currentDevelopers.map((dev) => (
+            <div
+              key={dev.id}
+              className="bg-white rounded-2xl shadow-md p-5 flex flex-col sm:flex-row items-center hover:shadow-xl hover:scale-[1.01] transition-transform border border-gray-200"
+            >
+              <img src={dev.profilePic} alt={dev.name} className="w-24 h-24 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 border-4 border-purple-200" />
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold text-blue-800">{dev.name}</h2>
+                <p className="text-sm text-gray-600">{dev.about}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  {dev.experience} year(s) | {dev.location} | {dev.education}
+                </p>
+                <span className="block text-xs text-gray-400 mt-1">Category: {dev.category}</span>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {dev.skills.map((skill, idx) => (
+                    <span key={idx} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs">{skill}</span>
+                  ))}
+                </div>
               </div>
-              <button
-                onClick={() => handleMessageClick(dev.name)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition"
-              >
-                Message Request
-              </button>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-10 space-x-4">
-          <button
-            onClick={goToPrevious}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="self-center">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={goToNext}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            Next
-          </button>
+          ))}
         </div>
-      )}
+
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-10 space-x-4">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-blue-200 text-blue-900 rounded hover:bg-blue-300 disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="self-center font-medium text-gray-700">Page {currentPage} of {totalPages}</span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-blue-200 text-blue-900 rounded hover:bg-blue-300 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

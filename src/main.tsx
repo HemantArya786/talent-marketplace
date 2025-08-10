@@ -26,6 +26,28 @@ import CategorySkillsForm from "./Pages/CategorySkillsForm";
 import CompanyDetailsPage from "./Pages/CompanyDetailPage";
 import CompanyProfileImageUpload from "./Pages/CompanyProfileUploadPage";
 import CompanyPersonDetailsForm from "./Pages/CompanyPersonDetailsForm";
+import Test from "./Pages/Test";
+import JobPostPage from "./Pages/JobPosting";
+import CompanyDashboardPage from "./Pages/CompanyDashboard";
+import CompanySidebar from "./components/CompanySidebar";
+import ApplicantsPage from "./Pages/ApplicantList";
+import DeveloperSidebar from "./components/DeveloperSidebar";
+
+// Layout for company pages with sidebar
+const CompanyLayout = ({ children }) => (
+  <div className="flex">
+    <CompanySidebar/>
+    <div className="flex-1">{children}</div>
+  </div>
+);
+
+const DeveloperLayout = ({ children }) => (
+  <div className="flex">
+    <DeveloperSidebar/>
+    <div className="flex-1">{children}</div>
+  </div>
+);
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -43,26 +65,37 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/signup-user" element={<UserSignUp />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<App />} />
-            <Route path="/inbox" element={<Inbox />} />
+            {/* <Route path="/inbox" element={<Inbox />} /> */}
             <Route path="/developer/resume" element={<ResumeUpload />} />
             <Route path="/developer/personal-details/userId" element={<PersonalDetailsForm />} />
             <Route path="/developer/experience-details/:userId" element={<JobDetailsForm />} />
             <Route path="/developer/project-details/:userId" element={<ProjectDetailsForm />} />
             <Route path="developer/profile-image/:userId" element={<ProfileImageUpload />} />
             <Route path="/developer/preview/:userId" element={<ManualFormPage />} />
-            <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} />
+            <Route path="/developer/portfolio" element={<DeveloperLayout><PortfolioPage/></DeveloperLayout> } />
+            <Route path="/inbox" element={<DeveloperLayout><Inbox/></DeveloperLayout>}/>
             {/*  2 new pages were added for developer */}
             <Route path="/developer/education" element={<EducationForm />} />
             <Route path="/developer/category" element={<CategorySkillsForm />} /> 
 
-            <Route path="/company/portfolio/:clientId" element={<CompanyPortfolioPage />} />
+            <Route path="/company/portfolio" element={<CompanyLayout> <CompanyPortfolioPage /></CompanyLayout>} />
             <Route path="/company/preview" element={<CompanyFormPage />} />
 
             {/*  2 new pages were added for company */}
             <Route path="/company/company-details" element={<CompanyDetailsPage />} />
             <Route path="/company/person-details" element={<CompanyPersonDetailsForm />} />
             <Route path="company/profile-image" element={<CompanyProfileImageUpload />} />
-            <Route path="/developer/list" element={<DevelopersListPage />} />
+            <Route path="/test" element={<Test />} />
+
+            <Route path="/company/post-job" element={<CompanyLayout> <JobPostPage/></CompanyLayout>}/>
+            <Route path="/company/dashboard" element={<CompanyLayout><CompanyDashboardPage/></CompanyLayout> }/>
+            <Route path="/developer/list" element={<CompanyLayout><DevelopersListPage /></CompanyLayout> } />
+            <Route path="/inbox" element={<CompanyLayout ><Inbox/></CompanyLayout>} />
+            <Route path="/company/applicants" element={<CompanyLayout><ApplicantsPage/></CompanyLayout> }/>
+
+
+
+            
 
           </Routes>
         </div>

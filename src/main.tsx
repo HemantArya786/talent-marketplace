@@ -72,6 +72,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/developer/project-details/:userId" element={<ProjectDetailsForm />} />
             <Route path="developer/profile-image/:userId" element={<ProfileImageUpload />} />
             <Route path="/developer/preview/:userId" element={<ManualFormPage />} />
+
+            {/* //new add change */}
             <Route path="/developer/portfolio" element={<DeveloperLayout><PortfolioPage/></DeveloperLayout> } />
             <Route path="/inbox" element={<DeveloperLayout><Inbox/></DeveloperLayout>}/>
             {/*  2 new pages were added for developer */}
@@ -85,8 +87,10 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/company/company-details" element={<CompanyDetailsPage />} />
             <Route path="/company/person-details" element={<CompanyPersonDetailsForm />} />
             <Route path="company/profile-image" element={<CompanyProfileImageUpload />} />
+            
             <Route path="/test" element={<Test />} />
 
+{/* add change please check do correct mapping */}
             <Route path="/company/post-job" element={<CompanyLayout> <JobPostPage/></CompanyLayout>}/>
             <Route path="/company/dashboard" element={<CompanyLayout><CompanyDashboardPage/></CompanyLayout> }/>
             <Route path="/developer/list" element={<CompanyLayout><DevelopersListPage /></CompanyLayout> } />

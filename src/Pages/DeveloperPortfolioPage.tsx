@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 type UserType = {
 
   userId: number;
-  name: string;
+  fullName: string;
   email: string;
   phone: number;
   avatar?: string;
@@ -87,7 +87,7 @@ type UserType = {
 };
 
 const initialUser: UserType = {
-  name: "",
+  fullName: "",
   email: "",
   phone: 0,
   avatar: "",
@@ -565,109 +565,109 @@ const PortfolioPage = () => {
 
     <div className="max-w-6xl mx-auto font-sans border p-2 ">
       {/* Cover and Profile Images */}
-            <div className="relative">
-              <img
-                src={coverImgPreview}
-                alt="Cover"
-                className="w-full h-64 object-cover rounded-b-3xl"
-              />
-              <div className="absolute top-4 right-4 flex gap-2">
-                <button
-                  className="bg-white p-1 rounded hover:bg-gray-100 shadow"
-                  onClick={() => onEdit("coverImg")}
-                  title="Edit cover image"
-                >
-                  <Edit size={18} />
-                </button>
-              </div>
-              <img
-                src={profileImgPreview}
-                alt="Profile"
-                className="w-32 h-32 rounded-full border-4 border-white absolute bottom-[-2rem] left-6 shadow-lg object-cover"
-              />
-              <div className="absolute left-40 bottom-2 flex gap-2">
-                <button
-                  className="bg-white p-1 rounded hover:bg-gray-100 shadow"
-                  onClick={() => onEdit("profileImg")}
-                  title="Edit profile image"
-                >
-                  <Edit size={18} />
-                </button>
-              </div>
-            </div>
-      
-            {/* Cover Image Upload UI */}
-            {editSection === "coverImg" && (
-              <div className="flex flex-col items-start gap-2 px-6 mt-3">
-                <label className="font-medium flex items-center gap-2 text-sm mb-1">
-                  <Image size={18} className="text-gray-500" /> Change Cover Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleCoverImgChange}
-                  className="block border rounded p-1"
-                />
-                {coverImgPreview && (
-                  <img
-                    src={coverImgPreview}
-                    alt="Preview"
-                    className="rounded-lg mt-2 shadow border h-32 object-cover"
-                    style={{ maxWidth: 320 }}
-                  />
-                )}
-                <div className="mt-2 flex gap-2">
-                  <button
-                    className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
-                    onClick={() => onSave("coverImg")}
-                  >
-                    <Save size={16} /> Save
-                  </button>
-                  <button
-                    className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
-                    onClick={() => onDelete("coverImg")}
-                  >
-                    <Trash2 size={16} /> Delete
-                  </button>
-                </div>
-              </div>
-            )}
-      
-            {/* Profile Image Upload UI */}
-            {editSection === "profileImg" && (
-              <div className="flex flex-col items-start gap-2 px-6 mt-3">
-                <label className="font-medium flex items-center gap-2 text-sm mb-1">
-                  <Image size={18} className="text-gray-500" /> Change Profile Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfileImgChange}
-                  className="block border rounded p-1"
-                />
-                {profileImgPreview && (
-                  <img
-                    src={profileImgPreview}
-                    alt="Preview"
-                    className="rounded-full mt-2 shadow border h-24 w-24 object-cover"
-                  />
-                )}
-                <div className="mt-2 flex gap-2">
-                  <button
-                    className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
-                    onClick={() => onSave("profileImg")}
-                  >
-                    <Save size={16} /> Save
-                  </button>
-                  <button
-                    className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
-                    onClick={() => onDelete("profileImg")}
-                  >
-                    <Trash2 size={16} /> Delete
-                  </button>
-                </div>
-              </div>
-            )}
+      <div className="relative">
+        <img
+          src={ coverImgPreview || "https://images.ctfassets.net/aq13lwl6616q/2XTr5hIUZ07eh6jDEcfgpP/cc11bd45cb93f9e42594ab6be3dac979/Become_a__one_line___3_.jpg?w=800&h=450&q=50&fm=webp&bg=transparent" }
+          alt="Cover"
+          className="w-full h-64 object-cover rounded-b-3xl"
+        />
+        <div className="absolute top-4 right-4 flex gap-2">
+          <button
+            className="bg-white p-1 rounded hover:bg-gray-100 shadow"
+            onClick={() => onEdit("coverImg")}
+            title="Edit cover image"
+          >
+            <Edit size={18} />
+          </button>
+        </div>
+        <img
+          src={profileImgPreview ||"https://images.ctfassets.net/aq13lwl6616q/2XTr5hIUZ07eh6jDEcfgpP/cc11bd45cb93f9e42594ab6be3dac979/Become_a__one_line___3_.jpg?w=800&h=450&q=50&fm=webp&bg=transparent"}
+          alt="Profile"
+          className="w-32 h-32 rounded-full border-4 border-white absolute bottom-[-2rem] left-6 shadow-lg object-cover"
+        />
+        <div className="absolute left-40 bottom-2 flex gap-2">
+          <button
+            className="bg-white p-1 rounded hover:bg-gray-100 shadow"
+            onClick={() => onEdit("profileImg")}
+            title="Edit profile image"
+          >
+            <Edit size={18} />
+          </button>
+        </div>
+      </div>
+
+      {/* Cover Image Upload UI */}
+      {editSection === "coverImg" && (
+        <div className="flex flex-col items-start gap-2 px-6 mt-3">
+          <label className="font-medium flex items-center gap-2 text-sm mb-1">
+            <Image size={18} className="text-gray-500" /> Change Cover Image
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleCoverImgChange}
+            className="block border rounded p-1"
+          />
+          {coverImgPreview && (
+            <img
+              src={coverImgPreview}
+              alt="Preview"
+              className="rounded-lg mt-2 shadow border h-32 object-cover"
+              style={{ maxWidth: 320 }}
+            />
+          )}
+          <div className="mt-2 flex gap-2">
+            <button
+              className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
+              onClick={() => onSave("coverImg")}
+            >
+              <Save size={16} /> Save
+            </button>
+            <button
+              className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
+              onClick={() => onDelete("coverImg")}
+            >
+              <Trash2 size={16} /> Delete
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Image Upload UI */}
+      {editSection === "profileImg" && (
+        <div className="flex flex-col items-start gap-2 px-6 mt-3">
+          <label className="font-medium flex items-center gap-2 text-sm mb-1">
+            <Image size={18} className="text-gray-500" /> Change Profile Image
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfileImgChange}
+            className="block border rounded p-1"
+          />
+          {profileImgPreview && (
+            <img
+              src={profileImgPreview}
+              alt="Preview"
+              className="rounded-full mt-2 shadow border h-24 w-24 object-cover"
+            />
+          )}
+          <div className="mt-2 flex gap-2">
+            <button
+              className="bg-green-500 text-white p-1 px-3 rounded flex items-center gap-1"
+              onClick={() => onSave("profileImg")}
+            >
+              <Save size={16} /> Save
+            </button>
+            <button
+              className="bg-red-500 text-white p-1 px-3 rounded flex items-center gap-1"
+              onClick={() => onDelete("profileImg")}
+            >
+              <Trash2 size={16} /> Delete
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="mt-16 px-6 sm:px-12 ">
@@ -679,8 +679,8 @@ const PortfolioPage = () => {
                 <input
                   type="text"
                   className="font-bold text-3xl border-b w-full"
-                  value={editValues.name}
-                  onChange={(e) => handleChange("name", e.target.value)}
+                  value={editValues.fullName}
+                  onChange={(e) => handleChange("fullName", e.target.value)}
                 />
                 <input
                   type="text"
@@ -721,7 +721,7 @@ const PortfolioPage = () => {
               </>
             ) : (
               <>
-                <h1 className="text-3xl font-bold">{user?.name}</h1>
+                <h1 className="text-3xl font-bold">{user?.fullName}</h1>
                 <p className="text-gray-600">{user.location.city}, {user.location.country}</p>
                 <p className="text-sm text-gray-500">
                   {user.email} | {user.phone}
@@ -1229,7 +1229,7 @@ const PortfolioPage = () => {
         </section>
 
         {/* Trainings */}
-        <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
+        {/* <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">
           <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
             Trainings
             {editSection !== "trainings" && (
@@ -1365,7 +1365,7 @@ const PortfolioPage = () => {
               ))}
             </ul>
           )}
-        </section>
+        </section> */}
 
         {/* Professional Experience */}
         <section className="mb-8 relative border p-5 rounded-lg bg-gray-100">

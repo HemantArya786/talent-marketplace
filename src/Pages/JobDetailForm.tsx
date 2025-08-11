@@ -270,17 +270,18 @@ const JobDetailsForm = () => {
 
           <div className="flex flex-col md:flex-row gap-4">
             <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
-            >
-              Next
-            </button>
-            <button
-              type="button"
               onClick={handleSkip}
+              type="button"
               className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-md"
             >
               Skip
+            </button>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
+
+            >
+              Next
             </button>
           </div>
         </form>

@@ -3,14 +3,13 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 const CompanyPersonDetailsForm = () => {
-  const { userId } = useParams();
   const [formData, setFormData] = useState({
     fullName: "",
     designation: "",
     email: "",
   });
 
-  const {clientId} = useParams()
+  const { clientId } = useParams()
 
   useEffect(() => {
 
@@ -24,6 +23,7 @@ const CompanyPersonDetailsForm = () => {
         email: data.email || "",
       };
       setFormData(normalizedData);
+      console.log(data);
     };
 
     fetchData();
@@ -42,7 +42,7 @@ const CompanyPersonDetailsForm = () => {
   const handleSubmit = async (e) => {
 
     e.preventDefault();
-    
+
     try {
       const response = await axios.put(
         `http://localhost:3000/api/clients/${clientId}`,
@@ -51,7 +51,7 @@ const CompanyPersonDetailsForm = () => {
 
       console.log("Form submitted successfully:", response.data);
       alert("Personal details updated successfully!");
-      navigate(`/company/client-details/${userId}`);
+      navigate(`/company/company-details/${clientId}`);
 
     } catch (error) {
       console.error(

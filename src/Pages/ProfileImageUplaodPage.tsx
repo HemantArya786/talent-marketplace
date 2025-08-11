@@ -80,7 +80,7 @@ const ProfileImageUpload = () => {
     console.log(coverPreview, profilePreview, socialLinks);
 
 
-  }, [userId])
+  }, [userId, coverPreview, profilePreview, socialLinks])
 
   // Social links handlers
   const handleSocialChange = (index, field, value) => {
@@ -113,6 +113,7 @@ const ProfileImageUpload = () => {
 
       const responseData = res
       alert("Images and social media links ready to send!")
+      navigate(`/developer/category/${userId}`)
       console.log("Form data:", responseData.data)
     }
     catch (err) {
@@ -121,7 +122,7 @@ const ProfileImageUpload = () => {
   };
 
   const handleSkip = () => {
-    navigate("/next-page");
+    navigate(`/developer/category/${userId}`)
   };
 
   return (

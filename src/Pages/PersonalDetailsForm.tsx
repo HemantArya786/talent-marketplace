@@ -89,9 +89,10 @@ const PersonalDetailsForm = () => {
         formData
       );
 
-      console.log("Form submitted successfully:", response.data);
       alert("Personal details updated successfully!")
       navigate(`/developer/experience-details/${userId}`)
+      console.log("Form submitted successfully:", response.data);
+      ///developer/experience-details/:userId
     }
     catch (error) {
       console.error(

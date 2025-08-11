@@ -1,60 +1,107 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CompanyDetailsPage = () => {
-  const navigate = useNavigate();
 
-  // Generate years dropdown (from current year to 1900)
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i);
 
+  const { clientId } = useParams()
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
-    companyName: "",
+    clientName: "",
     clientType: "",
-    phone: "",
-    email: "",
+    clientPhone: "",
+    clientEmail: "",
     location: {
       country: "",
       city: ""
     },
     establishedYear: "",
-    employees: "",
-    about: "",
-    website: "",
+    clientSize: "",
+    description: "",
+    clientWebsite: "",
+    industry: ""
   });
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+
+      const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`)
+      const data = await res.data
+      console.log(data.clientDetails);
+      setFormData(data.clientDetails)
+    }
+    fetchData()
+
+  }, [clientId])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "country" || name === "city") {
+      setFormData((prev) => ({
+        ...prev,
+        location: {
+          ...prev.location,
+          [name]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
-
-  const handleChangeEmployees =
-    (field: string) =>
-      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-      };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(formData.clientEmail)) {
       alert("Please enter a valid email address.");
       return;
     }
 
     try {
-      await axios.put("/api/company-details", formData);
-      alert("Company details updated successfully!");
-    } catch (error) {
-      console.error("Error updating company details", error);
-      alert("Failed to update company details");
+      const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`);
+      const client = res.data;
+
+      if (client.clientDetails && client.clientDetails.length > 0) {
+        const detailsId = client.clientDetails._id;
+
+        await axios.put(
+          `http://localhost:3000/api/clients/${clientId}/client-details/${detailsId}`,
+          formData
+        );
+
+        alert("Company details updated successfully!");
+        console.log(formData);
+      }
+      else {
+        await axios.post(
+          `http://localhost:3000/api/clients/${clientId}/client-details`,
+          formData
+        );
+        alert("Company details created successfully!");
+      }
+
+      navigate(`/company/profile-image/${clientId}`);
+      console.log(formData);
+    }
+    catch (error) {
+      console.error("Error saving company details:", error);
+      alert("Failed to save company details");
     }
   };
+
 
   return (
     <div className="min-h-screen flex">
@@ -71,15 +118,15 @@ const CompanyDetailsPage = () => {
       <div className="w-1/2 bg-white p-8 overflow-y-auto">
         <h1 className="text-2xl font-bold mb-6">Company Details</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4">
           {/* Company Name */}
           <div>
             <label className="block font-medium mb-1">Company Name</label>
             <input
               type="text"
-              name="companyName"
+              name="clientName"
               placeholder="e.g. Tech Solutions Pvt Ltd"
-              value={formData.companyName}
+              value={formData.clientName}
               onChange={handleChange}
               className="w-full border p-2 rounded"
               required
@@ -103,6 +150,29 @@ const CompanyDetailsPage = () => {
             </select>
           </div>
 
+          {/* Industry */}
+          <div>
+            <label className="block font-medium mb-1">Type of Industry</label>
+            <select
+              name="industry"
+              value={formData.industry}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            >
+              <option value="">Select an industry</option>
+              <option value="Technology">Technology</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Finance">Finance</option>
+              <option value="Education">Education</option>
+              <option value="Retail">Retail</option>
+              <option value="Manufacturing">Manufacturing</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+
           {/* Phone */}
           <div className="mb-4">
             <label className="block text-gray-700 font-medium mb-2">
@@ -110,9 +180,10 @@ const CompanyDetailsPage = () => {
             </label>
             <PhoneInput
               country={"in"}
-              name="phone"
-              value={formData.phone || ""}
-              onChange={(phone) => setFormData((prev) => ({ ...prev, phone }))}
+              name="clientPhone"
+              type="text"
+              value={formData.clientPhone || ""}
+              onChange={(clientPhone) => setFormData((prev) => ({ ...prev, clientPhone }))}
               inputClass="!w-full !py-2 !pl-14 !pr-4 !border-gray-300 !rounded-md focus:!ring-2 focus:!ring-blue-500"
               buttonClass="!bg-white !border-gray-300"
               inputStyle={{ width: "100%" }}
@@ -123,26 +194,13 @@ const CompanyDetailsPage = () => {
           <div>
             <label className="block font-medium mb-1">Business Email</label>
             <input
-              type="email"
-              name="email"
+              type="text"
+              name="clientEmail"
               placeholder="e.g. contact@techsolutions.com"
-              value={formData.email}
+              value={formData.clientEmail}
               onChange={handleChange}
               className="w-full border p-2 rounded"
               required
-            />
-          </div>
-
-          {/* Address */}
-          <div>
-            <label className="block font-medium mb-1">City</label>
-            <input
-              type="text"
-              name="address"
-              placeholder="e.g. 123, Business Park, New Delhi"
-              value={formData.location.city}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
             />
           </div>
 
@@ -153,7 +211,7 @@ const CompanyDetailsPage = () => {
               type="text"
               name="country"
               placeholder="e.g. India"
-              value={formData.location.country}
+              value={formData.location.country || ""}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
@@ -166,7 +224,7 @@ const CompanyDetailsPage = () => {
               type="text"
               name="city"
               placeholder="e.g. New Delhi"
-              value={formData.location.city}
+              value={formData.location.city || ""}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
@@ -194,8 +252,8 @@ const CompanyDetailsPage = () => {
           <div>
             <label className="block font-medium mb-1">Number of Employees</label>
             <select
-              name="employees"
-              value={formData.employees}
+              name="clientSize"
+              value={formData.clientSize}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             >
@@ -212,9 +270,9 @@ const CompanyDetailsPage = () => {
           <div>
             <label className="block font-medium mb-1">About Company</label>
             <textarea
-              name="about"
+              name="description"
               placeholder="Write a short description about the company..."
-              value={formData.about}
+              value={formData.description}
               onChange={handleChange}
               className="w-full border p-2 rounded"
               rows={3}
@@ -226,9 +284,9 @@ const CompanyDetailsPage = () => {
             <label className="block font-medium mb-1">Website URL</label>
             <input
               type="url"
-              name="website"
+              name="clientWebsite"
               placeholder="e.g. https://www.techsolutions.com"
-              value={formData.website}
+              value={formData.clientWebsite}
               onChange={handleChange}
               className="w-full border p-2 rounded"
             />
@@ -236,16 +294,17 @@ const CompanyDetailsPage = () => {
 
           {/* Buttons */}
           <div className="flex justify-between mt-6">
-            <button
+            {/* <button
               type="button"
               onClick={() => navigate("/next-page")}
               className="px-4 py-2 border rounded bg-gray-200 hover:bg-gray-300"
             >
               Skip This Page
-            </button>
+            </button> */}
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={handleSubmit}
             >
               Save Details
             </button>

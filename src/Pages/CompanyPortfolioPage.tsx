@@ -11,14 +11,9 @@ import { useParams } from "react-router-dom";
 type ClientType = {
   firebaseUid: string;
   clientId: number,
-  name: string;
+  fullName: string;
   email: string;
-  phone: number;
-  location: {
-    country: string;
-    city: string;
-    timezone: string;
-  };
+  designation: string,
   role: 'client' | string;
   authProvider: 'linkedIn' | 'google' | 'email';
   clientDetails: {
@@ -26,13 +21,20 @@ type ClientType = {
     clientName: string;
     clientSize: '1-9' | '10-25' | '26-50' | '50+' | '100+';
     industry: string;
-    socials: {
+    clientPhone: number;
+    location: {
+      country: string;
+      city: string;
+    };
+    establishedYear: string,
+    clientSocials: {
       _id: string;
       socialType: string;
-      URL: string;
+      url: string;
     }[];
     clientType: 'company' | 'agency' | 'individual';
     description: string;
+    clientWebsite: string,
     clientProfileImageURL: string;
     clientBackgroundImageURL: string;
     lastLogin: string;
@@ -42,14 +44,9 @@ type ClientType = {
 const initialData: ClientType = {
   firebaseUid: "",
   clientId: 0,
-  name: "",
+  fullName: "",
   email: "",
-  phone: 0,
-  location: {
-    country: "",
-    city: "",
-    timezone: ""
-  },
+  designation: "",
   role: "client",
   authProvider: "email",
   clientDetails: {
@@ -57,9 +54,16 @@ const initialData: ClientType = {
     clientName: "",
     clientSize: "1-9",
     industry: "",
-    socials: [],
+    clientPhone: 0,
+    location: {
+      country: "",
+      city: "",
+    },
+    establishedYear: "",
+    clientSocials: [],
     clientType: "individual",
     description: "",
+    clientWebsite: "",
     clientProfileImageURL: "",
     clientBackgroundImageURL: "",
     lastLogin: ""
@@ -194,7 +198,7 @@ const CompanyPortfolioPage = () => {
         </button>
       </div>
 
-      Modals
+      {/* Modals */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-4 rounded shadow w-96">
@@ -234,13 +238,13 @@ const CompanyPortfolioPage = () => {
 
       {/* Company Info */}
       <section className="mb-6 relative mt-4">
-        <h2 className="text-xl font-semibold mb-2">Company Info</h2>
+        <h2 className="text-xl font-semibold mb-2">Employee Info</h2>
         {editSection === "header" ? (
           <>
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.name}
-              onChange={(e) => handleChange("name", e.target.value)}
+              value={editValues.fullName}
+              onChange={(e) => handleChange("fullName", e.target.value)}
               placeholder="Company Name"
             />
             <input
@@ -251,7 +255,7 @@ const CompanyPortfolioPage = () => {
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.phone}
+              value={editValues.clientDetails.clientPhone}
               onChange={(e) => handleChange("phone", e.target.value)}
               placeholder="Phone Number"
             />
@@ -260,6 +264,12 @@ const CompanyPortfolioPage = () => {
               value={editValues.email}
               onChange={(e) => handleChange("email", e.target.value)}
               placeholder="Email"
+            />
+            <input
+              className="block border rounded w-full px-2 py-1 mb-2"
+              value={editValues.designation}
+              onChange={(e) => handleChange("designation", e.target.value)}
+              placeholder="Designation"
             />
             <button
               onClick={() => onSave("header")}
@@ -270,10 +280,11 @@ const CompanyPortfolioPage = () => {
           </>
         ) : (
           <div>
-            <p><strong>Name:</strong> {company.name}</p>
+            <p><strong>Name:</strong> {company.fullName}</p>
             {/* <p><strong>Location:</strong> {company.location.city}</p> */}
             <p><strong>Email:</strong> {company.email}</p>
-            <p><strong>Phone:</strong> {company.phone}</p>
+            <p><strong>Phone:</strong> {company.clientDetails.clientPhone}</p>
+            <p><strong>Designation:</strong> {company.designation}</p>
             <button
               onClick={() => onEdit("header")}
               className="absolute top-0 right-0 bg-white p-1 rounded shadow"
@@ -318,7 +329,7 @@ const CompanyPortfolioPage = () => {
 
       {/* About Company */}
       <section className="mb-6 relative">
-        <h2 className="text-xl font-semibold mb-2">About Company</h2>
+        <h2 className="text-xl font-semibold mb-2">About Company || {editValues.clientDetails.establishedYear}</h2>
         {editSection === "about" ? (
           <>
             <textarea
@@ -467,7 +478,7 @@ const CompanyPortfolioPage = () => {
             />
             <input
               className="block border rounded w-full px-2 py-1 mb-2"
-              value={editValues.clientDetails.socials}
+              value={editValues.clientDetails.clientWebsite}
               onChange={(e) => handleChange("website", e.target.value)}
               placeholder="Website"
             />
@@ -480,19 +491,22 @@ const CompanyPortfolioPage = () => {
           </>
         ) : (
           <div>
-            <p><strong>Founder:</strong> {company.name}</p>
+
+            <h2>
+            <strong>Company:</strong> {company.clientDetails.clientName}
+            </h2>
             {/* <p><strong>Head Office:</strong> {company.location.city}, {company.location.country}</p> */}
             <p><strong>Company Size:</strong> {company.clientDetails.clientSize}</p>
             <p><strong>Industry:</strong> {company.clientDetails.industry}</p>
             <p>
               <strong>Website:</strong>{" "}
               <a
-                href={company.clientDetails.socials}
+                href={company.clientDetails.clientWebsite}
                 className="text-blue-600 underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {company.clientDetails.socials}
+                {company.clientDetails.clientWebsite}
               </a>
             </p>
             <button

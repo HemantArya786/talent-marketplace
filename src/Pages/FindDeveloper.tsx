@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 const categoryOptions = [
@@ -33,39 +34,45 @@ const skillsData: Record<string, string[]> = {
 };
 
 type Developer = {
-  id: number;
-  name: string;
-  about: string;
-  profilePic: string;
+  userId: number;
+  fullName: string;
+  bio: string;
+  userProfileImageURL: string;
+  backgroundImageURL: string;
+  experience: string[];
+  location: {
+    country: string;
+    city: string;
+  };
+  categories: string[];
+  education: {
+    degree: string;
+  }[];
   skills: string[];
-  experience: number;
-  location: string;
-  category: string;
-  education: string;
 };
 
-const locations = ["Delhi", "Bangalore", "Mumbai"];
-const educations = ["B.Tech", "M.Tech", "PhD", "MSc AI", "BSc Computer Science"];
+const locations = ["Delhi", "Bangalore", "Mumbai", "Hyderabad", "Madrid", "Warsaw", "Singapore", "London"];
+const educations = ["Bachelors", "Masters", "SSC/10th", "MSc AI", "12th/Intermediate"];
 
-const generateDummyDevelopers = (count: number): Developer[] => {
-  return Array.from({ length: count }, (_, i) => {
-    const category = categoryOptions[Math.floor(Math.random() * categoryOptions.length)];
-    const categorySkills = skillsData[category];
-    const randomSkills = categorySkills.sort(() => 0.5 - Math.random()).slice(0, 3);
+// const generateDummyDevelopers = (count: number): Developer[] => {
+//   return Array.from({ length: count }, (_, i) => {
+//     const category = categoryOptions[Math.floor(Math.random() * categoryOptions.length)];
+//     const categorySkills = skillsData[category];
+//     const randomSkills = categorySkills.sort(() => 0.5 - Math.random()).slice(0, 3);
 
-    return {
-      id: i + 1,
-      name: `Developer ${i + 1}`,
-      about: `Experienced ${category} specialist with strong expertise in ${randomSkills[0]}.`,
-      profilePic: `https://i.pravatar.cc/150?img=${i + 10}`,
-      skills: randomSkills,
-      experience: Math.floor(Math.random() * 5) + 1,
-      location: locations[Math.floor(Math.random() * locations.length)],
-      category,
-      education: educations[Math.floor(Math.random() * educations.length)],
-    };
-  });
-};
+//     return {
+//       id: i + 1,
+//       name: `Developer ${i + 1}`,
+//       about: `Experienced ${category} specialist with strong expertise in ${randomSkills[0]}.`,
+//       profilePic: `https://i.pravatar.cc/150?img=${i + 10}`,
+//       skills: randomSkills,
+//       experience: Math.floor(Math.random() * 5) + 1,
+//       location: locations[Math.floor(Math.random() * locations.length)],
+//       category,
+//       education: educations[Math.floor(Math.random() * educations.length)],
+//     };
+//   });
+// };
 
 const MultiSelectDropdown = ({
   label,
@@ -173,19 +180,57 @@ const DevelopersListPage = () => {
 
   const developersPerPage = 10;
 
+  const Experience = (dev: Developer): number => {
+    if (!dev.experience || dev.experience.length === 0) return 0;
+
+    let totalMonths = 0;
+    const now = new Date();
+
+    dev.experience.forEach((job: any) => {
+      const start = new Date(job.startDate);
+      const end = job.currentlyWorking || !job.endDate ? now : new Date(job.endDate);
+
+      const months =
+        (end.getFullYear() - start.getFullYear()) * 12 +
+        (end.getMonth() - start.getMonth());
+
+      totalMonths += months;
+    });
+
+    return Math.floor(totalMonths / 12);
+  };
+
   useEffect(() => {
-    setDevelopers(generateDummyDevelopers(50));
+    // setDevelopers(generateDummyDevelopers(50));
+    const fetchData = async () => {
+
+      try {
+        const res = await axios.get(`http://localhost:3000/api/users`)
+
+        const responseData = await res.data
+        setDevelopers(responseData)
+        console.log(responseData);
+
+      }
+      catch (err) {
+        throw await err
+      }
+    }
+    fetchData()
   }, []);
 
   const filteredDevelopers = developers.filter((dev) => {
+    const yearsOfExperience = Experience(dev);
+
     return (
       (selectedSkills.length === 0 || selectedSkills.some((skill) => dev.skills.includes(skill))) &&
-      (selectedExperience.length === 0 || selectedExperience.includes(dev.experience.toString())) &&
-      (selectedLocation.length === 0 || selectedLocation.includes(dev.location)) &&
-      (selectedCategory.length === 0 || selectedCategory.includes(dev.category)) &&
-      (selectedEducation.length === 0 || selectedEducation.includes(dev.education))
+      (selectedExperience.length === 0 || selectedExperience.includes(yearsOfExperience.toString())) &&
+      (selectedLocation.length === 0 || selectedLocation.includes(dev.location.city)) &&
+      (selectedCategory.length === 0 || dev.categories.some((cat) => selectedCategory.includes(cat))) &&
+      (selectedEducation.length === 0 || dev.education.some((edu) => selectedEducation.includes(edu.degree)))
     );
   });
+
 
   const totalPages = Math.ceil(filteredDevelopers.length / developersPerPage);
   const currentDevelopers = filteredDevelopers.slice((currentPage - 1) * developersPerPage, currentPage * developersPerPage);
@@ -197,7 +242,7 @@ const DevelopersListPage = () => {
 
         <MultiSelectDropdown label="Location" options={locations} selectedValues={selectedLocation} onChange={setSelectedLocation} />
         <MultiSelectDropdown label="Category" options={categoryOptions} selectedValues={selectedCategory} onChange={setSelectedCategory} />
-        <MultiSelectDropdown label="Experience" options={["1", "2", "3", "4", "5"]} selectedValues={selectedExperience} onChange={setSelectedExperience} />
+        <MultiSelectDropdown label="Experience" options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].reverse()} selectedValues={selectedExperience} onChange={setSelectedExperience} />
         <MultiSelectDropdown label="Education" options={educations} selectedValues={selectedEducation} onChange={setSelectedEducation} />
         <MultiSelectDropdown label="Skills" options={Object.values(skillsData).flat()} selectedValues={selectedSkills} onChange={setSelectedSkills} />
       </div>
@@ -207,17 +252,17 @@ const DevelopersListPage = () => {
         <div className="flex flex-col gap-6">
           {currentDevelopers.map((dev) => (
             <div
-              key={dev.id}
+              key={dev.userId}
               className="bg-white rounded-2xl shadow-md p-5 flex flex-col sm:flex-row items-center hover:shadow-xl hover:scale-[1.01] transition-transform border border-gray-200"
             >
-              <img src={dev.profilePic} alt={dev.name} className="w-24 h-24 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 border-4 border-purple-200" />
+              <img src={dev.userProfileImageURL} alt={dev.fullName} className="w-24 h-24 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 border-4 border-purple-200" />
               <div className="flex-1">
-                <h2 className="text-xl font-semibold text-blue-800">{dev.name}</h2>
-                <p className="text-sm text-gray-600">{dev.about}</p>
+                <h2 className="text-xl font-semibold text-blue-800">{dev.fullName}</h2>
+                <p className="text-sm text-gray-600">{dev.bio}</p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {dev.experience} year(s) | {dev.location} | {dev.education}
+                  {Experience(dev)} year(s) | {dev.location.city} | {dev.education.map((e) => e.degree).join(", ")}
                 </p>
-                <span className="block text-xs text-gray-400 mt-1">Category: {dev.category}</span>
+                <span className="block text-xs text-gray-400 mt-1">Category: {dev.categories}</span>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {dev.skills.map((skill, idx) => (
                     <span key={idx} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs">{skill}</span>

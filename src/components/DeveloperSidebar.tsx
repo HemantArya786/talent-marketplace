@@ -1,11 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 export default function DeveloperSidebar() {
   const location = useLocation();
+  const { userId } = useParams()
 
   const menuItems = [
     // { name: "dashboard", path: "/" },
-    { name: "view profile", path: "/developer/portfolio/:userId" },
+    { name: "view profile", path: `/developer/portfolio/${userId}` },
     // { name: "find Company", path: "/developer/list" },
     // { name: "post a job", path: "/company/post-job" },
     // { name: "list of applicants", path: "/applicants" },
@@ -20,11 +21,10 @@ export default function DeveloperSidebar() {
           <Link
             key={item.name}
             to={item.path}
-            className={`block px-3 py-2 rounded-md capitalize font-medium ${
-              location.pathname === item.path
+            className={`block px-3 py-2 rounded-md capitalize font-medium ${location.pathname === item.path
                 ? "bg-blue-500 text-white"
                 : "text-gray-700 hover:bg-gray-200"
-            }`}
+              }`}
           >
             {item.name}
           </Link>

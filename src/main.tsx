@@ -5,8 +5,8 @@ import App from "@/App.tsx";
 import "./index.css";
 import Footer from "@/Footer";
 import LoginPage from "./Pages/LoginPage";
-import ResumeUpload from "./Pages/DeveloperResumeUpload";
-import ManualFormPage from "./Pages/DeveloperManualFillup";
+// import ResumeUpload from "./Pages/DeveloperResumeUpload";
+// import ManualFormPage from "./Pages/DeveloperManualFillup";
 import PortfolioPage from "./Pages/DeveloperPortfolioPage";
 import CompanyFormPage from "./Pages/CompanyManualFillUp";
 import CompanyPortfolioPage from "./Pages/CompanyPortfolioPage";
@@ -60,37 +60,39 @@ createRoot(document.getElementById("root")!).render(
 
           <Routes>  
             <Route path="/" element={<App />} />
-            <Route path="/role-selection" element={<RoleSelection />} />
+            <Route path="*" element={<App />} />
+
             <Route path="/signup-client" element={<ClientSignUp />} />
             <Route path="/signup-user" element={<UserSignUp />} />
+            <Route path="/role-selection" element={<RoleSelection />} />
+
             <Route path="/login" element={<LoginPage />} />
-            <Route path="*" element={<App />} />
             {/* <Route path="/inbox" element={<Inbox />} /> */}
-            <Route path="/developer/resume" element={<ResumeUpload />} />
-            <Route path="/developer/personal-details/userId" element={<PersonalDetailsForm />} />
+            {/* <Route path="/developer/resume" element={<ResumeUpload />} /> */}
+
+            <Route path="/developer/personal-details/:userId" element={<PersonalDetailsForm />} />
             <Route path="/developer/experience-details/:userId" element={<JobDetailsForm />} />
             <Route path="/developer/project-details/:userId" element={<ProjectDetailsForm />} />
+            <Route path="/developer/education-details/:userId" element={<EducationForm />} />
             <Route path="/developer/profile-image/:userId" element={<ProfileImageUpload />} />
-            <Route path="/developer/preview/:userId" element={<ManualFormPage />} />
-            {/* <Route path="/developer/portfolio/:userId" element={<PortfolioPage />} /> */}
-            <Route path="/developer/education/:userId" element={<EducationForm />} />
             <Route path="/developer/category/:userId" element={<CategorySkillsForm />} /> 
+            {/* <Route path="/developer/preview/:userId" element={<ManualFormPage />} /> */}
 
             {/* //new add change */}
             <Route path="/developer/portfolio/:userId" element={<DeveloperLayout><PortfolioPage/></DeveloperLayout> } />
             <Route path="/inbox" element={<DeveloperLayout><Inbox/></DeveloperLayout>}/>
 
-            <Route path="/company/portfolio/:clientId" element={<CompanyLayout> <CompanyPortfolioPage /></CompanyLayout>} />
-            <Route path="/company/preview/:clientId" element={<CompanyFormPage />} />
 
             {/*  2 new pages were added for company */}
             <Route path="/company/company-details/:clientId" element={<CompanyDetailsPage />} />
             <Route path="/company/personal-details/:clientId" element={<CompanyPersonDetailsForm />} />
-            <Route path="company/profile-image/:clientId" element={<CompanyProfileImageUpload />} />
+            <Route path="/company/profile-image/:clientId" element={<CompanyProfileImageUpload />} />
             
+            <Route path="/company/portfolio/:clientId" element={<CompanyLayout> <CompanyPortfolioPage /></CompanyLayout>} />
+            <Route path="/company/preview/:clientId" element={<CompanyFormPage />} />
+          
             <Route path="/test" element={<Test />} />
 
-{/* add change please check do correct mapping */}
             <Route path="/company/post-job" element={<CompanyLayout> <JobPostPage/></CompanyLayout>}/>
             <Route path="/company/dashboard" element={<CompanyLayout><CompanyDashboardPage/></CompanyLayout> }/>
             <Route path="/developer/list" element={<CompanyLayout><DevelopersListPage /></CompanyLayout> } />

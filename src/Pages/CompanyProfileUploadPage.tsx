@@ -24,25 +24,19 @@ const CompanyProfileImageUpload = () => {
       try {
         const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`);
 
-        const data = await res.data.clientDetails;
+        const responseData = await res.data;
+        const data = responseData.clientDetails
         console.log(data);
 
-        if (data.clientProfileImageURL) {
-          setProfilePreview(data.clientProfileImageURL);
-          setProfileImageUrl(data.clientProfileImageURL);
-        }
-        if (data.backgroundImageURL) {
-          setCoverPreview(data.clientBackgroundImageURL);
-          setCoverImageUrl(data.clientBackgroundImageURL);
-        }
-        if (data.socials && data.socials.length) {
-          setSocialLinks(data.socials);
-        }
+        setProfilePreview(data.clientProfileImageURL);
+        setCoverPreview(data.clientBackgroundImageURL)
+        setSocialLinks(data.clientSocials);
+
       } catch (err) {
         console.error("Error fetching company data:", err);
       }
     };
-    
+
     fetchData();
   }, [clientId]);
 
@@ -89,27 +83,32 @@ const CompanyProfileImageUpload = () => {
   const addSocialLink = () => setSocialLinks([...socialLinks, { socialType: "", url: "" }]);
   const removeSocialLink = (idx) => setSocialLinks(socialLinks.filter((_, i) => i !== idx));
 
-  // Submission logic
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const payload = {
-      clientProfileImageURL: profileImageUrl,
-      clientBackgroundImageURL: coverImageUrl,
-      socials: socialLinks,
+      clientProfileImageURL: profileImageUrl || profilePreview,
+      clientBackgroundImageURL: coverImageUrl || coverPreview,
+      clientSocials: socialLinks
     };
 
     try {
-      const res = await axios.post(`http://localhost:3000/api/clients/${clientId}/client-details`, payload);
-      alert("Company profile updated!");
-      console.log(res.data.details);
-    } catch (err) {
-      console.error("Update error:", err);
-      alert("Update failed. Please try again.");
+      const res = await axios.put(
+        `http://localhost:3000/api/clients/${clientId}/client-details`,
+        payload
+      );
+
+      alert("Company details updated successfully!");
+      navigate(`/company/portfolio/${clientId}`)
+      console.log(res.data);
+    }
+    catch (error) {
+      console.error("Error details:", error.response?.data);
+      alert("Failed to submit client details.");
     }
   };
 
-  const handleSkip = () => navigate("/next-page");
+  // const handleSkip = () => navigate("/next-page");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -158,20 +157,27 @@ const CompanyProfileImageUpload = () => {
           {/* Social Media Links */}
           <div className="mt-24">
             <h3 className="text-lg font-semibold mb-4">Social Media Links</h3>
+
             {socialLinks.map((link, idx) => (
+
               <div key={idx} className="flex flex-col md:flex-row gap-3 mb-3 items-center">
+
                 <select value={link.socialType}
                   onChange={(e) => handleSocialChange(idx, "socialType", e.target.value)}
                   className="border rounded px-3 py-2 flex-1">
                   <option value="">Select Platform</option>
+
                   {socialPlatforms.map((platform) => (
-                    <option key={platform} value={platform}>{platform}</option>
+                    <option key={platform} value={platform}>
+                      {platform}</option>
                   ))}
                 </select>
+
                 <input type="url" placeholder="https://example.com"
                   value={link.url}
                   onChange={(e) => handleSocialChange(idx, "url", e.target.value)}
                   className="border rounded px-3 py-2 flex-1" />
+
                 {socialLinks.length > 1 && (
                   <button type="button" onClick={() => removeSocialLink(idx)}
                     className="text-red-500 hover:underline">Remove</button>
@@ -190,10 +196,10 @@ const CompanyProfileImageUpload = () => {
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">
               Submit
             </button>
-            <button onClick={handleSkip}
+            {/* <button onClick={handleSkip}
               className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-md">
               Skip
-            </button>
+            </button> */}
           </div>
         </div>
 

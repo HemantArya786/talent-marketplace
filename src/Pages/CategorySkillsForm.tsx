@@ -238,7 +238,8 @@ export default function CategorySkillsForm() {
 
       alert("Categories and skills added successfully!");
       console.log(payload);
-      navigate(`/developer/experience-details/${userId}`)
+      navigate(`/developer/portfolio/${userId}`)
+      alert("Profile created succesfully!!!!")
 
     } catch (err) {
       console.error("Error submitting form:", err);
@@ -413,13 +414,6 @@ export default function CategorySkillsForm() {
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
             >
               Submit
-            </button>
-            <button
-              type="button"
-              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
-              onClick={() => console.log("Skipped")}
-            >
-              Skip this page
             </button>
           </div>
         </form>

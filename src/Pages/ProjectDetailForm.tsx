@@ -99,7 +99,7 @@ const ProjectDetailsForm = () => {
 
       await Promise.all(requests);
       alert("Projects saved successfully!");
-      navigate(`/developer/next-step/${userId}`); // update route as needed
+      navigate(`/developer/education-details/${userId}`);
     } catch (error) {
       console.error("Error submitting projects:", error);
       alert("Failed to submit projects.");
@@ -107,7 +107,7 @@ const ProjectDetailsForm = () => {
   };
 
   const handleSkip = () => {
-    navigate("/next-page"); // Replace with your actual route
+    navigate(`/developer/education-details/${userId}`);
   };
 
   return (

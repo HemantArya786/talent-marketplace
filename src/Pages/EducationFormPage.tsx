@@ -7,7 +7,7 @@ const degreeOptions = ['SSC', '12th/Intermediate', 'Bachelors', 'Masters', 'Othe
 const EducationForm = () => {
   const [educationList, setEducationList] = useState([
     {
-      _id:'',
+      _id: '',
       instituteName: '',
       degree: '',
       fieldOfStudy: '',
@@ -54,7 +54,18 @@ const EducationForm = () => {
     if (lastEducationRef.current) {
       lastEducationRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [educationList.length]);
+
+    const fetchData = async () => {
+
+      const res = await fetch(`http://localhost:3000/api/users/${userId}`)
+      const data = await res.json()
+
+      setEducationList(data.education)
+      console.log(data.education);
+    }
+    fetchData()
+
+  }, [educationList.length, userId]);
 
 
   const handleSubmit = async (e) => {
@@ -83,8 +94,8 @@ const EducationForm = () => {
 
       await Promise.all(requests);
       alert("Education details saved successfully!");
-      navigate(`/developer/preview/${userId}`); 
-    } 
+      navigate(`/developer/profile-image/${userId}`);
+    }
     catch (error) {
       console.error("Error submitting education details:", error);
       alert("Failed to submit education details.");
@@ -92,7 +103,7 @@ const EducationForm = () => {
   };
 
   const handleSkip = () => {
-    navigate('/next-page');
+    navigate(`/developer/profile-image/${userId}`);
   };
 
   return (
@@ -138,7 +149,7 @@ const EducationForm = () => {
                 type="text"
                 name="schoolName"
                 placeholder="School/College Name"
-                value={education.schoolName}
+                value={education.instituteName}
                 onChange={(e) => handleChange(index, e)}
                 className="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
@@ -171,14 +182,14 @@ const EducationForm = () => {
                 <input
                   type="month"
                   name="startDate"
-                  value={education.startDate}
+                  value={education.startDate.slice(0, 7)}
                   onChange={(e) => handleChange(index, e)}
                   className="w-1/2 border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <input
                   type="month"
                   name="endDate"
-                  value={education.endDate}
+                  value={education.endDate.slice(0, 7)}
                   onChange={(e) => handleChange(index, e)}
                   className="w-1/2 border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />

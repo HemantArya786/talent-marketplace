@@ -5,4 +5,4 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const BASE_API = `http://localhost:3000`
+export const BASE_API = `https://ai-markteplace-gtmotion-ai.onrender.com`

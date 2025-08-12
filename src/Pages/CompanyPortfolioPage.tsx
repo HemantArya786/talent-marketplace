@@ -7,6 +7,7 @@ import {
   Save,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { BASE_API } from "@/lib/utils";
 
 type ClientType = {
   firebaseUid: string;
@@ -132,7 +133,7 @@ const CompanyPortfolioPage = () => {
 
     const fetchData = async () => {
 
-      const response = await fetch(`http://localhost:3000/api/clients/${clientId}`, {
+      const response = await fetch(`${BASE_API}/api/clients/${clientId}`, {
         method: "GET",
         headers: { "Content-type": "application/json" }
       })

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CameraIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
+import { BASE_API } from "@/lib/utils";
 
 const socialPlatforms = ["LINKEDIN", "GITHUB", "PORTFOLIO", "INSTAGRAM", "TWITTER"];
 
@@ -22,7 +23,7 @@ const CompanyProfileImageUpload = () => {
     const fetchData = async () => {
 
       try {
-        const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`);
+        const res = await axios.get(`${BASE_API}/api/clients/${clientId}`);
 
         const responseData = await res.data;
         const data = responseData.clientDetails
@@ -51,7 +52,7 @@ const CompanyProfileImageUpload = () => {
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await fetch("http://localhost:3000/api/upload-image", {
+      const res = await fetch(`${BASE_API}/api/upload-image`, {
         method: "POST",
         body: formData,
       });
@@ -94,7 +95,7 @@ const CompanyProfileImageUpload = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/clients/${clientId}/client-details`,
+        `${BASE_API}/api/clients/${clientId}/client-details`,
         payload
       );
 

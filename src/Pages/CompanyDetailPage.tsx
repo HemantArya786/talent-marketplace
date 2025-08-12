@@ -3,6 +3,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { BASE_API } from "@/lib/utils";
 
 const CompanyDetailsPage = () => {
 
@@ -32,7 +33,7 @@ const CompanyDetailsPage = () => {
 
   //   const fetchData = async () => {
 
-  //     const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`)
+  //     const res = await axios.get(`${BASE_API}/api/clients/${clientId}`)
   //     const data = await res.data
   //     console.log(data);
   //     setFormData(data.clientDetails)
@@ -71,14 +72,14 @@ const CompanyDetailsPage = () => {
     }
 
     try {
-      const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`);
+      const res = await axios.get(`${BASE_API}/api/clients/${clientId}`);
       const client = res.data;
 
       if (client.clientDetails && client.clientDetails.length > 0) {
         const detailsId = client.clientDetails._id;
 
         await axios.put(
-          `http://localhost:3000/api/clients/${clientId}/client-details/${detailsId}`,
+          `${BASE_API}/api/clients/${clientId}/client-details/${detailsId}`,
           formData
         );
 
@@ -87,7 +88,7 @@ const CompanyDetailsPage = () => {
       }
       else {
         await axios.post(
-          `http://localhost:3000/api/clients/${clientId}/client-details`,
+          `${BASE_API}/api/clients/${clientId}/client-details`,
           formData
         );
         alert("Company details created successfully!");

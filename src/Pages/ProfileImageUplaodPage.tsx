@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CameraIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { AutoCloseModal } from "@/lib/Modal"; // Import the modal
+import { BASE_API } from "@/lib/utils";
 
 const socialPlatforms = ["LINKEDIN", "GITHUB", "PORTFOLIO", "INSTAGRAM", "TWITTER"];
 
@@ -33,7 +34,7 @@ const ProfileImageUpload = () => {
       const formDataImage = new FormData();
       formDataImage.append("image", file);
 
-      const res = await fetch("http://localhost:3000/api/upload-image", {
+      const res = await fetch(`${BASE_API}/api/upload-image`, {
         method: "POST",
         body: formDataImage,
       });
@@ -62,7 +63,7 @@ const ProfileImageUpload = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+      const res = await fetch(`${BASE_API}/api/users/${userId}`, {
         method: "GET",
         headers: {
           "content-type": "application/json"
@@ -105,7 +106,7 @@ const ProfileImageUpload = () => {
     };
 
     try {
-      const res = await axios.put(`http://localhost:3000/api/users/${userId}`, payload);
+      const res = await axios.put(`${BASE_API}/api/users/${userId}`, payload);
 
       setModalMessage("Images and Social links added successfully!");
       setModalType("success");

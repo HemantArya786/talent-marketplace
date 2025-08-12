@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/ContextApi";
+import { BASE_API } from "@/lib/utils";
 
 
 export default function Header() {
@@ -14,7 +15,7 @@ export default function Header() {
 
   // useEffect(() => {
   //   const fetchData = async () => {
-  //     const res = fetch(`http://localhost:3000/api/check`)
+  //     const res = fetch(`${BASE_API}/api/check`)
   //   }
 
   // }, [user, userLoginned])
@@ -22,7 +23,7 @@ export default function Header() {
   async function handleLogout() {
 
     try {
-      await fetch('http:localhost:3000/auth/api/logout', { method: 'POST', credentials: 'include' });
+      await fetch(`${BASE_API}/auth/api/logout`, { method: 'POST', credentials: 'include' });
 
       setUser(null);
       setUserLoginned(false);

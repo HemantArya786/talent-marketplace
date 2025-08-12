@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { BASE_API } from "@/lib/utils";
 
 const CompanyPersonDetailsForm = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const CompanyPersonDetailsForm = () => {
   useEffect(() => {
 
     const fetchData = async () => {
-      const res = await fetch(`http://localhost:3000/api/clients/${clientId}`);
+      const res = await fetch(`${BASE_API}/api/clients/${clientId}`);
       const data = await res.json();
 
       const normalizedData = {
@@ -45,7 +46,7 @@ const CompanyPersonDetailsForm = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/clients/${clientId}`,
+        `${BASE_API}/api/clients/${clientId}`,
         formData
       );
 

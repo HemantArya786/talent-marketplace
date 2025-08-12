@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth, provider } from '@/lib/firebase'
 import { signInWithPopup } from 'firebase/auth'
 import { useAuth } from "@/context/ContextApi";
+import { BASE_API } from "@/lib/utils";
 
 export default function ClientSignUp() {
 
@@ -50,7 +51,7 @@ export default function ClientSignUp() {
                 firebaseToken: token
             }
 
-            const apiResponse = await fetch('http://localhost:3000/auth/api/client-google-signup', {
+            const apiResponse = await fetch(`${BASE_API}/auth/api/client-google-signup`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-type': 'application/json' },
@@ -82,7 +83,7 @@ export default function ClientSignUp() {
         const params = new URLSearchParams({
             response_type: 'code',
             client_id: import.meta.env.VITE_LINKEDIN_CLIENT_ID,
-            redirect_uri: "http://localhost:3000/auth/api/client-linkedin-signup",
+            redirect_uri: `${BASE_API}/auth/api/client-linkedin-signup`,
             scope: "openid email profile"
         })
 

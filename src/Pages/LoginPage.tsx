@@ -3,6 +3,7 @@ import Image from "../../public/image.jpg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth, provider } from "@/lib/firebase";
 import { signInWithPopup } from "firebase/auth";
+import { BASE_API } from "@/lib/utils";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -59,7 +60,7 @@ export default function LoginPage() {
       };
 
       const apiResponse = await fetch(
-        "http://localhost:3000/auth/api/google-login",
+        `${BASE_API}/auth/api/google-login`,
         {
           method: "POST",
           credentials: "include",
@@ -91,7 +92,7 @@ export default function LoginPage() {
     const params = new URLSearchParams({
       response_type: "code",
       client_id: import.meta.env.VITE_LINKEDIN_CLIENT_ID,
-      redirect_uri: "http://localhost:3000/auth/api/linkedin-login",
+      redirect_uri: `${BASE_API}/auth/api/linkedin-login`,
       scope: "openid email profile",
     });
 

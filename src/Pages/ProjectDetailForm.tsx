@@ -1,4 +1,5 @@
 import { AutoCloseModal } from "@/lib/Modal";
+import { BASE_API } from "@/lib/utils";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,7 +27,7 @@ const ProjectDetailsForm = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+      const res = await fetch(`${BASE_API}/api/users/${userId}`);
       const data = await res.json();
 
       setProjects(data.projects);
@@ -78,7 +79,7 @@ const ProjectDetailsForm = () => {
       const formData = new FormData();
       formData.append("image", file);
 
-      const res = await fetch("http://localhost:3000/api/upload-image", {
+      const res = await fetch(`${BASE_API}/api/upload-image`, {
         method: "POST",
         body: formData,
       });
@@ -109,12 +110,12 @@ const ProjectDetailsForm = () => {
 
         if (proj._id) {
           return axios.put(
-            `http://localhost:3000/api/users/${userId}/projects/${proj._id}`,
+            `${BASE_API}/api/users/${userId}/projects/${proj._id}`,
             proj
           );
         } else {
           return axios.post(
-            `http://localhost:3000/api/users/${userId}/projects`,
+            `${BASE_API}/api/users/${userId}/projects`,
             proj
           );
         }

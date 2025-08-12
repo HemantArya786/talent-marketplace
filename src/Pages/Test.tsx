@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { BASE_API } from "@/lib/utils";
 
 type UserType = {
   userId: number;
@@ -171,7 +172,7 @@ const Test = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+        const response = await fetch(`${BASE_API}/api/users/${userId}`, {
           withCredentials: true,
           method: "GET",
           headers: { "Content-Type": "application/json" },

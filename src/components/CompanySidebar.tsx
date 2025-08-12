@@ -1,3 +1,4 @@
+import { BASE_API } from "@/lib/utils";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function CompanySidebar() {
@@ -18,7 +19,7 @@ export default function CompanySidebar() {
   const handleLogout = async () => {
 
     try {
-      const res = await fetch(`http://localhost:3000/auth/api/logout`, {
+      const res = await fetch(`${BASE_API}/auth/api/logout`, {
         method: "POST",
         credentials: "include"
       })

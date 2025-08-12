@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { data, useNavigate, useParams } from "react-router-dom";
+import { BASE_API } from "@/lib/utils";
 
 // Initial object templates for each array-of-object field
 const initialProject = {
@@ -73,7 +74,7 @@ const ManualFormPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+        const res = await fetch(`${BASE_API}/api/users/${userId}`);
         const data = await res.json();
 
         console.log(data);
@@ -111,7 +112,7 @@ const ManualFormPage = () => {
 
   //   const fetchData = async () => {
 
-  //     const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+  //     const res = await fetch(`${BASE_API}/api/users/${userId}`, {
   //       method: "GET",
   //       headers: {
   //         "content-type": "application/json"
@@ -297,7 +298,7 @@ const ManualFormPage = () => {
     try {
       const formDataImage = new FormData();
       formDataImage.append("image", file);
-      const res = await fetch("http://localhost:3000/api/upload-image", {
+      const res = await fetch(`${BASE_API}/api/upload-image`, {
         method: "POST",
         body: formDataImage,
       });
@@ -340,7 +341,7 @@ const ManualFormPage = () => {
     };
 
     try {
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+      const res = await fetch(`${BASE_API}/api/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalFormData),

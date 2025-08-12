@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AutoCloseModal } from "@/lib/Modal";
+import { BASE_API } from "@/lib/utils";
 
 const categoryOptions = [
   "Generative AI",
@@ -209,7 +210,7 @@ export default function CategorySkillsForm() {
 
     const fetchData = async () => {
 
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`,
+      const res = await fetch(`${BASE_API}/api/users/${userId}`,
         {
           method: "GET",
           headers: {
@@ -239,7 +240,7 @@ export default function CategorySkillsForm() {
     };
 
     try {
-      await axios.put(`http://localhost:3000/api/users/${userId}`, payload);
+      await axios.put(`${BASE_API}/api/users/${userId}`, payload);
 
       setModalMessage("Category and Skills added successfully, Profile Completed!");
       setModalType("success");

@@ -1,3 +1,4 @@
+import { BASE_API } from "@/lib/utils";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
@@ -205,7 +206,7 @@ const DevelopersListPage = () => {
     const fetchData = async () => {
 
       try {
-        const res = await axios.get(`http://localhost:3000/api/users`)
+        const res = await axios.get(`${BASE_API}/api/users`)
 
         const responseData = await res.data
         setDevelopers(responseData)

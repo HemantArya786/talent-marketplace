@@ -1,3 +1,4 @@
+import { BASE_API } from "@/lib/utils";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
@@ -8,7 +9,7 @@ export const ContextApi = ({ children }) => {
 
     useEffect(() => {
 
-        fetch("http://localhost:3000/api/users/check", {
+        fetch(`${BASE_API}/api/users/check`, {
             method: "GET",
             credentials: "include",
         })

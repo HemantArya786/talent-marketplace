@@ -38,7 +38,7 @@
 //     e.preventDefault();
 
 //     try {
-//       const res = await fetch("http://localhost:3000/api/clients", {
+//       const res = await fetch(`${BASE_API}/api/clients`, {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify(formData),
@@ -260,6 +260,7 @@
 import React, { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { BASE_API } from "@/lib/utils";
 
 
 const initialClientDetails = () => ({
@@ -297,7 +298,7 @@ const CompanyFormPage = () => {
 
     const fetchClient = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/clients/${clientId}`);
+        const res = await fetch(`${BASE_API}/api/clients/${clientId}`);
         const data = await res.json();
 
         if (res.ok) {
@@ -386,7 +387,7 @@ const CompanyFormPage = () => {
 
     try {
 
-      const res = await fetch(`http://localhost:3000/api/clients/${id}`, {
+      const res = await fetch(`${BASE_API}/api/clients/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UploadCloud, FileText, ArrowRightCircle } from "lucide-react";
+import { BASE_API } from "@/lib/utils";
 
 const ResumeUpload = () => {
   const [resumeFile, setResumeFile] = useState(null);
@@ -20,7 +21,7 @@ const ResumeUpload = () => {
     formData.append("resume", resumeFile);
 
     try {
-      const response = await fetch("http://localhost:5000/api/parser/upload", {
+      const response = await fetch(`${BASE_API}/api/parser/upload`, {
         method: "POST",
         body: formData,
       });

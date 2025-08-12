@@ -1,4 +1,5 @@
 import { AutoCloseModal } from "@/lib/Modal";
+import { BASE_API } from "@/lib/utils";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -40,7 +41,7 @@ const JobDetailsForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+        const res = await fetch(`${BASE_API}/api/users/${userId}`);
         const data = await res.json();
 
         if (Array.isArray(data.experience) && data.experience.length > 0) {
@@ -99,12 +100,12 @@ const JobDetailsForm = () => {
 
         if (exp._id) {
           return axios.put(
-            `http://localhost:3000/api/users/${userId}/experience/${exp._id}`,
+            `${BASE_API}/api/users/${userId}/experience/${exp._id}`,
             exp
           );
         } else {
           return axios.post(
-            `http://localhost:3000/api/users/${userId}/experience`,
+            `${BASE_API}/api/users/${userId}/experience`,
             exp
           );
         }

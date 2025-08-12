@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BASE_API } from "@/lib/utils";
 
 export default function Hero() {
   const [search, setSearch] = useState("");
@@ -26,7 +27,7 @@ export default function Hero() {
 
       try {
         const res = await axios.get(
-          `http://localhost:3000/api/search/search-suggestions?q=${encodeURIComponent(
+          `${BASE_API}/api/search/search-suggestions?q=${encodeURIComponent(
             debouncedSearch)}`)
 
         setResults(res.data?.users || [])

@@ -4,6 +4,7 @@ import "react-phone-input-2/lib/style.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AutoCloseModal } from "@/lib/Modal";
+import { BASE_API } from "@/lib/utils";
 
 const PersonalDetailsForm = () => {
 
@@ -26,7 +27,7 @@ const PersonalDetailsForm = () => {
 
     const fetchData = async () => {
 
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+      const res = await fetch(`${BASE_API}/api/users/${userId}`);
       const data = await res.json();
 
       const normalizedData = {
@@ -89,7 +90,7 @@ const PersonalDetailsForm = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/users/${userId}`,
+        `${BASE_API}/api/users/${userId}`,
         formData
       );
 

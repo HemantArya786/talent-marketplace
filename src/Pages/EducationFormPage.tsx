@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AutoCloseModal } from '@/lib/Modal';
+import { BASE_API } from '@/lib/utils';
 
 const degreeOptions = ['SSC', '12th/Intermediate', 'Bachelors', 'Masters', 'Others'];
 
@@ -59,7 +60,7 @@ const EducationForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+        const res = await fetch(`${BASE_API}/api/users/${userId}`);
         const data = await res.json();
 
         if (Array.isArray(data.education) && data.education.length > 0) {
@@ -91,14 +92,14 @@ const EducationForm = () => {
 
         if (education._id) {
           return axios.put(
-            `http://localhost:3000/api/users/${userId}/educations/${education._id}`,
+            `${BASE_API}/api/users/${userId}/educations/${education._id}`,
             education
           );
 
         }
         else {
           return axios.post(
-            `http://localhost:3000/api/users/${userId}/educations`,
+            `${BASE_API}/api/users/${userId}/educations`,
             education
           );
         }

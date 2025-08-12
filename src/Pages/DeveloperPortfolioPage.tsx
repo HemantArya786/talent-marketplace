@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { BASE_API } from "@/lib/utils";
 
 type UserType = {
 
@@ -168,7 +169,7 @@ const PortfolioPage = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+        const response = await fetch(`${BASE_API}/api/users/${userId}`, {
           withCredentials: true,
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -222,7 +223,7 @@ const PortfolioPage = () => {
         const experienceId = exp._id;
 
         const updateData = async () => {
-          const response = await fetch(`http://localhost:3000/api/users/${userId}/experience/${experienceId}`, {
+          const response = await fetch(`${BASE_API}/api/users/${userId}/experience/${experienceId}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -253,7 +254,7 @@ const PortfolioPage = () => {
         const trainingId = training._id;
 
         const updateData = async () => {
-          const response = await fetch(`http://localhost:3000/api/users/${userId}/training/${trainingId}`, {
+          const response = await fetch(`${BASE_API}/api/users/${userId}/training/${trainingId}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -283,7 +284,7 @@ const PortfolioPage = () => {
         const educationId = edu._id;
 
         const updateData = async () => {
-          const response = await fetch(`http://localhost:3000/api/users/${userId}/education/${educationId}`, {
+          const response = await fetch(`${BASE_API}/api/users/${userId}/education/${educationId}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -315,7 +316,7 @@ const PortfolioPage = () => {
 
         const updateData = async () => {
 
-          const response = await fetch(`http://localhost:3000/api/users/${userId}/projects/${projectId}`, {
+          const response = await fetch(`${BASE_API}/api/users/${userId}/projects/${projectId}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",

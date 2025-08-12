@@ -329,7 +329,7 @@ const CompanyPortfolioPage = () => {
 
       {/* About Company */}
       <section className="mb-6 relative">
-        <h2 className="text-xl font-semibold mb-2">About Company || {editValues.clientDetails.establishedYear}</h2>
+        <h2 className="text-xl font-semibold mb-2">About Company </h2>
         {editSection === "about" ? (
           <>
             <textarea
@@ -493,11 +493,14 @@ const CompanyPortfolioPage = () => {
           <div>
 
             <h2>
-            <strong>Company:</strong> {company.clientDetails.clientName}
+              <strong>Company:</strong> {company.clientDetails.clientName}
             </h2>
             {/* <p><strong>Head Office:</strong> {company.location.city}, {company.location.country}</p> */}
             <p><strong>Company Size:</strong> {company.clientDetails.clientSize}</p>
             <p><strong>Industry:</strong> {company.clientDetails.industry}</p>
+            <p>
+              <strong>Since: {company.clientDetails.establishedYear}</strong>
+            </p>
             <p>
               <strong>Website:</strong>{" "}
               <a

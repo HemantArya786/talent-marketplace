@@ -11,7 +11,6 @@ export default function UserSignUp() {
 
     const { setUser, setUserLoginned } = useAuth();
 
-
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -35,7 +34,6 @@ export default function UserSignUp() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Form Data:", formData);
-        // Add validation or backend API call here
     };
 
     const handleGoogleLogin = async () => {
@@ -63,11 +61,6 @@ export default function UserSignUp() {
 
             if (!apiResponse.ok) {
                 throw new Error('Failed to login.')
-            }
-            if (apiResponse.status === 302) {
-
-                alert('User already exists, redirecting to login...');
-                navigate('/login');
             }
             const responseData = await apiResponse.json()
 

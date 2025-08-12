@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CameraIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
-
+import { AutoCloseModal } from "@/lib/Modal"; // Import the modal
 
 const socialPlatforms = ["LINKEDIN", "GITHUB", "PORTFOLIO", "INSTAGRAM", "TWITTER"];
 
@@ -16,10 +16,13 @@ const ProfileImageUpload = () => {
 
   const [socialLinks, setSocialLinks] = useState([{ socialType: "", url: "" }]);
 
-  const navigate = useNavigate();
-  const { userId } = useParams()
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState<"success" | "error">("success");
 
-  //! Image upload AWS
+  const navigate = useNavigate();
+  const { userId } = useParams();
+
   const handleImageChange = async (e, type) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -40,49 +43,42 @@ const ProfileImageUpload = () => {
       const data = await res.json();
       const imageUrl = data.imageUrl;
 
-      console.log(`${type} image uploaded:`, imageUrl);
-
       if (type === "profile") {
         setProfileImage(file);
         setProfilePreview(preview);
         setProfileImageUrl(imageUrl);
-      }
-      else if (type === "cover") {
+      } else if (type === "cover") {
         setCoverImage(file);
         setCoverPreview(preview);
         setCoverImageUrl(imageUrl);
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Failed to upload image.");
+      setModalMessage("Failed to upload image.");
+      setModalType("error");
+      setShowModal(true);
     }
   };
 
   useEffect(() => {
-
     const fetchData = async () => {
-
       const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
         method: "GET",
         headers: {
           "content-type": "application/json"
         }
-      })
+      });
 
-      const resData = await res.json()
+      const resData = await res.json();
 
-      setProfilePreview(resData.userProfileImageURL)
-      setCoverPreview(resData.backgroundImageURL)
-      setSocialLinks(resData.socials)
-    }
-    fetchData()
+      setProfilePreview(resData.userProfileImageURL);
+      setCoverPreview(resData.backgroundImageURL);
+      setSocialLinks(resData.socials);
+    };
 
-    console.log(coverPreview, profilePreview, socialLinks);
+    fetchData();
+  }, [userId]);
 
-
-  }, [userId, coverPreview, profilePreview, socialLinks])
-
-  // Social links handlers
   const handleSocialChange = (index, field, value) => {
     const updatedLinks = [...socialLinks];
     updatedLinks[index][field] = value;
@@ -109,26 +105,30 @@ const ProfileImageUpload = () => {
     };
 
     try {
-      const res = await axios.put(`http://localhost:3000/api/users/${userId}`, payload)
+      const res = await axios.put(`http://localhost:3000/api/users/${userId}`, payload);
 
-      const responseData = res
-      alert("Images and social media links ready to send!")
-      navigate(`/developer/category/${userId}`)
-      console.log("Form data:", responseData.data)
-    }
-    catch (err) {
-      console.log("Unable to post the data", err);
+      setModalMessage("Images and Social links added successfully!");
+      setModalType("success");
+      setShowModal(true);
+
+      setTimeout(() => {
+        navigate(`/developer/category/${userId}`);
+      }, 2000);
+    } catch (err) {
+      console.error("Unable to post the data", err);
+      setModalMessage("Failed to submit data.");
+      setModalType("error");
+      setShowModal(true);
     }
   };
 
   const handleSkip = () => {
-    navigate(`/developer/category/${userId}`)
+    navigate(`/developer/category/${userId}`);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex flex-1">
-        {/* Left Upload & Form Panel */}
         <div className="w-full md:w-1/2 p-10 flex flex-col justify-center bg-white">
           <h2 className="text-3xl font-bold mb-6 text-gray-800">
             Upload Your Images
@@ -199,7 +199,7 @@ const ProfileImageUpload = () => {
                   onChange={(e) => handleSocialChange(index, "socialType", e.target.value)}
                   className="border rounded px-3 py-2 flex-1"
                 >
-                  <option value={link.socialType}>Select Platform</option>
+                  <option value="">Select Platform</option>
                   {socialPlatforms.map((platform) => (
                     <option key={platform} value={platform}>
                       {platform}
@@ -211,9 +211,7 @@ const ProfileImageUpload = () => {
                   type="url"
                   placeholder="https://example.com"
                   value={link.url}
-                  onChange={(e) =>
-                    handleSocialChange(index, "url", e.target.value)
-                  }
+                  onChange={(e) => handleSocialChange(index, "url", e.target.value)}
                   className="border rounded px-3 py-2 flex-1"
                 />
                 {socialLinks.length > 1 && (
@@ -264,6 +262,15 @@ const ProfileImageUpload = () => {
           />
         </div>
       </div>
+
+      {/* AutoClose Modal */}
+      {showModal && (
+        <AutoCloseModal
+          type={modalType}
+          message={modalMessage}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };

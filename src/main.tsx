@@ -98,16 +98,10 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/developer/list" element={<CompanyLayout><DevelopersListPage /></CompanyLayout> } />
             <Route path="/inbox" element={<CompanyLayout ><Inbox/></CompanyLayout>} />
             <Route path="/company/applicants" element={<CompanyLayout><ApplicantsPage/></CompanyLayout> }/>
-
-
-
-            
-
           </Routes>
         </div>
 
         <Footer />
-
       </ContextApi >
     </BrowserRouter >
   </StrictMode >

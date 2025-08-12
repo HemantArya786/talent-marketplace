@@ -1,13 +1,18 @@
+import { AutoCloseModal } from "@/lib/Modal";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const JobDetailsForm = () => {
   const navigate = useNavigate();
-  const { userId } = useParams()
+  const { userId } = useParams();
+
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState<"success" | "error">("success");
 
   type Experience = {
-    _id: string,
+    _id: string;
     title: string;
     companyName: string;
     location: string;
@@ -18,21 +23,21 @@ const JobDetailsForm = () => {
     description: string;
   };
 
-  const [experiences, setExperiences] = useState<Experience[]>([{
-    _id: "",
-    title: "",
-    companyName: "",
-    location: "",
-    startDate: "",
-    endDate: "",
-    currentlyWorking: false,
-    workType: "",
-    description: "",
-  }]);
-
+  const [experiences, setExperiences] = useState<Experience[]>([
+    {
+      _id: "",
+      title: "",
+      companyName: "",
+      location: "",
+      startDate: "",
+      endDate: "",
+      currentlyWorking: false,
+      workType: "",
+      description: "",
+    },
+  ]);
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         const res = await fetch(`http://localhost:3000/api/users/${userId}`);
@@ -49,9 +54,7 @@ const JobDetailsForm = () => {
     fetchData();
   }, [userId]);
 
-
   const handleChange = (index, e) => {
-
     const { name, value, type, checked } = e.target;
     const newExperiences = [...experiences];
     newExperiences[index][name] = type === "checkbox" ? checked : value;
@@ -94,14 +97,12 @@ const JobDetailsForm = () => {
 
         if (!exp._id) delete exp._id;
 
-        //!If updating the existing experience will be required in future while parsing the data
         if (exp._id) {
           return axios.put(
             `http://localhost:3000/api/users/${userId}/experience/${exp._id}`,
             exp
           );
-        }
-        else {
+        } else {
           return axios.post(
             `http://localhost:3000/api/users/${userId}/experience`,
             exp
@@ -110,12 +111,20 @@ const JobDetailsForm = () => {
       });
 
       await Promise.all(requests);
-      alert("Projects added successfully!");
-      navigate(`/developer/project-details/${userId}`);
-    }
-    catch (error) {
+
+      setModalMessage("Experience added successfully!");
+      setModalType("success");
+      setShowModal(true);
+
+      setTimeout(() => {
+        navigate(`/developer/project-details/${userId}`);
+      }, 2100);
+    } catch (error) {
       console.error("Error submitting job experiences:", error);
-      alert("Failed to submit job experiences.");
+
+      setModalMessage("Failed to submit job experiences.");
+      setModalType("error");
+      setShowModal(true);
     }
   };
 
@@ -252,7 +261,7 @@ const JobDetailsForm = () => {
                   name="description"
                   value={exp.description}
                   onChange={(e) => handleChange(index, e)}
-                  rows="3"
+                  rows={3}
                   className="w-full px-3 py-2 border rounded-md"
                   placeholder="What did you do in this role?"
                 ></textarea>
@@ -279,13 +288,21 @@ const JobDetailsForm = () => {
             <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md"
-
             >
               Next
             </button>
           </div>
         </form>
       </div>
+
+      {/* Modal message */}
+      {showModal && (
+        <AutoCloseModal
+          message={modalMessage}
+          onClose={() => setShowModal(false)}
+          type={modalType}
+        />
+      )}
 
       {/* Image Section */}
       <div className="hidden md:block w-1/2 h-full">

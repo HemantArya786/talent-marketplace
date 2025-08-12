@@ -28,18 +28,18 @@ const CompanyDetailsPage = () => {
     industry: ""
   });
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const fetchData = async () => {
+  //   const fetchData = async () => {
 
-      const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`)
-      const data = await res.data
-      console.log(data.clientDetails);
-      setFormData(data.clientDetails)
-    }
-    fetchData()
+  //     const res = await axios.get(`http://localhost:3000/api/clients/${clientId}`)
+  //     const data = await res.data
+  //     console.log(data);
+  //     setFormData(data.clientDetails)
+  //   }
+  //   fetchData()
 
-  }, [clientId])
+  // }, [clientId])
 
   const handleChange = (e) => {
     const { name, value } = e.target;

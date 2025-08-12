@@ -9,7 +9,6 @@ export default function ClientSignUp() {
 
     const { user, userLoginned, setUser, setUserLoginned } = useAuth();
 
-
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -71,7 +70,7 @@ export default function ClientSignUp() {
             setUserLoginned(true)
 
             console.log(responseData);
-            navigate(`/company/preview/${responseData.client.clientId}`)
+            navigate(`/company/personal-details/${responseData.client.clientId}`)
         }
         catch (error) {
             console.log(error)

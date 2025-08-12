@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function CompanySidebar() {
   const location = useLocation();
@@ -12,6 +12,26 @@ export default function CompanySidebar() {
     { name: "list of applicants", path: "/company/applicants" },
     { name: "messages", path: "/inbox" },
   ];
+
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+
+    try {
+      const res = await fetch(`http://localhost:3000/auth/api/logout`, {
+        method: "POST",
+        credentials: "include"
+      })
+
+      if (res.ok) {
+        alert("User logout successfuly!")
+        navigate(`/login`)
+      }
+    } catch (err) {
+      console.log("failed to logout!", err);
+    }
+
+  }
 
   return (
     <aside className="w-64 bg-white shadow-lg p-4 flex flex-col">
@@ -31,7 +51,7 @@ export default function CompanySidebar() {
         ))}
       </nav>
       <button
-        onClick={() => alert("Logged out!")}
+        onClick={handleLogout}
         className="mt-auto px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
       >
         Logout

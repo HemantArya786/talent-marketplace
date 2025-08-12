@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "../../public/image.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth, provider } from "@/lib/firebase";
 import { signInWithPopup } from "firebase/auth";
 
@@ -11,8 +11,26 @@ export default function LoginPage() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const location = useLocation()
+
+  const closeModal = () => setShowModal(false);
+
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const userExists = params.get('userExists')
+
+
+    if (userExists === 'true') {
+      setShowModal(true);
+      // alert('User already exists. Please log in.')
+    }
+  }, [location])
+
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,6 +108,25 @@ export default function LoginPage() {
           className="w-full h-full object-cover"
         />
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-2">User Already Exists</h3>
+            <p className="text-sm text-gray-700 mb-4">
+              Please log in.
+            </p>
+            <button
+              onClick={closeModal}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
 
       {/* Left: Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center px-6 md:px-12">
@@ -175,6 +212,7 @@ export default function LoginPage() {
               Log In
             </button>
           </form>
+
 
           {/* Redirect */}
           <p className="text-center text-sm text-gray-600">

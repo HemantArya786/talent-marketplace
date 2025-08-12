@@ -12,6 +12,13 @@ export default function Header() {
 
   const navigate = useNavigate()
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = fetch(`http://localhost:3000/api/check`)
+  //   }
+
+  // }, [user, userLoginned])
+
   async function handleLogout() {
 
     try {
@@ -94,12 +101,12 @@ export default function Header() {
                   className="flex items-center gap-2 cursor-pointer"
                 >
                   <img
-                    src={user?.profilePic}
+                    src={user?.userProfileImageURL}
                     alt="Profile"
                     className="w-8 h-8 rounded-full"
                   />
                   <span className="text-gray-700 font-medium">
-                    {user?.name}
+                    {user?.fullName}
                   </span>
                   <i className="ri-arrow-down-s-line"></i>
                 </button>
@@ -168,7 +175,7 @@ export default function Header() {
                 Pricing
               </Link>
               <hr className="border-gray-200" />
-              {!isLoggedIn ? (
+              {!userLoginned ? (
                 <>
                   <Link
                     to={"/login"}
@@ -191,9 +198,7 @@ export default function Header() {
                     View Portfolio
                   </Link>
                   <button
-                    onClick={() => {
-                      // TODO: Logout logic here
-                    }}
+                    onClick={handleLogout}
                     className="text-left text-gray-700 hover:text-blue-600 font-medium"
                   >
                     Log out

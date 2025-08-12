@@ -257,12 +257,12 @@ const DevelopersListPage = () => {
             >
               <img src={dev.userProfileImageURL} alt={dev.fullName} className="w-24 h-24 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 border-4 border-purple-200" />
               <div className="flex-1">
-                <h2 className="text-xl font-semibold text-blue-800">{dev.fullName}</h2>
-                <p className="text-sm text-gray-600">{dev.bio}</p>
+                <h2 className="text-xl font-semibold text-blue-800">{dev.fullName || `Developer${dev.userId}`}</h2>
+                <p className="text-sm text-gray-600">{dev.bio || ""}</p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {Experience(dev)} year(s) | {dev.location.city} | {dev.education.map((e) => e.degree).join(", ")}
+                  {Experience(dev) || ""} year(s) | {dev.location.city || "India"} | {dev.education.map((e) => e.degree).join(", ") || ""}
                 </p>
-                <span className="block text-xs text-gray-400 mt-1">Category: {dev.categories}</span>
+                <span className="block text-xs text-gray-400 mt-1">Category: {dev.categories || ""}</span>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {dev.skills.map((skill, idx) => (
                     <span key={idx} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs">{skill}</span>

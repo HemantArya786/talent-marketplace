@@ -181,6 +181,8 @@ const PortfolioPage = () => {
 
         const data = await response.json()
         console.log("User data:", data)
+        setCoverImgPreview(data.backgroundImageURL)
+        setProfileImgPreview(data.userProfileImageURL)
         setUser(data)
 
       } catch (error) {
@@ -460,45 +462,45 @@ const PortfolioPage = () => {
     }));
   };
 
-  // Trainings handlers
-  const handleTrainingRemove = (idx: number) => {
-    setEditValues((prev: any) => {
-      const arr =
-        prev.training !== undefined
-          ? [...prev.training]
-          : user.training.map((t) => ({ ...t }));
-      arr.splice(idx, 1);
-      return { ...prev, training: arr };
-    });
-  };
-  const handleTrainingAdd = () => {
-    setEditValues((prev: any) => ({
-      ...prev,
-      training: prev.training
-        ? [
-          ...prev.training,
-          {
-            courseName: "",
-            description: "",
-            location: "",
-            start: "",
-            end: "",
-            current: ""
-          },
-        ]
-        : [
-          ...user.training,
-          {
-            courseName: "",
-            description: "",
-            location: "",
-            start: "",
-            end: "",
-            current: ""
-          },
-        ],
-    }));
-  };
+  // // Trainings handlers
+  // const handleTrainingRemove = (idx: number) => {
+  //   setEditValues((prev: any) => {
+  //     const arr =
+  //       prev.training !== undefined
+  //         ? [...prev.training]
+  //         : user.training.map((t) => ({ ...t }));
+  //     arr.splice(idx, 1);
+  //     return { ...prev, training: arr };
+  //   });
+  // };
+  // const handleTrainingAdd = () => {
+  //   setEditValues((prev: any) => ({
+  //     ...prev,
+  //     training: prev.training
+  //       ? [
+  //         ...prev.training,
+  //         {
+  //           courseName: "",
+  //           description: "",
+  //           location: "",
+  //           start: "",
+  //           end: "",
+  //           current: ""
+  //         },
+  //       ]
+  //       : [
+  //         ...user.training,
+  //         {
+  //           courseName: "",
+  //           description: "",
+  //           location: "",
+  //           start: "",
+  //           end: "",
+  //           current: ""
+  //         },
+  //       ],
+  //   }));
+  // };
 
   // Professional section handlers
   const handleProfessionalRemove = (idx: number) => {
@@ -567,7 +569,7 @@ const PortfolioPage = () => {
       {/* Cover and Profile Images */}
       <div className="relative">
         <img
-          src={ coverImgPreview || "https://images.ctfassets.net/aq13lwl6616q/2XTr5hIUZ07eh6jDEcfgpP/cc11bd45cb93f9e42594ab6be3dac979/Become_a__one_line___3_.jpg?w=800&h=450&q=50&fm=webp&bg=transparent" }
+          src={coverImgPreview || "https://images.ctfassets.net/aq13lwl6616q/2XTr5hIUZ07eh6jDEcfgpP/cc11bd45cb93f9e42594ab6be3dac979/Become_a__one_line___3_.jpg?w=800&h=450&q=50&fm=webp&bg=transparent"}
           alt="Cover"
           className="w-full h-64 object-cover rounded-b-3xl"
         />
@@ -581,7 +583,7 @@ const PortfolioPage = () => {
           </button>
         </div>
         <img
-          src={profileImgPreview ||"https://images.ctfassets.net/aq13lwl6616q/2XTr5hIUZ07eh6jDEcfgpP/cc11bd45cb93f9e42594ab6be3dac979/Become_a__one_line___3_.jpg?w=800&h=450&q=50&fm=webp&bg=transparent"}
+          src={profileImgPreview || "https://images.ctfassets.net/aq13lwl6616q/2XTr5hIUZ07eh6jDEcfgpP/cc11bd45cb93f9e42594ab6be3dac979/Become_a__one_line___3_.jpg?w=800&h=450&q=50&fm=webp&bg=transparent"}
           alt="Profile"
           className="w-32 h-32 rounded-full border-4 border-white absolute bottom-[-2rem] left-6 shadow-lg object-cover"
         />
@@ -1536,7 +1538,10 @@ const PortfolioPage = () => {
                   <span className="text-xs">{item.description}</span>
                   <br />
                   <span className="text-xs text-gray-500">
-                    {new Date(item.startDate).getFullYear()} - {item.currentlyWorking ? "Current" : new Date(item.startDate).getFullYear()}
+                    <span className="text-xs text-gray-500">
+                      {new Date(item.startDate).toLocaleString('default', { month: 'short', year: 'numeric' })} - {item.currentlyWorking ? "Current" : new Date(item.endDate).toLocaleString('default', { month: 'short', year: 'numeric' })}
+                    </span>
+
                   </span>
                 </li>
 

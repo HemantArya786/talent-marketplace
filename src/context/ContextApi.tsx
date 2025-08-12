@@ -7,9 +7,9 @@ export const ContextApi = ({ children }) => {
     const [userLoginned, setUserLoginned] = useState(false);
 
     useEffect(() => {
-        // ✅ Always check the current logged-in user
+
         fetch("http://localhost:3000/api/users/check", {
-            method:"GET",
+            method: "GET",
             credentials: "include",
         })
             .then((res) => (res.ok ? res.json() : null))

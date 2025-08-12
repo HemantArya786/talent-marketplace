@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { AutoCloseModal } from "@/lib/Modal";
 
 const categoryOptions = [
   "Generative AI",
@@ -152,6 +153,10 @@ export default function CategorySkillsForm() {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
   const [warning, setWarning] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState<"success" | "error">("success");
+
 
   const combinedSkills = selectedCategories.flatMap(
     (cat) => skillsData[cat] || []
@@ -236,14 +241,18 @@ export default function CategorySkillsForm() {
     try {
       await axios.put(`http://localhost:3000/api/users/${userId}`, payload);
 
-      alert("Categories and skills added successfully!");
-      console.log(payload);
-      navigate(`/developer/portfolio/${userId}`)
-      alert("Profile created succesfully!!!!")
+      setModalMessage("Category and Skills added successfully, Profile Completed!");
+      setModalType("success");
+      setShowModal(true);
 
+      setTimeout(() => {
+        navigate(`/developer/portfolio/${userId}`);
+      }, 2000);
     } catch (err) {
-      console.error("Error submitting form:", err);
-      alert("Something went wrong. Please try again.");
+      console.error("Unable to post the data", err);
+      setModalMessage("Failed to submit data.");
+      setModalType("error");
+      setShowModal(true);
     }
   };
 
@@ -257,6 +266,15 @@ export default function CategorySkillsForm() {
           className="w-full h-full object-cover"
         />
       </div>
+
+      {/* //Modal mssge */}
+      {showModal && (
+        <AutoCloseModal
+          type={modalType}
+          message={modalMessage}
+          onClose={() => setShowModal(false)}
+        />
+      )}
 
       {/* Right Side */}
       <div className="w-full md:w-1/2 flex items-center  justify-center p-6">

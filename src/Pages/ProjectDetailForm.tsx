@@ -1,11 +1,15 @@
+import { AutoCloseModal } from "@/lib/Modal";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ProjectDetailsForm = () => {
-
   const navigate = useNavigate();
-  const { userId } = useParams()
+  const { userId } = useParams();
+
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState<"success" | "error">("success");
+  const [showModal, setShowModal] = useState(false);
 
   const [projects, setProjects] = useState([
     {
@@ -16,36 +20,28 @@ const ProjectDetailsForm = () => {
       endDate: "",
       workingCurrently: false,
       url: "",
-      thumbnail: null,
+      thumbnail: "",
     },
   ]);
 
   useEffect(() => {
     const fetchData = async () => {
+      const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+      const data = await res.json();
 
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`)
-      const data = await res.json()
-
-      setProjects(data.projects)
+      setProjects(data.projects);
       console.log(data.projects);
-
-    }
-    fetchData()
-  }, [userId])
+    };
+    fetchData();
+  }, [userId]);
 
   const handleChange = (index, e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
     const newProjects = [...projects];
 
     if (type === "checkbox") {
       newProjects[index][name] = checked;
       if (checked) newProjects[index]["endDate"] = "";
-    } else if (type === "file") {
-      if (name === "thumbnail") {
-        newProjects[index][name] = files[0];
-      } else if (name === "images") {
-        newProjects[index][name] = Array.from(files);
-      }
     } else {
       newProjects[index][name] = value;
     }
@@ -64,7 +60,7 @@ const ProjectDetailsForm = () => {
         endDate: "",
         workingCurrently: false,
         url: "",
-        thumbnail: null,
+        thumbnail: "",
       },
     ]);
   };
@@ -72,6 +68,34 @@ const ProjectDetailsForm = () => {
   const deleteProject = (indexToDelete) => {
     const newProjects = projects.filter((_, i) => i !== indexToDelete);
     setProjects(newProjects);
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch("http://localhost:3000/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const { imageUrl } = await res.json();
+
+      const updatedProjects = [...projects];
+      updatedProjects[index].thumbnail = imageUrl;
+      setProjects(updatedProjects);
+
+      alert("Image uploaded!");
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Failed to upload image.");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -89,7 +113,6 @@ const ProjectDetailsForm = () => {
             proj
           );
         } else {
-
           return axios.post(
             `http://localhost:3000/api/users/${userId}/projects`,
             proj
@@ -98,11 +121,19 @@ const ProjectDetailsForm = () => {
       });
 
       await Promise.all(requests);
-      alert("Projects saved successfully!");
-      navigate(`/developer/education-details/${userId}`);
+
+      setModalMessage("Projects added successfully!");
+      setModalType("success");
+      setShowModal(true);
+
+      setTimeout(() => {
+        navigate(`/developer/education-details/${userId}`);
+      }, 2100);
     } catch (error) {
       console.error("Error submitting projects:", error);
-      alert("Failed to submit projects.");
+      setModalMessage("Failed to submit projects.");
+      setModalType("error");
+      setShowModal(true);
     }
   };
 
@@ -114,7 +145,7 @@ const ProjectDetailsForm = () => {
     <div className="h-screen flex flex-col md:flex-row bg-white overflow-hidden">
       {/* Left - Form Section */}
       <div className="w-full md:w-1/2 overflow-y-auto">
-        <form onSubmit={handleSubmit} className="bg-white  p-6 md:p-8">
+        <form onSubmit={handleSubmit} className="bg-white p-6 md:p-8">
           <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
             Project Details
           </h2>
@@ -130,9 +161,7 @@ const ProjectDetailsForm = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-gray-700 mb-1">
-                    Project Title
-                  </label>
+                  <label className="block text-gray-700 mb-1">Project Title</label>
                   <input
                     type="text"
                     name="title"
@@ -178,15 +207,13 @@ const ProjectDetailsForm = () => {
                       onChange={(e) => handleChange(index, e)}
                       className="ml-2"
                     />
-                    <span className="text-sm text-gray-500">
-                      Currently Working
-                    </span>
+                    <span className="text-sm text-gray-500">Currently Working</span>
                   </label>
                   {!project.workingCurrently && (
                     <input
                       type="month"
                       name="endDate"
-                      value={project.startDate.slice(0, 7) || ""}
+                      value={project.endDate.slice(0, 7) || ""}
                       onChange={(e) => handleChange(index, e)}
                       className="w-full px-3 py-2 border rounded-md"
                     />
@@ -195,14 +222,12 @@ const ProjectDetailsForm = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 mb-1">
-                  Project Description
-                </label>
+                <label className="block text-gray-700 mb-1">Project Description</label>
                 <textarea
                   name="description"
                   value={project.description}
                   onChange={(e) => handleChange(index, e)}
-                  rows="3"
+                  rows={3}
                   className="w-full px-3 py-2 border rounded-md"
                   placeholder="Describe the project, tools used, your role, etc."
                   required
@@ -210,18 +235,15 @@ const ProjectDetailsForm = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 mb-1">
-                  Thumbnail Image
-                </label>
+                <label className="block text-gray-700 mb-1">Thumbnail Image</label>
                 <input
                   type="file"
                   accept="image/*"
                   name="thumbnail"
-                  onChange={(e) => handleChange(index, e)}
+                  onChange={(e) => handleImageChange(e, index)}
                   className="w-full"
                 />
               </div>
-
 
               {projects.length > 1 && (
                 <button
@@ -262,13 +284,22 @@ const ProjectDetailsForm = () => {
       </div>
 
       {/* Right - Image Section */}
-      <div className="hidden md:block md:w-1/2 bg-cover bg-center ">
+      <div className="hidden md:block md:w-1/2 bg-cover bg-center">
         <img
           src="https://create.microsoft.com/_next/image?url=https%3A%2F%2Fcdn.create.microsoft.com%2Fcmsassets%2FAIJobSearch-HERO.webp&w=1920&q=75"
           alt="Project Visual"
-          className="h-full w-full object-cover "
+          className="h-full w-full object-cover"
         />
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <AutoCloseModal
+          message={modalMessage}
+          type={modalType}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };

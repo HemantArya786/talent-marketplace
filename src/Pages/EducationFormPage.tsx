@@ -1,10 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AutoCloseModal } from '@/lib/Modal';
 
 const degreeOptions = ['SSC', '12th/Intermediate', 'Bachelors', 'Masters', 'Others'];
 
 const EducationForm = () => {
+
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState<"success" | "error">("success")
+
   const [educationList, setEducationList] = useState([
     {
       _id: '',
@@ -51,21 +57,27 @@ const EducationForm = () => {
 
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
+        const data = await res.json();
+
+        if (Array.isArray(data.education) && data.education.length > 0) {
+          setEducationList(data.education);
+        }
+      } catch (error) {
+        console.error("Failed to fetch education data:", error);
+      }
+    };
+
+    fetchData();
+  }, [userId]);
+
+  useEffect(() => {
     if (lastEducationRef.current) {
       lastEducationRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-
-    const fetchData = async () => {
-
-      const res = await fetch(`http://localhost:3000/api/users/${userId}`)
-      const data = await res.json()
-
-      setEducationList(data.education)
-      console.log(data.education);
-    }
-    fetchData()
-
-  }, [educationList.length, userId]);
+  }, [educationList.length]);
 
 
   const handleSubmit = async (e) => {
@@ -93,12 +105,24 @@ const EducationForm = () => {
       });
 
       await Promise.all(requests);
-      alert("Education details saved successfully!");
-      navigate(`/developer/profile-image/${userId}`);
-    }
-    catch (error) {
+
+      setModalMessage("Education details saved successfully!");
+      setShowModal(true);
+      setModalType("success")
+
+      setTimeout(() => {
+        setShowModal(false);
+        navigate(`/developer/profile-image/${userId}`);
+      }, 2000);
+
+    } catch (error) {
       console.error("Error submitting education details:", error);
-      alert("Failed to submit education details.");
+
+      setModalMessage("Failed to submit education details.");
+      setModalType("error")
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+
     }
   };
 
@@ -107,6 +131,7 @@ const EducationForm = () => {
   };
 
   return (
+
     <div className="flex min-h-screen bg-gray-50">
       {/* Left Image */}
       <div className="w-1/2 flex items-center justify-center bg-gray-200">
@@ -116,6 +141,14 @@ const EducationForm = () => {
           className="max-w-full h-auto object-fill"
         />
       </div>
+
+      {showModal && (
+        <AutoCloseModal
+          type={modalType}
+          message={modalMessage}
+          onClose={() => setShowModal(false)}
+        />
+      )}
 
       {/* Right Form */}
       <div className="w-1/2 p-6 overflow-hidden">
@@ -147,7 +180,7 @@ const EducationForm = () => {
 
               <input
                 type="text"
-                name="schoolName"
+                name="instituteName"
                 placeholder="School/College Name"
                 value={education.instituteName}
                 onChange={(e) => handleChange(index, e)}

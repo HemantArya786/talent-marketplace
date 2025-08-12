@@ -3,6 +3,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { AutoCloseModal } from "@/lib/Modal";
 
 const PersonalDetailsForm = () => {
 
@@ -17,6 +18,9 @@ const PersonalDetailsForm = () => {
     },
     email: "",
   });
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState<"success" | "error">("success");
 
   useEffect(() => {
 
@@ -89,19 +93,19 @@ const PersonalDetailsForm = () => {
         formData
       );
 
-      alert("Personal details updated successfully!")
-      navigate(`/developer/experience-details/${userId}`)
-      console.log("Form submitted successfully:", response.data);
-      ///developer/experience-details/:userId
+      setModalMessage("Personal details added successfully!");
+      setModalType("success");
+      setShowModal(true);
+      setTimeout(() => {
+        navigate(`/developer/experience-details/${userId}`);
+      }, 2000);
+    } catch (err) {
+      console.error("Unable to post the data", err);
+      setModalMessage("Failed to submit data.");
+      setModalType("error");
+      setShowModal(true);
     }
-    catch (error) {
-      console.error(
-        "Error submitting form:",
-        error.response?.data || error.message
-      );
-    }
-  };
-
+  }
   return (
     <div className="h-screen w-screen flex">
       {/* Image Section */}
@@ -112,6 +116,15 @@ const PersonalDetailsForm = () => {
           className="w-full h-full object-cover"
         />
       </div>
+
+      {/* AutoClose Modal */}
+      {showModal && (
+        <AutoCloseModal
+          type={modalType}
+          message={modalMessage}
+          onClose={() => setShowModal(false)}
+        />
+      )}
 
       {/* Form Section */}
       <div className="w-full md:w-1/2 h-full flex items-center justify-center bg-white">

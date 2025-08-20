@@ -61,8 +61,11 @@ export default function UserSignUp() {
             })
 
             if (!apiResponse.ok) {
-                throw new Error('Failed to login.')
+                const errorText = await apiResponse.text();
+                console.error("API failed:", apiResponse.status, errorText);
+                throw new Error('Failed to login.');
             }
+
             const responseData = await apiResponse.json()
 
             const userId = responseData.user.userId

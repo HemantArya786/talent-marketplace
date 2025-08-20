@@ -688,7 +688,7 @@ const PortfolioPage = () => {
                 <input
                   type="text"
                   className="text-gray-600 w-full border-b"
-                  value={editValues.location?.city || ""}
+                  value={editValues.location?.city || " "}
                   onChange={(e) =>
                     setEditValues((prev) => ({
                       ...prev,

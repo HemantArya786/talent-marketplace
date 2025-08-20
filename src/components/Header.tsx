@@ -13,12 +13,12 @@ export default function Header() {
 
   const navigate = useNavigate()
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const res = fetch(`${BASE_API}/api/check`)
-  //   }
-
-  // }, [user, userLoginned])
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       const res = fetch(`${BASE_API}/api/check`)
+//     }
+// fetchData()
+//   }, [user, userLoginned])
 
   async function handleLogout() {
 
@@ -102,7 +102,7 @@ export default function Header() {
                   className="flex items-center gap-2 cursor-pointer"
                 >
                   <img
-                    src={user?.userProfileImageURL}
+                    src={user?.userProfileImageURL || "https://media.istockphoto.com/id/1641574902/photo/3d-illustration-of-a-asian-girl-renae-laptop-and-working-at-the-desk-in-office-with-coffee.jpg?s=1024x1024&w=is&k=20&c=zRKhLPwvREz8F1NgQam-9KbwntihyDktZ4O5ddyxRik="}
                     alt="Profile"
                     className="w-8 h-8 rounded-full"
                   />
@@ -115,7 +115,7 @@ export default function Header() {
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-lg py-2 z-50">
                     <Link
-                      to={"/portfolio"}
+                      to={`/developer/portfolio/${user.userId}`}
                       className="block px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
                     >
                       View Portfolio

@@ -6,3 +6,4 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const BASE_API = `https://ai-markteplace-gtmotion-ai.onrender.com`
+//http://localhost:3000

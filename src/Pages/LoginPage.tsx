@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { auth, provider } from "@/lib/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { BASE_API } from "@/lib/utils";
+import { useAuth } from "@/context/ContextApi";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { setUser, setUserLoginned } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation()
@@ -30,8 +32,6 @@ export default function LoginPage() {
       // alert('User already exists. Please log in.')
     }
   }, [location])
-
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,12 +74,19 @@ export default function LoginPage() {
       const result = await apiResponse.json();
 
       if (result.success && result.role === "user") {
-        navigate("/developer/portfolio");
-      } else if (result.success && result.role === "client") {
-        navigate("/company/portfolio");
-      } else if (result.needsSignup) {
+        navigate(`/developer/portfolio/${result.user.userId}`);
+        setUser(result.user)
+        setUserLoginned(true)
+      }
+      else if (result.success && result.role === "client") {
+        navigate(`/company/portfolio/${result.user.clientId}`);
+        setUser(result.user)
+        setUserLoginned(true)
+      }
+      else if (result.needsSignup) {
         navigate("/role-selection");
-      } else {
+      }
+      else {
         throw new Error("Unknown response from server");
       }
     } catch (error) {
